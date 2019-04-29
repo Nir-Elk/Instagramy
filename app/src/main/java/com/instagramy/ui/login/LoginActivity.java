@@ -22,13 +22,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.instagramy.MainActivity;
 import com.instagramy.R;
 import com.instagramy.ui.login.LoginViewModel;
 import com.instagramy.ui.login.LoginViewModelFactory;
+import com.instagramy.utils.Navigator;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
+    private Navigator navigator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,12 +120,16 @@ public class LoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         });
+
+        navigator = new Navigator(this);
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
         // TODO : initiate successful logged in experience
+        this.navigator.navigate(MainActivity.class);
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
