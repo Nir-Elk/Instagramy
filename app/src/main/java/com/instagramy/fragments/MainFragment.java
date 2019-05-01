@@ -25,6 +25,7 @@ import com.instagramy.helpers.PostAdapter;
 import com.instagramy.models.Post;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -110,6 +111,7 @@ public class MainFragment extends Fragment {
                     Post post = postsnap.getValue(Post.class);
                     postList.add(post) ;
                 }
+                Collections.reverse(postList);
                 postAdapter = new PostAdapter(getActivity(),postList);
                 postRecyclerView.setAdapter(postAdapter);
 
