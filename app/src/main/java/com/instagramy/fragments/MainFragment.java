@@ -1,14 +1,31 @@
-package com.instagramy;
+package com.instagramy.fragments;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+import com.instagramy.R;
+import com.instagramy.helpers.PostAdapter;
+import com.instagramy.models.Post;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -30,6 +47,13 @@ public class MainFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView postRecyclerView;
+    private PostAdapter postAdapter;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
+    private List<Post> postList;
+
 
     public MainFragment() {
         // Required empty public constructor
@@ -66,8 +90,37 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
+        postRecyclerView  = fragmentView.findViewById(R.id.postRV);
+        postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        postRecyclerView.setHasFixedSize(true);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Posts");
+        return fragmentView;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postList = new ArrayList<>();
+                for (DataSnapshot postsnap: dataSnapshot.getChildren()) {
+                    Post post = postsnap.getValue(Post.class);
+                    postList.add(post) ;
+                }
+                postAdapter = new PostAdapter(getActivity(),postList);
+                postRecyclerView.setAdapter(postAdapter);
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.instagramy.MainFragment"
+        android:name="com.instagramy.fragments.MainFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_main" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.instagramy.PostFragment"
+        android:name="com.instagramy.fragments.PostFragment"
         android:label="fragment_post"
         tools:layout="@layout/fragment_post" >
         <action
@@ -27,7 +27,12 @@
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.instagramy.MapFragment"
+        android:name="com.instagramy.fragments.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.instagramy.fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

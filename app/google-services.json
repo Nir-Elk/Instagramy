@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "977086701699",
+    "firebase_url": "https://instagramy-88bc5.firebaseio.com",
+    "project_id": "instagramy-88bc5",
+    "storage_bucket": "instagramy-88bc5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977086701699:android:962c9c4d7a0271d2",
+        "android_client_info": {
+          "package_name": "com.example.instagramy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977086701699-b1pfvqvcia9jpvmlb1oeigv85ok49ij8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjtYrnQ_Nkmaqb8clnW-KyJ6nEzpmYY04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977086701699-b1pfvqvcia9jpvmlb1oeigv85ok49ij8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977086701699:android:8e53986c5ee81ee0",
+        "android_client_info": {
+          "package_name": "com.instagramy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977086701699-kemtg8f5u8ug60scd3p1pkqhbn4r9l8s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instagramy",
+            "certificate_hash": "cd58c53c0f6be39a4dd7054cb675eb24f3844697"
+          }
+        },
+        {
+          "client_id": "977086701699-b1pfvqvcia9jpvmlb1oeigv85ok49ij8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjtYrnQ_Nkmaqb8clnW-KyJ6nEzpmYY04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977086701699-b1pfvqvcia9jpvmlb1oeigv85ok49ij8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
