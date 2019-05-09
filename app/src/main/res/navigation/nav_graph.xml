@@ -35,4 +35,9 @@
         android:name="com.instagramy.fragments.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/groupsFragment"
+        android:name="com.instagramy.fragments.GroupsFragment"
+        android:label="fragment_groups"
+        tools:layout="@layout/fragment_groups" />
 </navigation>
