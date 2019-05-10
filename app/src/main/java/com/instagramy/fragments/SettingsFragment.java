@@ -1,6 +1,7 @@
 package com.instagramy.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -9,8 +10,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.instagramy.R;
+import com.instagramy.activities.LoginActivity;
 
 
 /**
@@ -27,6 +31,7 @@ public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private Button logoutbtn;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -62,13 +67,26 @@ public class SettingsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
+        logoutbtn  = fragmentView.findViewById(R.id.logout_btn);
+        logoutbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent logginActivity = new Intent(getActivity(), LoginActivity.class);
+                startActivity(logginActivity);
+                getActivity().finish();
+            }
+        });
+        return fragmentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
