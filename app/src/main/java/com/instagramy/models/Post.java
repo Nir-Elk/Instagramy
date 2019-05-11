@@ -7,18 +7,18 @@ public class Post {
     private String title;
     private String description;
     private String picture;
-    private String userId;
-    private Object timeStamp;
+    private String userName;
+    private String userImg;
+    private int yummies;
 
-    public Post() { }
-
-    public Post(String title, String description, String picture, String userId) {
-        this.title = title;
-        this.description = description;
-        this.picture = picture;
-        this.userId = userId;
-        this.timeStamp = ServerValue.TIMESTAMP;
+    public int getYummies() {
+        return yummies;
     }
+
+    public void setYummies(int yummies) {
+        this.yummies = yummies;
+    }
+
 
     public String getKey() {
         return Key;
@@ -52,12 +52,20 @@ public class Post {
         this.picture = picture;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserImg() {
+        return userImg;
+    }
+
+    public void setUserImg(String userImg) {
+        this.userImg = userImg;
     }
 
     public Object getTimeStamp() {
@@ -67,4 +75,23 @@ public class Post {
     public void setTimeStamp(Object timeStamp) {
         this.timeStamp = timeStamp;
     }
+
+    private Object timeStamp;
+
+    public Post(String title, String description, String picture, String userName, String userImg) {
+        this.title = title;
+        this.description = description;
+        this.picture = picture;
+        this.userName = userName;
+        this.userImg = userImg;
+        this.timeStamp = ServerValue.TIMESTAMP;
+        this.yummies = 0;
+
+    }
+
+    public Post() { }
+
+
+
+
 }

@@ -45,6 +45,7 @@ import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
 import com.instagramy.fragments.GroupsFragment;
 import com.instagramy.fragments.MainFragment;
+import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
 
@@ -56,7 +57,8 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements
         MainFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
-        GroupsFragment.OnFragmentInteractionListener {
+        GroupsFragment.OnFragmentInteractionListener,
+        PostFragment.OnFragmentInteractionListener {
     Fragment homeFragment;
     Fragment settingFragment;
     Fragment groupsFragment;
@@ -176,7 +178,8 @@ public class MainActivity extends AppCompatActivity implements
                                     Post post = new Post(popupTitle.getText().toString(),
                                             popupDescription.getText().toString(),
                                             imageDownloadLink,
-                                            currentUser.getUid());
+                                            currentUser.getDisplayName(),
+                                            currentUser.getPhotoUrl().toString());
                                     addPost(post);
 
                                 }
