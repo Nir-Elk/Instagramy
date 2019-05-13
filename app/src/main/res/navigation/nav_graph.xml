@@ -3,15 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@+id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.instagramy.fragments.MainFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_main" >
-        <action
-            android:id="@+id/action_homeFragment_to_postFragment"
-            app:destination="@id/postFragment" />
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_homeFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
@@ -20,16 +17,15 @@
         android:id="@+id/postFragment"
         android:name="com.instagramy.fragments.PostFragment"
         android:label="fragment_post"
-        tools:layout="@layout/fragment_post" >
-        <action
-            android:id="@+id/action_postFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_post"/>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.instagramy.fragments.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <argument android:name="post"
+            app:argType="com.instagramy.models.Post" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.instagramy.fragments.SettingsFragment"
@@ -40,4 +36,13 @@
         android:name="com.instagramy.fragments.GroupsFragment"
         android:label="fragment_groups"
         tools:layout="@layout/fragment_groups" />
+    <action
+        android:id="@+id/action_global_groupsFragment"
+        app:destination="@id/groupsFragment" />
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/homeFragment" />
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment" />
 </navigation>

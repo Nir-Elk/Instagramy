@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.instagramy.R;
+import com.instagramy.models.Post;
 
 
 /**
@@ -30,13 +32,16 @@ public class PostFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Post post;
 
     private OnFragmentInteractionListener mListener;
 
     public PostFragment() {
         // Required empty public constructor
     }
-
+    public PostFragment(Post post) {
+        this.post = post;
+    }
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -68,7 +73,9 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_post, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_post, container, false);
+        ((TextView)fragmentView.findViewById(R.id.title)).setText(post.getTitle());
+        return fragmentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
