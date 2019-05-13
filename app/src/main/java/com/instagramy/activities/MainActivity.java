@@ -24,12 +24,14 @@ public class MainActivity extends AppCompatActivity implements
     Fragment homeFragment;
     Fragment settingFragment;
     Fragment groupsFragment;
+    Toolbar toolbar;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
 
         this.homeFragment = new MainFragment();
         this.settingFragment = new SettingsFragment();
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                toolbar.setTitle("Instagramy");
                 switchFragment(homeFragment);
             }
         });
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_settings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                toolbar.setTitle("Settings");
                 switchFragment(settingFragment);
             }
         });
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_groups).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                toolbar.setTitle("Groups");
                 switchFragment(groupsFragment);
             }
         });
