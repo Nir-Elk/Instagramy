@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.R;
 import com.instagramy.models.Post;
+import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
 
 
@@ -115,8 +116,27 @@ public class PostFragment extends Fragment {
                 mDatabaseRef.child("Posts").child(post.getKey()).child("yummies").setValue(post.getYummies()+1);
             }
         });
-        final PostFragmentDirections.ActionPostFragmentToMapFragment action = PostFragmentDirections.actionPostFragmentToMapFragment(post);
-        mapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(action));
+
+        final PostFragmentDirections.ActionPostFragmentToMapFragment mapAction = PostFragmentDirections.actionPostFragmentToMapFragment(post);
+        String[] fullName = post.getUserName().split(" ");
+
+        String firstName = "";
+        String lastName = "";
+
+        try {
+            firstName = fullName[0];
+            lastName = fullName[1];
+        } catch (Exception ignored){}
+
+        final PostFragmentDirections.ActionPostFragmentToProfileFragment
+                actionPostFragmentToProfileFragment =
+                PostFragmentDirections
+                        .actionPostFragmentToProfileFragment(
+                                new Profile(firstName, lastName,firstName+lastName , firstName  + "@" +lastName+ ".com", Uri.parse(post.getUserImg())));
+
+        view.findViewById(R.id.post_userimg).setOnClickListener(Navigation.createNavigateOnClickListener(actionPostFragmentToProfileFragment));
+        view.findViewById(R.id.post_username).setOnClickListener(Navigation.createNavigateOnClickListener(actionPostFragmentToProfileFragment));
+        mapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
 
 
         return view;

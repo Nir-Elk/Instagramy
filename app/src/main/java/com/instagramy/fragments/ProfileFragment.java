@@ -3,39 +3,27 @@ package com.instagramy.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
-import com.instagramy.helpers.PostAdapter;
-import com.instagramy.models.Post;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.instagramy.models.Profile;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
+ * {@link ProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
+ * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment {
+public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,17 +32,11 @@ public class MainFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Profile profile;
 
     private OnFragmentInteractionListener mListener;
 
-    private RecyclerView postRecyclerView;
-    private PostAdapter postAdapter;
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
-    private List<Post> postList;
-
-
-    public MainFragment() {
+    public ProfileFragment() {
         // Required empty public constructor
     }
 
@@ -64,11 +46,11 @@ public class MainFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MainFragment.
+     * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2) {
-        MainFragment fragment = new MainFragment();
+    public static ProfileFragment newInstance(String param1, String param2) {
+        ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -89,45 +71,14 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
-        postRecyclerView  = fragmentView.findViewById(R.id.postRV);
-        postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        postRecyclerView.setHasFixedSize(true);
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts");
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        assert getArguments() != null;
+        this.profile = ProfileFragmentArgs.fromBundle(getArguments()).getProfile();
+        ((TextView) view.findViewById(R.id.full_name)).setText(profile.getFirstName() + " " +profile.getLastName());
+        ((TextView) view.findViewById(R.id.email)).setText(profile.getEmail());
 
-
-        return fragmentView;
+        return view;
     }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postList = new ArrayList<>();
-                for (DataSnapshot postsnap: dataSnapshot.getChildren()) {
-                    Post post = postsnap.getValue(Post.class);
-                    postList.add(post) ;
-                }
-                Collections.reverse(postList);
-                postAdapter = new PostAdapter(getActivity(),postList);
-                postRecyclerView.setAdapter(postAdapter);
-
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

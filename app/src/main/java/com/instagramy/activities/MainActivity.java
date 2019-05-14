@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,7 +12,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,7 +32,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.Navigation;
 
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,10 +43,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
+import com.instagramy.fragments.SearchFragment;
 import com.instagramy.fragments.GroupsFragment;
 import com.instagramy.fragments.MainFragment;
 import com.instagramy.fragments.MapFragment;
 import com.instagramy.fragments.PostFragment;
+import com.instagramy.fragments.ProfileFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
 import com.instagramy.utils.GPSLocation;
@@ -64,7 +63,9 @@ public class MainActivity extends AppCompatActivity implements
         SettingsFragment.OnFragmentInteractionListener,
         GroupsFragment.OnFragmentInteractionListener,
         PostFragment.OnFragmentInteractionListener,
-        MapFragment.OnFragmentInteractionListener {
+        MapFragment.OnFragmentInteractionListener,
+        ProfileFragment.OnFragmentInteractionListener,
+        SearchFragment.OnFragmentInteractionListener {
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -111,6 +112,12 @@ public class MainActivity extends AppCompatActivity implements
                 navHostFragmentNavigate(R.id.action_global_groupsFragment);
             }
         });
+        findViewById(R.id.nav_search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navHostFragmentNavigate(R.id.action_global_searchFragment);
+            }
+        });
     }
 
     public void navHostFragmentNavigate(int fragmentId) {
@@ -122,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
         popupChooseGalleryOrCamera.setContentView(R.layout.popup_choose_gallery_or_camera);
         popupChooseGalleryOrCamera.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupChooseGalleryOrCamera.getWindow().setLayout(Toolbar.LayoutParams.WRAP_CONTENT,Toolbar.LayoutParams.WRAP_CONTENT);
-        popupChooseGalleryOrCamera.getWindow().getAttributes().gravity = Gravity.TOP;
+        popupChooseGalleryOrCamera.getWindow().getAttributes().gravity = Gravity.CENTER_VERTICAL;
 
         cameraBtn = popupChooseGalleryOrCamera.findViewById(R.id.camera_btn);
         cameraBtn.setOnClickListener(new View.OnClickListener() {

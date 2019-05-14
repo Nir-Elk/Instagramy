@@ -1,6 +1,7 @@
 package com.instagramy.helpers;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.fragments.MainFragmentDirections;
+import com.instagramy.fragments.PostFragmentDirections;
 import com.instagramy.models.Post;
 import com.instagramy.R;
+import com.instagramy.models.Profile;
 
 import java.util.List;
 
@@ -66,6 +69,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         final MainFragmentDirections.ActionHomeFragmentToPostFragment action2 = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position));
         holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
 
+        String[] fullName = mData.get(position).getUserName().split(" ");
+
+        String firstName = "";
+        String lastName = "";
+
+        try {
+            firstName = fullName[0];
+            lastName = fullName[1];
+        } catch (Exception ignored){}
+
+        final MainFragmentDirections.ActionHomeFragmentToProfileFragment
+                actionHomeFragmentToProfileFragment =
+                MainFragmentDirections
+                        .actionHomeFragmentToProfileFragment(
+                                new Profile(firstName, lastName,firstName+lastName , firstName  + "@" +lastName+ ".com",Uri.parse("Idiot.")));
+
+        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(actionHomeFragmentToProfileFragment));
+        holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(actionHomeFragmentToProfileFragment));
 
 //        holder.postImage.setOnClickListener(new View.OnClickListener() {
 //            @Override

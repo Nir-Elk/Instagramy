@@ -11,10 +11,28 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_homeFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
+            app:destination="@id/mapFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_homeFragment_to_postFragment"
-            app:destination="@id/postFragment" />
+            app:destination="@id/postFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_homeFragment_to_groupDetailsFragment"
+            app:destination="@id/groupDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -27,6 +45,20 @@
         <argument
             android:name="post"
             app:argType="com.instagramy.models.Post" />
+        <action
+            android:id="@+id/action_postFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_postFragment_to_groupDetailsFragment"
+            app:destination="@id/groupDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -45,14 +77,70 @@
         android:id="@+id/groupsFragment"
         android:name="com.instagramy.fragments.GroupsFragment"
         android:label="fragment_groups"
-        tools:layout="@layout/fragment_groups" />
+        tools:layout="@layout/fragment_groups" >
+        <action
+            android:id="@+id/action_groupsFragment_to_groupDetailsFragment"
+            app:destination="@id/groupDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <action
         android:id="@+id/action_global_groupsFragment"
-        app:destination="@id/groupsFragment" />
+        app:destination="@id/groupsFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     <action
         android:id="@+id/action_global_homeFragment"
         app:destination="@id/homeFragment" />
     <action
         android:id="@+id/action_global_settingsFragment"
-        app:destination="@id/settingsFragment" />
+        app:destination="@id/settingsFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.instagramy.fragments.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <argument
+            android:name="Profile"
+            app:argType="com.instagramy.models.Profile" />
+        <action
+            android:id="@+id/action_profileFragment_to_groupDetailsFragment"
+            app:destination="@id/groupDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.instagramy.fragments.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <action
+        android:id="@+id/action_global_searchFragment"
+        app:destination="@id/searchFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <fragment
+        android:id="@+id/groupDetailsFragment"
+        android:name="com.instagramy.fragments.GroupDetailsFragment"
+        android:label="fragment_group_details"
+        tools:layout="@layout/fragment_group_details" />
+    <action
+        android:id="@+id/action_global_mapFragment"
+        app:destination="@id/mapFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>

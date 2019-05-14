@@ -1,22 +1,17 @@
 package com.instagramy.fragments;
 
 import android.content.Context;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.instagramy.R;
 import com.instagramy.models.Post;
-import com.instagramy.utils.GPSLocation;
 
 
 /**
@@ -76,6 +71,7 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        assert getArguments() != null;
         this.post = MapFragmentArgs.fromBundle(getArguments()).getPost();
         TextView title = view.findViewById(R.id.map_post_title);
         title.setText(post.getTitle());
