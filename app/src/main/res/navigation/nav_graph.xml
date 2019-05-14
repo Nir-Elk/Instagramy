@@ -12,12 +12,22 @@
         <action
             android:id="@+id/action_homeFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_postFragment"
+            app:destination="@id/postFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
         android:name="com.instagramy.fragments.PostFragment"
         android:label="fragment_post"
-        tools:layout="@layout/fragment_post"/>
+        tools:layout="@layout/fragment_post">
+        <action
+            android:id="@+id/action_postFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <argument
+            android:name="post"
+            app:argType="com.instagramy.models.Post" />
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.instagramy.fragments.MapFragment"

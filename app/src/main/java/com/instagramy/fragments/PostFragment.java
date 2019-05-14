@@ -1,26 +1,36 @@
 package com.instagramy.fragments;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.R;
 import com.instagramy.models.Post;
+import com.instagramy.utils.GPSLocation;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PostFragment.OnFragmentInteractionListener} interface
+ * {@link MapFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link PostFragment#newInstance} factory method to
+ * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class PostFragment extends Fragment {
@@ -33,22 +43,26 @@ public class PostFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private Post post;
+    FirebaseDatabase  database;
+    DatabaseReference mDatabaseRef;
+    TextView title,description,username,yummies;
+    ImageView postimg, userImg;
+    Button yummiBtn,mapBtn;
+
 
     private OnFragmentInteractionListener mListener;
 
     public PostFragment() {
         // Required empty public constructor
     }
-    public PostFragment(Post post) {
-        this.post = post;
-    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PostFragment.
+     * @return A new instance of fragment MapFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static PostFragment newInstance(String param1, String param2) {
@@ -73,9 +87,39 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_post, container, false);
-        ((TextView)fragmentView.findViewById(R.id.title)).setText(post.getTitle());
-        return fragmentView;
+        View view = inflater.inflate(R.layout.fragment_post, container, false);
+        this.post = MapFragmentArgs.fromBundle(getArguments()).getPost();
+
+        this.database = FirebaseDatabase.getInstance();
+        this.mDatabaseRef = database.getReference();
+
+        title = view.findViewById(R.id.post_title);
+        description = view.findViewById(R.id.post_description);
+        username = view.findViewById(R.id.post_username);
+        yummies = view.findViewById(R.id.post_yummies);
+        postimg = view.findViewById(R.id.post_img);
+        userImg = view.findViewById(R.id.post_userimg);
+        yummiBtn = view.findViewById(R.id.post_yummies_btn);
+        mapBtn = view.findViewById(R.id.post_map_btn);
+
+        title.setText(post.getTitle());
+        description.setText(post.getDescription());
+        username.setText(post.getUserName());
+        yummies.setText(post.getYummies()+" Yummies");
+        Glide.with(getContext()).load(post.getUserImg()).into(userImg);
+        Glide.with(getContext()).load(post.getPicture()).into(postimg);
+
+        yummiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDatabaseRef.child("Posts").child(post.getKey()).child("yummies").setValue(post.getYummies()+1);
+            }
+        });
+        final PostFragmentDirections.ActionPostFragmentToMapFragment action = PostFragmentDirections.actionPostFragmentToMapFragment(post);
+        mapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(action));
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

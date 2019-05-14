@@ -4,13 +4,16 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,6 +52,7 @@ import com.instagramy.fragments.MapFragment;
 import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
+import com.instagramy.utils.GPSLocation;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
+        ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},123);
         initBottomBarClickListeners();
         iniPopup();
 
@@ -174,13 +178,15 @@ public class MainActivity extends AppCompatActivity implements
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String imageDownloadLink = uri.toString();
+                                    GPSLocation gpsLocation = new GPSLocation(MainActivity.this);
+                                    Location location = gpsLocation.getLocation();
                                     Post post = new Post(popupTitle.getText().toString(),
                                             popupDescription.getText().toString(),
                                             imageDownloadLink,
                                             currentUser.getDisplayName(),
-                                            currentUser.getPhotoUrl().toString());
+                                            currentUser.getPhotoUrl().toString(),
+                                            location);
                                     addPost(post);
-
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
