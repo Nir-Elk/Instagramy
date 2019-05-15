@@ -105,9 +105,9 @@ public class PostFragment extends Fragment {
 
         title.setText(post.getTitle());
         description.setText(post.getDescription());
-        username.setText(post.getUserName());
+        //username.setText(post.getUserName());
         yummies.setText(post.getYummies()+" Yummies");
-        Glide.with(getContext()).load(post.getUserImg()).into(userImg);
+        //Glide.with(getContext()).load(post.getUserImg()).into(userImg);
         Glide.with(getContext()).load(post.getPicture()).into(postimg);
 
         yummiBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,24 +118,6 @@ public class PostFragment extends Fragment {
         });
 
         final PostFragmentDirections.ActionPostFragmentToMapFragment mapAction = PostFragmentDirections.actionPostFragmentToMapFragment(post);
-        String[] fullName = post.getUserName().split(" ");
-
-        String firstName = "";
-        String lastName = "";
-
-        try {
-            firstName = fullName[0];
-            lastName = fullName[1];
-        } catch (Exception ignored){}
-
-        final PostFragmentDirections.ActionPostFragmentToProfileFragment
-                actionPostFragmentToProfileFragment =
-                PostFragmentDirections
-                        .actionPostFragmentToProfileFragment(
-                                new Profile(firstName, lastName,firstName+lastName , firstName  + "@" +lastName+ ".com", Uri.parse(post.getUserImg())));
-
-        view.findViewById(R.id.post_userimg).setOnClickListener(Navigation.createNavigateOnClickListener(actionPostFragmentToProfileFragment));
-        view.findViewById(R.id.post_username).setOnClickListener(Navigation.createNavigateOnClickListener(actionPostFragmentToProfileFragment));
         mapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
 
 

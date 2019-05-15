@@ -15,14 +15,19 @@ public class Post implements Serializable {
     private String title;
     private String description;
     private String picture;
-    private String userName;
-    private String userImg;
+    private String userId;
     private int yummies;
     private Double locationLatitude; // X
     private Double locationLongitude; // Y
     private Object timeStamp;
 
+    public String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public Double getLocationLatitude() {
         return locationLatitude;
@@ -80,22 +85,6 @@ public class Post implements Serializable {
         this.picture = picture;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserImg() {
-        return userImg;
-    }
-
-    public void setUserImg(String userImg) {
-        this.userImg = userImg;
-    }
-
     public Object getTimeStamp() {
         return timeStamp;
     }
@@ -104,12 +93,11 @@ public class Post implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public Post(String title, String description, String picture, String userName, String userImg,Location location) {
+    public Post(String title, String description, String picture, String userId,Location location) {
         this.title = title;
         this.description = description;
         this.picture = picture;
-        this.userName = userName;
-        this.userImg = userImg;
+        this.userId = userId;
         this.timeStamp = ServerValue.TIMESTAMP;
         this.yummies = 0;
         this.locationLatitude=location!=null?location.getLatitude():0;

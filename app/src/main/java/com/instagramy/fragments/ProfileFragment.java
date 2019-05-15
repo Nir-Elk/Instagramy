@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         assert getArguments() != null;
         this.profile = ProfileFragmentArgs.fromBundle(getArguments()).getProfile();
-        ((TextView) view.findViewById(R.id.full_name)).setText(profile.getFirstName() + " " +profile.getLastName());
+        ((TextView) view.findViewById(R.id.full_name)).setText(profile.getName());
         ((TextView) view.findViewById(R.id.email)).setText(profile.getEmail());
 
         return view;

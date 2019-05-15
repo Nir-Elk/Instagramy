@@ -5,8 +5,8 @@ import android.net.Uri;
 import java.io.Serializable;
 
 public class Profile implements Serializable {
-    private String firstName;
-    private String lastName;
+    private String name;
+    private String Key;
     private String id;
     private String email;
     private Uri imageUri;
@@ -14,28 +14,27 @@ public class Profile implements Serializable {
 
     public Profile() {}
 
-    public Profile(String firstName, String lastName, String id, String email, Uri imageUri) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Profile(String name, String id, String email, Uri imageUri) {
+        this.name = name;
         this.id = id;
         this.email = email;
         this.imageUri = imageUri;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getKey() {
+        return Key;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setKey(String key) {
+        Key = key;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getId() {

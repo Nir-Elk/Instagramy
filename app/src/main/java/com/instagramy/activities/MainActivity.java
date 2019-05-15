@@ -51,6 +51,7 @@ import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.ProfileFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
+import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
 
 import java.io.File;
@@ -190,8 +191,7 @@ public class MainActivity extends AppCompatActivity implements
                                     Post post = new Post(popupTitle.getText().toString(),
                                             popupDescription.getText().toString(),
                                             imageDownloadLink,
-                                            currentUser.getDisplayName(),
-                                            currentUser.getPhotoUrl().toString(),
+                                            currentUser.getUid(),
                                             location);
                                     addPost(post);
                                 }
@@ -213,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements
             }
 
         });
-
     }
 
     private void addPost(Post post) {
@@ -390,4 +389,5 @@ public class MainActivity extends AppCompatActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

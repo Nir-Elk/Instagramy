@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.instagramy.fragments.MainFragmentDirections;
 import com.instagramy.fragments.PostFragmentDirections;
 import com.instagramy.models.Post;
@@ -51,42 +54,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
-        holder.postUserName.setText(mData.get(position).getUserName());
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+        mDatabaseRef.child("Users").orderByChild("id").equalTo(mData.get(position).getUserId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                holder.postUserName.setText(dataSnapshot.child("name").toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         String yummies = mData.get(position).getYummies()+" Yummies";
         holder.postYummies.setText(yummies);
-        Glide.with(mContext).load(mData.get(position).getUserImg()).into(holder.postUserImage);
+        //Glide.with(mContext).load(mData.get(position).getUserImg()).into(holder.postUserImage);
         Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).getYummies()+1);
-            }
+        }
         });
-
         final MainFragmentDirections.ActionHomeFragmentToMapFragment action = MainFragmentDirections.actionHomeFragmentToMapFragment(mData.get(position));
         holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(action));
         final MainFragmentDirections.ActionHomeFragmentToPostFragment action2 = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position));
         holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
 
-        String[] fullName = mData.get(position).getUserName().split(" ");
-
-        String firstName = "";
-        String lastName = "";
-
-        try {
-            firstName = fullName[0];
-            lastName = fullName[1];
-        } catch (Exception ignored){}
-
-        final MainFragmentDirections.ActionHomeFragmentToProfileFragment
-                actionHomeFragmentToProfileFragment =
-                MainFragmentDirections
-                        .actionHomeFragmentToProfileFragment(
-                                new Profile(firstName, lastName,firstName+lastName , firstName  + "@" +lastName+ ".com",Uri.parse("Idiot.")));
-
-        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(actionHomeFragmentToProfileFragment));
-        holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(actionHomeFragmentToProfileFragment));
 
 //        holder.postImage.setOnClickListener(new View.OnClickListener() {
 //            @Override
