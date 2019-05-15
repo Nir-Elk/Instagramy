@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.fragments.MainFragmentDirections;
-import com.instagramy.fragments.PostFragmentDirections;
 import com.instagramy.models.Post;
 import com.instagramy.R;
 import com.instagramy.models.Profile;
@@ -110,8 +109,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView postYummies,postUserName;
-        ImageView postImage,postUserImage;
-        Button postYummiBtn,postMapBtn;
+        ImageView postImage;
+        ImageView postUserImage;
+        ImageView postYummiBtn;
+        ImageView postMapBtn;
 
         public MyViewHolder(View itemView){
             super(itemView);
@@ -119,7 +120,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postUserImage = itemView.findViewById(R.id.row_post_userimg);
             postUserName = itemView.findViewById(R.id.row_post_username);
             postYummies = itemView.findViewById(R.id.row_post_yummies);
-            postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
+            postYummiBtn = itemView.findViewById(R.id.row_post_map_btn);
             postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
         }
     }

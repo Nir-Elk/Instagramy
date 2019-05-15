@@ -118,14 +118,14 @@ public class PostFragment extends Fragment {
         });
 
         final PostFragmentDirections.ActionPostFragmentToMapFragment mapAction = PostFragmentDirections.actionPostFragmentToMapFragment(post);
-        String[] fullName = post.getUserName().split(" ");
+        //String[] fullName = post.getUserName().split(" ");
 
         String firstName = "";
         String lastName = "";
 
         try {
-            firstName = fullName[0];
-            lastName = fullName[1];
+            //firstName = fullName[0];
+            //lastName = fullName[1];
         } catch (Exception ignored){}
 
         final PostFragmentDirections.ActionPostFragmentToProfileFragment

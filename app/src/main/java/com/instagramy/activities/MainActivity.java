@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements
         bottomNavigationItems.add(R.id.nav_groups);
         bottomNavigationItems.add(R.id.nav_search);
         bottomNavigationItems.add(R.id.nav_settings);
+        bottomNavigationItems.add(R.id.nav_map);
     }
 
     public void setSelectedItemBottomNavigation(final int itemId) {
@@ -124,6 +125,13 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
+            }
+        });
+
+        findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navHostFragmentNavigate(R.id.action_global_mapFragment);
             }
         });
 
