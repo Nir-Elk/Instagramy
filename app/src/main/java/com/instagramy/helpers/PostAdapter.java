@@ -69,14 +69,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         final MainFragmentDirections.ActionHomeFragmentToPostFragment action2 = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position));
         holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
 
-        String[] fullName = mData.get(position).getUserName().split(" ");
+        //String[] fullName = mData.get(position).getUserName().split(" ");
 
         String firstName = "";
         String lastName = "";
 
         try {
-            firstName = fullName[0];
-            lastName = fullName[1];
+            //firstName = fullName[0];
+           // lastName = fullName[1];
         } catch (Exception ignored){}
 
         final MainFragmentDirections.ActionHomeFragmentToProfileFragment
