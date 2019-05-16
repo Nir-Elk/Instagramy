@@ -43,8 +43,8 @@
             android:id="@+id/action_postFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
         <argument
-            android:name="post"
-            app:argType="com.instagramy.models.Post" />
+            android:name="postId"
+            app:argType="string" />
         <action
             android:id="@+id/action_postFragment_to_profileFragment"
             app:destination="@id/profileFragment"
@@ -65,8 +65,8 @@
         android:name="com.instagramy.fragments.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" >
-        <argument android:name="post"
-            app:argType="com.instagramy.models.Post" />
+        <argument android:name="postId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -113,7 +113,7 @@
             app:argType="com.instagramy.models.Profile" />
         <action
             android:id="@+id/action_profileFragment_to_groupDetailsFragment"
-            app:destination="@id/groupDetailsFragment"
+            app:destination="@+id/groupDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"

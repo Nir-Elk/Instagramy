@@ -1,7 +1,6 @@
 package com.instagramy.helpers;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.fragments.MainFragmentDirections;
-import com.instagramy.fragments.PostFragmentDirections;
 import com.instagramy.models.Post;
 import com.instagramy.R;
 import com.instagramy.models.Profile;
@@ -55,10 +53,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        mDatabaseRef.child("Users").orderByChild("id").equalTo(mData.get(position).getUserId()).addValueEventListener(new ValueEventListener() {
+        DatabaseReference myRef = database.getReference("Profiles").child(mData.get(position).getUserId());
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                holder.postUserName.setText(dataSnapshot.child("name").toString());
+                Profile profile = dataSnapshot.getValue(Profile.class);
+                holder.postUserName.setText(profile.getName());
+                Glide.with(mContext).load(profile.getImageUri()).into(holder.postUserImage);
             }
 
             @Override
@@ -68,7 +69,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         });
         String yummies = mData.get(position).getYummies()+" Yummies";
         holder.postYummies.setText(yummies);
-        //Glide.with(mContext).load(mData.get(position).getUserImg()).into(holder.postUserImage);
         Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,23 +76,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).getYummies()+1);
         }
         });
-        final MainFragmentDirections.ActionHomeFragmentToMapFragment action = MainFragmentDirections.actionHomeFragmentToMapFragment(mData.get(position));
+        final MainFragmentDirections.ActionHomeFragmentToMapFragment action = MainFragmentDirections.actionHomeFragmentToMapFragment(mData.get(position).getKey());
         holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(action));
-        final MainFragmentDirections.ActionHomeFragmentToPostFragment action2 = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position));
+        final MainFragmentDirections.ActionHomeFragmentToPostFragment action2 = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
         holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
 
-
-//        holder.postImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                ((MainActivity) mContext).getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.main_container, new PostFragment(mData.get(position)))
-//                        .commit();
-//
-//            }
-//        });
 
     }
 

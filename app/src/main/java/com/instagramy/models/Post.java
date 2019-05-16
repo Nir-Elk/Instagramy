@@ -1,14 +1,11 @@
 package com.instagramy.models;
 
 import android.location.Location;
-import android.location.LocationManager;
-import android.util.Log;
 
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
 
-import static android.content.Context.LOCATION_SERVICE;
 
 public class Post implements Serializable {
     private String Key;

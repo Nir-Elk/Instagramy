@@ -16,8 +16,6 @@ public class Navigator {
     }
 
     public void navigate(Class target) {
-        //Intent intent = ;
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         this.activity.startActivity(new Intent(this.activity.getApplicationContext(), target));
         this.activity.finish();
     }

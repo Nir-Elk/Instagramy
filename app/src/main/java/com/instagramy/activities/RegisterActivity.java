@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +33,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.Navigator;
 
@@ -116,7 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void checkAndRequestPermission() {
         if(ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Toast.makeText(RegisterActivity.this,"Please accept for requierdpermission",Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this,"Please accept for requierd permission",Toast.LENGTH_SHORT).show();
             }
             else{
                 ActivityCompat.requestPermissions(RegisterActivity.this,
@@ -162,8 +160,8 @@ public class RegisterActivity extends AppCompatActivity {
                 imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Profile profile = new Profile(name, currentUser.getUid(), currentUser.getEmail(), uri);
-                        addProfile(profile);
+                        Profile profile = new Profile(name, currentUser.getUid(), currentUser.getEmail(), uri.toString());
+                        addProfile(profile,currentUser);
                     }
                 });
             }
@@ -171,21 +169,33 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    private void addProfile(Profile profile) {
+    private void addProfile(Profile profile, final FirebaseUser currentUser) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users").push();
+        DatabaseReference myRef = database.getReference("Profiles").push();
 
-
-        String key = myRef.getKey();
+        final String key = myRef.getKey();
         profile.setKey(key);
 
         myRef.setValue(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                showMessage("Register complete");
-                intent.putExtra("Result","OK");
-                setResult(RESULT_OK,intent);
-                finish();
+                UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(key)
+                        .build();
+                currentUser.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        showMessage("Register complete");
+                        intent.putExtra("Result","OK");
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        showMessage(e.getMessage());
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

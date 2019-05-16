@@ -1,6 +1,7 @@
 package com.instagramy.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -51,7 +52,6 @@ import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.ProfileFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
-import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
 
 import java.io.File;
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements
                                     Post post = new Post(popupTitle.getText().toString(),
                                             popupDescription.getText().toString(),
                                             imageDownloadLink,
-                                            currentUser.getUid(),
+                                            currentUser.getDisplayName(),
                                             location);
                                     addPost(post);
                                 }

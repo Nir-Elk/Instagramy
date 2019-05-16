@@ -1,32 +1,54 @@
 package com.instagramy.models;
 
-import android.net.Uri;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 
 public class Profile implements Serializable {
     private String name;
-    private String Key;
+    private String key;
     private String id;
     private String email;
-    private Uri imageUri;
+    private String imageUri;
     private String aboutMe;
 
     public Profile() {}
 
-    public Profile(String name, String id, String email, Uri imageUri) {
+    public Profile(String name, String id, String email, String imageUri) {
         this.name = name;
         this.id = id;
         this.email = email;
         this.imageUri = imageUri;
     }
 
+    public static Profile getProfileById(String id){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Profiles").child(id);
+
+
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+        //Profile profile = new Profile(myRef.child("name"),myRef.child("id").getKey(),myRef.child("email").getKey(),myRef.child("imageUri").getKey());
+        //profile.setKey(id);
+        return null;
+    }
+
     public String getKey() {
-        return Key;
+        return key;
     }
 
     public void setKey(String key) {
-        Key = key;
+        this.key = key;
     }
 
     public String getName() {
@@ -53,11 +75,11 @@ public class Profile implements Serializable {
         this.email = email;
     }
 
-    public Uri getImageUri() {
+    public String getImageUri() {
         return imageUri;
     }
 
-    public void setImageUri(Uri imageUri) {
+    public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
     }
 
@@ -68,4 +90,5 @@ public class Profile implements Serializable {
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
     }
+
 }

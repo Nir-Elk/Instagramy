@@ -31,7 +31,7 @@ public class MapFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Post post;
+    private String postId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -72,9 +72,9 @@ public class MapFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         assert getArguments() != null;
-        this.post = MapFragmentArgs.fromBundle(getArguments()).getPost();
-        TextView title = view.findViewById(R.id.map_post_title);
-        title.setText(post.getTitle());
+//        this.post = MapFragmentArgs.fromBundle(getArguments()).getPostId();
+//        TextView title = view.findViewById(R.id.map_post_title);
+//        title.setText(post.getTitle());
         return view;
     }
 
