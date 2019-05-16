@@ -51,22 +51,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
 
+
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        DatabaseReference myRef = database.getReference("Profiles").child(mData.get(position).getUserId());
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Profile profile = dataSnapshot.getValue(Profile.class);
-                holder.postUserName.setText(profile.getName());
-                Glide.with(mContext).load(profile.getImageUri()).into(holder.postUserImage);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        holder.postUserName.setText(mData.get(position).getUserName());
+        Glide.with(mContext).load(mData.get(position).getUserimg()).into(holder.postUserImage);
         String yummies = mData.get(position).getYummies()+" Yummies";
         holder.postYummies.setText(yummies);
         Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);

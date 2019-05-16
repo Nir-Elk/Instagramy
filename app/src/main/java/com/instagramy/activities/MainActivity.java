@@ -38,8 +38,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -52,6 +55,7 @@ import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.ProfileFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
+import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
 
 import java.io.File;
@@ -185,15 +189,41 @@ public class MainActivity extends AppCompatActivity implements
                             imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    String imageDownloadLink = uri.toString();
+                                    final String imageDownloadLink = uri.toString();
                                     GPSLocation gpsLocation = new GPSLocation(MainActivity.this);
-                                    Location location = gpsLocation.getLocation();
-                                    Post post = new Post(popupTitle.getText().toString(),
-                                            popupDescription.getText().toString(),
-                                            imageDownloadLink,
-                                            currentUser.getDisplayName(),
-                                            location);
-                                    addPost(post);
+                                    final Location location = gpsLocation.getLocation();
+
+
+
+
+                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Profiles").child(currentUser.getDisplayName());
+                                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Profile profile = dataSnapshot.getValue(Profile.class);
+
+                                            Post post = new Post(popupTitle.getText().toString(),
+                                                    popupDescription.getText().toString(),
+                                                    imageDownloadLink,
+                                                    currentUser.getDisplayName(),
+                                                    profile.getName(),
+                                                    profile.getImageUri(),
+                                                    location);
+                                            addPost(post);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+//                                        Post post = new Post(popupTitle.getText().toString(),
+//                                            popupDescription.getText().toString(),
+//                                            imageDownloadLink,
+//                                            currentUser.getDisplayName(),
+//                                            location);
+//                                    addPost(post);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
