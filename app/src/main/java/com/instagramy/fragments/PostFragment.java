@@ -94,17 +94,7 @@ public class PostFragment extends Fragment {
         this.database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference().child("Posts").child(postId);
 
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                post = dataSnapshot.getValue(Post.class);
-                updateView();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
     }
 
     @Override
@@ -123,6 +113,17 @@ public class PostFragment extends Fragment {
         yummiBtn = view.findViewById(R.id.post_yummies_btn);
         mapBtn = view.findViewById(R.id.post_map_btn);
 
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                post = dataSnapshot.getValue(Post.class);
+                updateView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
 
         return view;
     }
@@ -130,20 +131,24 @@ public class PostFragment extends Fragment {
     public void updateView() {
 
 
-        // TODO: bug here!!!
         title.setText(post.getTitle());
         description.setText(post.getDescription());
         yummies.setText(post.getYummies());
         yummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseRef.child("Posts").child(postId).child("yummies").setValue(post.getYummies() + 1);
+                mDatabaseRef.child("yummies").setValue(String.valueOf(Integer.parseInt(post.getYummies())+1));
             }
         });
+
         final PostFragmentDirections.ActionPostFragmentToMapFragment mapAction = PostFragmentDirections.actionPostFragmentToMapFragment(post.getKey());
         mapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
         username.setText(post.getUserName());
         Glide.with(getContext()).load(post.getUserimg()).into(userImg);
+        Glide.with(getContext()).load(post.getPicture()).into(postimg);
+        final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
+        username.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+        userImg.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
     }
 
     // TODO: Rename method, update argument and hook method into UI event

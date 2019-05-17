@@ -56,20 +56,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         holder.postUserName.setText(mData.get(position).getUserName());
         Glide.with(mContext).load(mData.get(position).getUserimg()).into(holder.postUserImage);
-        String yummies = mData.get(position).getYummies()+" Yummies";
-        holder.postYummies.setText(yummies);
+        holder.postYummies.setText(mData.get(position).getYummies());
         Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).getYummies()+1);
+                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(String.valueOf(Integer.parseInt(mData.get(position).getYummies())+1));
         }
         });
-        final MainFragmentDirections.ActionHomeFragmentToMapFragment action = MainFragmentDirections.actionHomeFragmentToMapFragment(mData.get(position).getKey());
-        holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(action));
-        final MainFragmentDirections.ActionHomeFragmentToPostFragment action2 = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
-        holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
-
+        final MainFragmentDirections.ActionHomeFragmentToMapFragment mapAction = MainFragmentDirections.actionHomeFragmentToMapFragment(mData.get(position).getKey());
+        holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
+        final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
+        holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
+        final MainFragmentDirections.ActionHomeFragmentToProfileFragment profileAction = MainFragmentDirections.actionHomeFragmentToProfileFragment(mData.get(position).getUserId());
+        holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
 
     }
 

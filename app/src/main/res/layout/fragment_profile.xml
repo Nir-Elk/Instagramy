@@ -7,7 +7,7 @@
     tools:context=".fragments.ProfileFragment" >
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profile_image"
         android:layout_width="124dp"
         android:layout_height="127dp"
         android:layout_marginStart="8dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/full_name"
+        android:id="@+id/profile_full_name"
         android:layout_width="136dp"
         android:layout_height="32dp"
         android:layout_marginStart="8dp"
@@ -29,10 +29,10 @@
         android:text="Full Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/profile_email"
         android:layout_width="136dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
@@ -41,5 +41,5 @@
         android:text="email@domain.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/full_name" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_full_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>
