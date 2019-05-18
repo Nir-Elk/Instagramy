@@ -84,7 +84,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postUserImage = itemView.findViewById(R.id.row_post_userimg);
             postUserName = itemView.findViewById(R.id.row_post_username);
             postYummies = itemView.findViewById(R.id.row_post_yummies);
-            postYummiBtn = itemView.findViewById(R.id.row_post_map_btn);
+            postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
             postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
         }
     }

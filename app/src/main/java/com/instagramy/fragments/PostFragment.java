@@ -36,7 +36,7 @@ public class PostFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference mDatabaseRef;
     TextView title, description, username, yummies;
-    ImageView postimg, userImg;
+    ImageView postImg, userImg;
     Button yummiBtn, mapBtn;
     private View view;
     private Post post;
@@ -91,7 +91,7 @@ public class PostFragment extends Fragment {
         description = view.findViewById(R.id.post_description);
         username = view.findViewById(R.id.post_username);
         yummies = view.findViewById(R.id.post_yummies);
-        postimg = view.findViewById(R.id.post_img);
+        postImg = view.findViewById(R.id.post_img);
         userImg = view.findViewById(R.id.post_userimg);
         yummiBtn = view.findViewById(R.id.post_yummies_btn);
         mapBtn = view.findViewById(R.id.post_map_btn);
@@ -126,7 +126,7 @@ public class PostFragment extends Fragment {
 
         username.setText(post.getUserName());
         Glide.with(getContext()).load(post.getUserimg()).into(userImg);
-        Glide.with(getContext()).load(post.getPicture()).into(postimg);
+        Glide.with(getContext()).load(post.getPicture()).into(postImg);
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
         username.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
         userImg.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
@@ -170,4 +170,5 @@ public class PostFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
