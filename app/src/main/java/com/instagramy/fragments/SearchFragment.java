@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
@@ -24,7 +26,7 @@ import com.instagramy.activities.MainActivity;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -33,6 +35,9 @@ public class SearchFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    ListView searchResults;
+    SearchView searchBox;
 
     private OnFragmentInteractionListener mListener;
 
@@ -71,7 +76,13 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        this.searchBox = view.findViewById(R.id.search_box);
+        this.searchResults = view.findViewById(R.id.search_results);
+
+
+        return view;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -104,6 +115,16 @@ public class SearchFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 
     /**

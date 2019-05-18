@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.instagramy.R;
+import com.instagramy.activities.AboutActivityDirections;
 import com.instagramy.activities.LoginActivity;
 import com.instagramy.activities.MainActivity;
 
@@ -35,6 +37,7 @@ public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private Button logoutbtn;
+    private Button aboutBtn;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -95,6 +98,12 @@ public class SettingsFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
+        aboutBtn = fragmentView.findViewById(R.id.about_btn);
+
+        aboutBtn.setOnClickListener(Navigation.createNavigateOnClickListener(SettingsFragmentDirections.actionSettingsFragmentToAboutActivity()));
+
+
         return fragmentView;
     }
 

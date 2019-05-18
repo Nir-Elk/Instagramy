@@ -60,7 +60,11 @@
         android:id="@+id/settingsFragment"
         android:name="com.instagramy.fragments.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_aboutActivity"
+            app:destination="@id/aboutActivity" />
+    </fragment>
     <fragment
         android:id="@+id/groupsFragment"
         android:name="com.instagramy.fragments.GroupsFragment"
@@ -144,4 +148,9 @@
     <action
         android:id="@+id/action_global_mapFragment"
         app:destination="@id/mapFragment" />
+    <activity
+        android:id="@+id/aboutActivity"
+        android:name="com.instagramy.activities.AboutActivity"
+        android:label="activity_about"
+        tools:layout="@layout/activity_about" />
 </navigation>
