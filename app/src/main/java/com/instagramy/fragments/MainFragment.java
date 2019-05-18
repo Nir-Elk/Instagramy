@@ -13,12 +13,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
+import com.instagramy.activities.MainActivity;
 import com.instagramy.helpers.PostAdapter;
 import com.instagramy.models.Post;
 
@@ -52,6 +54,7 @@ public class MainFragment extends Fragment {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private List<Post> postList;
+
 
 
     public MainFragment() {
@@ -95,14 +98,13 @@ public class MainFragment extends Fragment {
         postRecyclerView.setHasFixedSize(true);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Posts");
-
-
         return fragmentView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((MainActivity)getActivity()).setSelectedItemBottomNavigation(R.id.nav_home);
     }
 
     @Override
@@ -167,4 +169,5 @@ public class MainFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

@@ -36,6 +36,8 @@ import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -60,7 +62,13 @@ import com.instagramy.utils.GPSLocation;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.function.Consumer;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -82,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements
     private Button cameraBtn, galleryBtn;
     private static final int PReqCode = 2,REQUSECODEG = 2,REQUSECODEC = 3;
     private Uri pickedImgUri = null;
-
-
+    private BottomNavigationView bottomNavigationView;
+    private Set<Integer> bottomNavigationItems;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,14 +101,42 @@ public class MainActivity extends AppCompatActivity implements
         ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},123);
         initBottomBarClickListeners();
         iniPopup();
-
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationItems = new HashSet<>();
+        bottomNavigationItems.add(R.id.nav_home);
+        bottomNavigationItems.add(R.id.nav_groups);
+        bottomNavigationItems.add(R.id.nav_search);
+        bottomNavigationItems.add(R.id.nav_settings);
+        bottomNavigationItems.add(R.id.nav_map);
     }
 
+    public void setSelectedItemBottomNavigation(final int itemId) {
+        bottomNavigationView.setSelectedItemId(itemId);
+        bottomNavigationItems.forEach(new Consumer<Integer>() {
+            @Override
+            public void accept(Integer integer) {
+                if(integer.equals(itemId)) {
+                    findViewById(integer).setClickable(false);
+                } else {
+                    findViewById(integer).setClickable(true);
+                }
+            }
+        });
+
+
+    }
     public void initBottomBarClickListeners() {
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
+            }
+        });
+
+        findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navHostFragmentNavigate(R.id.action_global_mapFragment);
             }
         });
 
@@ -114,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_groups).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 navHostFragmentNavigate(R.id.action_global_groupsFragment);
             }
         });
@@ -283,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
     private void openGallery() {
         //TODO: open gallery intent and wait for user to pick an image
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -392,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 
     @Override

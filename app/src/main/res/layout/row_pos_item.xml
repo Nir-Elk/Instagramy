@@ -51,30 +51,6 @@
         app:layout_constraintStart_toEndOf="@+id/row_post_userimg"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/row_post_yummies_btn"
-        android:layout_width="97dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="yummi"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <Button
-        android:id="@+id/row_post_map_btn"
-        android:layout_width="97dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="map"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/row_post_yummies_btn"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
     <TextView
         android:id="@+id/row_post_yummies"
         android:layout_width="wrap_content"
@@ -86,5 +62,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <ImageView
+        android:id="@+id/row_post_map_btn"
+        android:layout_width="44dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/row_post_yummies_btn2"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_place_black_64dp" />
+
+    <ImageView
+        android:id="@+id/row_post_yummies_btn2"
+        android:layout_width="44dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
