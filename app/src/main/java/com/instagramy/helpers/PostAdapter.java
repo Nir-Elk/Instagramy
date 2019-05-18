@@ -1,11 +1,9 @@
 package com.instagramy.helpers;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,13 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.instagramy.R;
 import com.instagramy.fragments.MainFragmentDirections;
 import com.instagramy.models.Post;
-import com.instagramy.R;
-import com.instagramy.models.Profile;
 
 import java.util.List;
 
@@ -50,54 +46,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         holder.postUserName.setText(mData.get(position).getUserName());
-        String yummies = mData.get(position).getYummies()+" Yummies";
-        holder.postYummies.setText(yummies);
-        Glide.with(mContext).load(mData.get(position).getUserImg()).into(holder.postUserImage);
+        Glide.with(mContext).load(mData.get(position).getUserimg()).into(holder.postUserImage);
+        holder.postYummies.setText(mData.get(position).getYummies());
         Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).getYummies()+1);
-            }
+                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(String.valueOf(Integer.parseInt(mData.get(position).getYummies())+1));
+        }
         });
-
-        final MainFragmentDirections.ActionHomeFragmentToMapFragment action = MainFragmentDirections.actionHomeFragmentToMapFragment(mData.get(position));
-        holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(action));
-        final MainFragmentDirections.ActionHomeFragmentToPostFragment action2 = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position));
-        holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
-
-        //String[] fullName = mData.get(position).getUserName().split(" ");
-
-        String firstName = "";
-        String lastName = "";
-
-        try {
-            //firstName = fullName[0];
-           // lastName = fullName[1];
-        } catch (Exception ignored){}
-
-        final MainFragmentDirections.ActionHomeFragmentToProfileFragment
-                actionHomeFragmentToProfileFragment =
-                MainFragmentDirections
-                        .actionHomeFragmentToProfileFragment(
-                                new Profile(firstName, lastName,firstName+lastName , firstName  + "@" +lastName+ ".com",Uri.parse("Idiot.")));
-
-        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(actionHomeFragmentToProfileFragment));
-        holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(actionHomeFragmentToProfileFragment));
-
-//        holder.postImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                ((MainActivity) mContext).getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.main_container, new PostFragment(mData.get(position)))
-//                        .commit();
-//
-//            }
-//        });
+        final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
+        holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
+        final MainFragmentDirections.ActionHomeFragmentToProfileFragment profileAction = MainFragmentDirections.actionHomeFragmentToProfileFragment(mData.get(position).getUserId());
+        holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
 
     }
 

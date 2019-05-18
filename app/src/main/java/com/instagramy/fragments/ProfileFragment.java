@@ -4,13 +4,21 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.models.Profile;
 
@@ -32,9 +40,15 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Profile profile;
-
+    private String profileId;
+    private FirebaseDatabase database;
+    private DatabaseReference mDatabaseRef;
     private OnFragmentInteractionListener mListener;
+    private Profile profile;
+    private TextView fullName, email;
+    private ImageView imageProfile;
+
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -73,11 +87,33 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         assert getArguments() != null;
-        this.profile = ProfileFragmentArgs.fromBundle(getArguments()).getProfile();
-        ((TextView) view.findViewById(R.id.full_name)).setText(profile.getFirstName() + " " +profile.getLastName());
-        ((TextView) view.findViewById(R.id.email)).setText(profile.getEmail());
+        this.profileId = ProfileFragmentArgs.fromBundle(getArguments()).getProfileId();
+        this.database = FirebaseDatabase.getInstance();
+        this.mDatabaseRef = database.getReference().child("Profiles").child(profileId);
+
+        this.imageProfile = view.findViewById(R.id.profile_image);
+        this.fullName = view.findViewById(R.id.profile_full_name);
+        this.email = view.findViewById(R.id.profile_email);
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                profile = dataSnapshot.getValue(Profile.class);
+                updateView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
 
         return view;
+    }
+
+    private void updateView() {
+        fullName.setText(profile.getName());
+        email.setText(profile.getEmail());
+        Glide.with(getContext()).load(profile.getImageUri()).into(imageProfile);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

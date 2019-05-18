@@ -36,11 +36,13 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,19 +50,16 @@ import com.instagramy.R;
 import com.instagramy.fragments.SearchFragment;
 import com.instagramy.fragments.GroupsFragment;
 import com.instagramy.fragments.MainFragment;
-import com.instagramy.fragments.MapFragment;
 import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.ProfileFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
+import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements
         SettingsFragment.OnFragmentInteractionListener,
         GroupsFragment.OnFragmentInteractionListener,
         PostFragment.OnFragmentInteractionListener,
-        MapFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener {
 
@@ -97,16 +95,19 @@ public class MainActivity extends AppCompatActivity implements
         initBottomBarClickListeners();
         iniPopup();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+
         bottomNavigationItems = new HashSet<>();
         bottomNavigationItems.add(R.id.nav_home);
         bottomNavigationItems.add(R.id.nav_groups);
         bottomNavigationItems.add(R.id.nav_search);
         bottomNavigationItems.add(R.id.nav_settings);
         bottomNavigationItems.add(R.id.nav_map);
+
     }
 
     public void setSelectedItemBottomNavigation(final int itemId) {
         bottomNavigationView.setSelectedItemId(itemId);
+
         bottomNavigationItems.forEach(new Consumer<Integer>() {
             @Override
             public void accept(Integer integer) {
@@ -221,16 +222,41 @@ public class MainActivity extends AppCompatActivity implements
                             imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    String imageDownloadLink = uri.toString();
+                                    final String imageDownloadLink = uri.toString();
                                     GPSLocation gpsLocation = new GPSLocation(MainActivity.this);
-                                    Location location = gpsLocation.getLocation();
-                                    Post post = new Post(popupTitle.getText().toString(),
-                                            popupDescription.getText().toString(),
-                                            imageDownloadLink,
-                                            currentUser.getDisplayName(),
-                                            currentUser.getPhotoUrl().toString(),
-                                            location);
-                                    addPost(post);
+                                    final Location location = gpsLocation.getLocation();
+
+
+
+
+                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Profiles").child(currentUser.getDisplayName());
+                                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Profile profile = dataSnapshot.getValue(Profile.class);
+
+                                            Post post = new Post(popupTitle.getText().toString(),
+                                                    popupDescription.getText().toString(),
+                                                    imageDownloadLink,
+                                                    currentUser.getDisplayName(),
+                                                    profile.getName(),
+                                                    profile.getImageUri(),
+                                                    location);
+                                            addPost(post);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+//                                        Post post = new Post(popupTitle.getText().toString(),
+//                                            popupDescription.getText().toString(),
+//                                            imageDownloadLink,
+//                                            currentUser.getDisplayName(),
+//                                            location);
+//                                    addPost(post);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -250,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements
             }
 
         });
-
     }
 
     private void addPost(Post post) {

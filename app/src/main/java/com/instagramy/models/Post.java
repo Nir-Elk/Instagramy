@@ -1,28 +1,49 @@
 package com.instagramy.models;
 
 import android.location.Location;
-import android.location.LocationManager;
-import android.util.Log;
 
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
 
-import static android.content.Context.LOCATION_SERVICE;
 
 public class Post implements Serializable {
     private String Key;
     private String title;
     private String description;
     private String picture;
+    private String userId;
     private String userName;
-    private String userImg;
-    private int yummies;
+    private String userimg;
+    private String yummies;
     private Double locationLatitude; // X
     private Double locationLongitude; // Y
     private Object timeStamp;
 
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserimg() {
+        return userimg;
+    }
+
+    public void setUserimg(String userimg) {
+        this.userimg = userimg;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public Double getLocationLatitude() {
         return locationLatitude;
@@ -40,11 +61,11 @@ public class Post implements Serializable {
         this.locationLongitude = locationLongitude;
     }
 
-    public int getYummies() {
+    public String getYummies() {
         return yummies;
     }
 
-    public void setYummies(int yummies) {
+    public void setYummies(String yummies) {
         this.yummies = yummies;
     }
 
@@ -80,22 +101,6 @@ public class Post implements Serializable {
         this.picture = picture;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserImg() {
-        return userImg;
-    }
-
-    public void setUserImg(String userImg) {
-        this.userImg = userImg;
-    }
-
     public Object getTimeStamp() {
         return timeStamp;
     }
@@ -104,16 +109,16 @@ public class Post implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public Post(String title, String description, String picture, String userName, String userImg,Location location) {
+    public Post(String title, String description, String picture, String userId, String userName, String userimg,Location location) {
         this.title = title;
         this.description = description;
         this.picture = picture;
+        this.userId = userId;
         this.userName = userName;
-        this.userImg = userImg;
-        this.timeStamp = ServerValue.TIMESTAMP;
-        this.yummies = 0;
+        this.userimg = userimg;
         this.locationLatitude=location!=null?location.getLatitude():0;
         this.locationLongitude=location!=null?location.getLongitude():0;
+        this.timeStamp = ServerValue.TIMESTAMP;
     }
 
     public Post() { }
