@@ -115,8 +115,10 @@ public class MainFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postList = new ArrayList<>();
                 for (DataSnapshot postsnap: dataSnapshot.getChildren()) {
-                    Post post = postsnap.getValue(Post.class);
-                    postList.add(post) ;
+                    try {
+                        Post post = postsnap.getValue(Post.class);
+                        postList.add(post);
+                    } catch (Exception ignored){}
                 }
                 Collections.reverse(postList);
                 postAdapter = new PostAdapter(getActivity(),postList);

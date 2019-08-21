@@ -119,6 +119,7 @@ public class Post implements Serializable {
         this.locationLatitude=location!=null?location.getLatitude():0;
         this.locationLongitude=location!=null?location.getLongitude():0;
         this.timeStamp = ServerValue.TIMESTAMP;
+        this.yummies = "0";
     }
 
     public Post() { }

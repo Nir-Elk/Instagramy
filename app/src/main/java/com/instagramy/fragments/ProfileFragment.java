@@ -1,5 +1,6 @@
 package com.instagramy.fragments;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -113,7 +114,6 @@ public class ProfileFragment extends Fragment {
         fullName.setText(profile.getName());
         email.setText(profile.getEmail());
         Glide.with(getContext()).load(profile.getImageUri()).into(imageProfile);
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

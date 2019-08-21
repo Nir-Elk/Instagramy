@@ -1,10 +1,13 @@
 package com.instagramy.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -30,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
@@ -46,7 +50,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
+import com.instagramy.fragments.MapFragmentDirections;
 import com.instagramy.fragments.SearchFragment;
 import com.instagramy.fragments.GroupsFragment;
 import com.instagramy.fragments.MainFragment;
@@ -54,6 +60,7 @@ import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.ProfileFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
+import com.instagramy.models.PostsList;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
 
@@ -62,7 +69,6 @@ import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Consumer;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -72,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements
         PostFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener {
-
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -85,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements
     private Uri pickedImgUri = null;
     private BottomNavigationView bottomNavigationView;
     private Set<Integer> bottomNavigationItems;
+    private Uri imageUri;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,17 +115,14 @@ public class MainActivity extends AppCompatActivity implements
     public void setSelectedItemBottomNavigation(final int itemId) {
         bottomNavigationView.setSelectedItemId(itemId);
 
-        bottomNavigationItems.forEach(new Consumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                if(integer.equals(itemId)) {
-                    findViewById(integer).setClickable(false);
-                } else {
-                    findViewById(integer).setClickable(true);
-                }
-            }
-        });
+        for (Integer bottomNavigationItem : bottomNavigationItems) {
+            if(bottomNavigationItem.equals(itemId)) {
+                findViewById(bottomNavigationItem).setClickable(false);
 
+            } else {
+                findViewById(bottomNavigationItem).setClickable(true);
+            }
+        }
 
     }
     public void initBottomBarClickListeners() {
@@ -128,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
             }
         });
+
 
         findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_groups).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 navHostFragmentNavigate(R.id.action_global_groupsFragment);
             }
         });
@@ -162,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements
         Navigation.findNavController(findViewById(R.id.nav_host_fragment)).navigate(fragmentId);
     }
 
+    public void navHostFragmentNavigate(NavDirections directions) {
+        Navigation.findNavController(findViewById(R.id.nav_host_fragment)).navigate(directions);
+    }
     private void iniPopup() {
         popupChooseGalleryOrCamera = new Dialog(this);
         popupChooseGalleryOrCamera.setContentView(R.layout.popup_choose_gallery_or_camera);
@@ -339,9 +346,30 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
     private void openCamera() {
-        //TODO: open Camera intent and wait for user to pick an image
-        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUSECODEC);
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "New Picture");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+            imageUri = getContentResolver().insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            startActivityForResult(intent, REQUSECODEC);
+
+        }
+
+
+        //startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUSECODEC);
 
     }
 
@@ -398,6 +426,14 @@ public class MainActivity extends AppCompatActivity implements
         return inSampleSize;
     }
 
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
 
     @Override
@@ -413,8 +449,14 @@ public class MainActivity extends AppCompatActivity implements
                     pickedImgUri = data.getData();
                     break;
                 case REQUSECODEC:
-                    pickedImgUri = bitmapToUriConverter((Bitmap)data.getExtras().get("data"));
+                    if (resultCode == Activity.RESULT_OK) {
+                        try {
+                            pickedImgUri = imageUri;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
+                    }
                     break;
                 default:
                     break;
