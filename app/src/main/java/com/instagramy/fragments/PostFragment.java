@@ -125,8 +125,10 @@ public class PostFragment extends Fragment {
         });
 
         username.setText(post.getUserName());
-        Glide.with(getContext()).load(post.getUserimg()).into(userImg);
-        Glide.with(getContext()).load(post.getPicture()).into(postImg);
+        if(getContext() != null) {
+            Glide.with(getContext()).load(post.getUserimg()).into(userImg);
+            Glide.with(getContext()).load(post.getPicture()).into(postImg);
+        }
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
         username.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
         userImg.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
