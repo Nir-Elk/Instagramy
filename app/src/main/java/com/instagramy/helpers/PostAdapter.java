@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,7 +49,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         holder.postUserName.setText(mData.get(position).getUserName());
-        Glide.with(mContext).load(mData.get(position).getUserimg()).into(holder.postUserImage);
+        holder.postTitle.setText(mData.get(position).getTitle());
+        Glide.with(mContext).load(mData.get(position).getUserimg()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
         holder.postYummies.setText(mData.get(position).getYummies());
         Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +74,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView postYummies,postUserName;
+        TextView postYummies,postTitle,postUserName;
         ImageView postImage;
         ImageView postUserImage;
         ImageView postYummiBtn;
@@ -83,9 +85,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postImage = itemView.findViewById(R.id.row_post_img);
             postUserImage = itemView.findViewById(R.id.row_post_userimg);
             postUserName = itemView.findViewById(R.id.row_post_username);
+            postTitle = itemView.findViewById(R.id.row_post_title);
             postYummies = itemView.findViewById(R.id.row_post_yummies);
             postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
             postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
         }
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

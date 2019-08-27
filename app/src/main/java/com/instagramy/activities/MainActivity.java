@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseUser currentUser;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Dialog popupAddPost,popupChooseGalleryOrCamera;
-    private ImageView popupUserImage,popupPostImage,popupAddBtn;
+    private ImageView popupPostImage,popupAddBtn;
     private TextView popupTitle,popupDescription;
     private ProgressBar popupClickProgress;
     private Button cameraBtn, galleryBtn;
@@ -199,14 +199,12 @@ public class MainActivity extends AppCompatActivity implements
         popupAddPost.getWindow().getAttributes().gravity = Gravity.TOP;
 
         // ini popup widgets
-        popupUserImage = popupAddPost.findViewById(R.id.popup_user_image);
         popupPostImage = popupAddPost.findViewById(R.id.popup_image);
         popupTitle = popupAddPost.findViewById(R.id.popup_title);
         popupDescription = popupAddPost.findViewById(R.id.popup_description);
         popupAddBtn = popupAddPost.findViewById(R.id.popup_add);
         popupClickProgress = popupAddPost.findViewById(R.id.popup_progressBar);
 
-        Glide.with(MainActivity.this).load(currentUser.getPhotoUrl()).into(popupUserImage);
 
 
 
