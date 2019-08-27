@@ -15,7 +15,7 @@ public class Post implements Serializable {
     private String userId;
     private String userName;
     private String userimg;
-    private String yummies;
+    private int yummies;
     private Double locationLatitude; // X
     private Double locationLongitude; // Y
     private Object timeStamp;
@@ -61,11 +61,15 @@ public class Post implements Serializable {
         this.locationLongitude = locationLongitude;
     }
 
-    public String getYummies() {
+    public int getYummies() {
         return yummies;
     }
 
-    public void setYummies(String yummies) {
+    public int addYummi() {
+        return ++this.yummies;
+    }
+
+    public void setYummies(int yummies) {
         this.yummies = yummies;
     }
 
@@ -119,7 +123,7 @@ public class Post implements Serializable {
         this.locationLatitude=location!=null?location.getLatitude():0;
         this.locationLongitude=location!=null?location.getLongitude():0;
         this.timeStamp = ServerValue.TIMESTAMP;
-        this.yummies = "0";
+        this.yummies = 0;
     }
 
     public Post() { }
