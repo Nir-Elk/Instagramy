@@ -98,7 +98,7 @@ public class MainFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         postRecyclerView.setLayoutManager(linearLayoutManager);
         postRecyclerView.setHasFixedSize(true);
-        
+
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Posts");
