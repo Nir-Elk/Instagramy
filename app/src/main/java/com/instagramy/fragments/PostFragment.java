@@ -1,10 +1,6 @@
 package com.instagramy.fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,19 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -109,7 +96,6 @@ public class PostFragment extends Fragment {
         yummiBtn = view.findViewById(R.id.post_yummies_btn);
         mapBtn = view.findViewById(R.id.post_map_btn);
 
-
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -127,44 +113,20 @@ public class PostFragment extends Fragment {
 
     public void updateView() {
 
+
         title.setText(post.getTitle());
         description.setText(post.getDescription());
-        yummies.setText(post.getYummies());
+        yummies.setText(String.valueOf(post.getYummies()));
         yummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseRef.child("yummies").setValue(String.valueOf(Integer.parseInt(post.getYummies())+1));
+                mDatabaseRef.child("yummies").setValue(post.addYummi());
             }
         });
 
         username.setText(post.getUserName());
-
-        Glide.with(getContext())
-                .load(post.getUserimg())
-                .apply(RequestOptions.circleCropTransform())
-                .into(userImg);
-
-        Glide.with(getContext()).load(post.getPicture()).into(new ImageViewTarget<Drawable>(postImg) {
-            @Override
-            protected void setResource(@Nullable final Drawable resource) {
-
-                postImg.setImageDrawable(resource);
-
-                postImg.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                        View mView = getLayoutInflater().inflate(R.layout.main_photo_dialog, null);
-                        PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
-                        photoView.setImageDrawable(resource);
-                        mBuilder.setView(mView);
-                        AlertDialog mDialog = mBuilder.create();
-                        mDialog.show();
-                    }
-                });
-            }
-        });
-
+        Glide.with(getContext()).load(post.getUserimg()).into(userImg);
+        Glide.with(getContext()).load(post.getPicture()).into(postImg);
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
         username.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
         userImg.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));

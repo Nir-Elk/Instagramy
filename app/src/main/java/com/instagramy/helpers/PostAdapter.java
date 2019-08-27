@@ -16,12 +16,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.fragments.MainFragmentDirections;
-import com.instagramy.fragments.MapFragmentDirections;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
 
 import java.util.List;
 
@@ -54,12 +51,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postUserName.setText(mData.get(position).getUserName());
         holder.postTitle.setText(mData.get(position).getTitle());
         Glide.with(mContext).load(mData.get(position).getUserimg()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
-        holder.postYummies.setText(mData.get(position).getYummies());
+        holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
         Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(String.valueOf(Integer.parseInt(mData.get(position).getYummies())+1));
+                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).addYummi());
         }
         });
         final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
@@ -68,11 +65,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
         holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
 
-        final NavGraphDirections.ActionGlobalMapFragment mapAction = MainFragmentDirections.actionGlobalMapFragment();
-        PostsList postsList = new PostsList();
-        postsList.add(mData.get(position));
-        mapAction.setPosts(postsList);
-        holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
     }
 
     @Override
