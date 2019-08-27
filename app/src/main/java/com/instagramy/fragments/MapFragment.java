@@ -74,21 +74,17 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        double avgLat = 0;
-        double avgLong = 0;
         for (Post post : posts) {
             Double lat = post.getLocationLatitude();
             Double lng = post.getLocationLongitude();
             if(lat != null && lng !=null) {
-                avgLat += lat;
-                avgLong += lng;
                 LatLng position = new LatLng(lat, lng);
                 this.googleMap.addMarker(new MarkerOptions().position(position).title(post.getTitle()));
             }
         }
-        avgLat = avgLat / posts.size();
-        avgLong = avgLong / posts.size();
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(avgLat,avgLong)));
+
+        Post newestPost = posts.get(posts.size()-1);
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(newestPost.getLocationLatitude(),newestPost.getLocationLongitude())));
         this.googleMap.setMinZoomPreference(10);
         this.googleMap.setMaxZoomPreference(10);
     }
