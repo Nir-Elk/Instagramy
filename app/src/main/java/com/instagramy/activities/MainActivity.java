@@ -36,7 +36,6 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -50,17 +49,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
-import com.instagramy.fragments.MapFragmentDirections;
-import com.instagramy.fragments.SearchFragment;
-import com.instagramy.fragments.GroupsFragment;
+import com.instagramy.fragments.FavoritesFragment;
 import com.instagramy.fragments.MainFragment;
 import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.ProfileFragment;
+import com.instagramy.fragments.SearchFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
 
@@ -74,7 +70,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity implements
         MainFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
-        GroupsFragment.OnFragmentInteractionListener,
+        FavoritesFragment.OnFragmentInteractionListener,
         PostFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener {
@@ -82,30 +78,31 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Dialog popupAddPost,popupChooseGalleryOrCamera;
-    private ImageView popupPostImage,popupAddBtn;
-    private TextView popupTitle,popupDescription;
+    private Dialog popupAddPost, popupChooseGalleryOrCamera;
+    private ImageView popupPostImage, popupAddBtn;
+    private TextView popupTitle, popupDescription;
     private ProgressBar popupClickProgress;
     private Button cameraBtn, galleryBtn;
-    private static final int PReqCode = 2,REQUSECODEG = 2,REQUSECODEC = 3;
+    private static final int PReqCode = 2, REQUSECODEG = 2, REQUSECODEC = 3;
     private Uri pickedImgUri = null;
     private BottomNavigationView bottomNavigationView;
     private Set<Integer> bottomNavigationItems;
     private Uri imageUri;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},123);
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         initBottomBarClickListeners();
         iniPopup();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationItems = new HashSet<>();
         bottomNavigationItems.add(R.id.nav_home);
-        bottomNavigationItems.add(R.id.nav_groups);
+        bottomNavigationItems.add(R.id.nav_favorites);
         bottomNavigationItems.add(R.id.nav_search);
         bottomNavigationItems.add(R.id.nav_settings);
         bottomNavigationItems.add(R.id.nav_map);
@@ -116,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
         bottomNavigationView.setSelectedItemId(itemId);
 
         for (Integer bottomNavigationItem : bottomNavigationItems) {
-            if(bottomNavigationItem.equals(itemId)) {
+            if (bottomNavigationItem.equals(itemId)) {
                 findViewById(bottomNavigationItem).setClickable(false);
 
             } else {
@@ -125,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+
     public void initBottomBarClickListeners() {
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,10 +146,10 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        findViewById(R.id.nav_groups).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navHostFragmentNavigate(R.id.action_global_groupsFragment);
+                navHostFragmentNavigate(R.id.action_global_favoritesFragment);
             }
         });
         findViewById(R.id.nav_search).setOnClickListener(new View.OnClickListener() {
@@ -169,11 +167,12 @@ public class MainActivity extends AppCompatActivity implements
     public void navHostFragmentNavigate(NavDirections directions) {
         Navigation.findNavController(findViewById(R.id.nav_host_fragment)).navigate(directions);
     }
+
     private void iniPopup() {
         popupChooseGalleryOrCamera = new Dialog(this);
         popupChooseGalleryOrCamera.setContentView(R.layout.popup_choose_gallery_or_camera);
         popupChooseGalleryOrCamera.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupChooseGalleryOrCamera.getWindow().setLayout(Toolbar.LayoutParams.WRAP_CONTENT,Toolbar.LayoutParams.WRAP_CONTENT);
+        popupChooseGalleryOrCamera.getWindow().setLayout(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
         popupChooseGalleryOrCamera.getWindow().getAttributes().gravity = Gravity.CENTER_VERTICAL;
 
         cameraBtn = popupChooseGalleryOrCamera.findViewById(R.id.camera_btn);
@@ -182,7 +181,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 checkAndRequestPermissionForCamera();
             }
-        });        galleryBtn = popupChooseGalleryOrCamera.findViewById(R.id.gallery_btn);
+        });
+        galleryBtn = popupChooseGalleryOrCamera.findViewById(R.id.gallery_btn);
         galleryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,11 +191,10 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-
         popupAddPost = new Dialog(this);
         popupAddPost.setContentView(R.layout.popup_add_post);
         popupAddPost.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupAddPost.getWindow().setLayout(Toolbar.LayoutParams.MATCH_PARENT,Toolbar.LayoutParams.WRAP_CONTENT);
+        popupAddPost.getWindow().setLayout(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.WRAP_CONTENT);
         popupAddPost.getWindow().getAttributes().gravity = Gravity.TOP;
 
         // ini popup widgets
@@ -206,8 +205,6 @@ public class MainActivity extends AppCompatActivity implements
         popupClickProgress = popupAddPost.findViewById(R.id.popup_progressBar);
 
 
-
-
         popupAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,9 +212,9 @@ public class MainActivity extends AppCompatActivity implements
                 popupClickProgress.setVisibility(View.VISIBLE);
 
                 // we need to test all input fields
-                if(!popupTitle.getText().toString().isEmpty()
+                if (!popupTitle.getText().toString().isEmpty()
                         && !popupDescription.getText().toString().isEmpty()
-                        && popupPostImage != null){
+                        && popupPostImage != null) {
 
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("blog_images");
                     final StorageReference imageFilePath = storageReference.child(pickedImgUri.getLastPathSegment());
@@ -230,8 +227,6 @@ public class MainActivity extends AppCompatActivity implements
                                     final String imageDownloadLink = uri.toString();
                                     GPSLocation gpsLocation = new GPSLocation(MainActivity.this);
                                     final Location location = gpsLocation.getLocation();
-
-
 
 
                                     DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Profiles").child(currentUser.getDisplayName());
@@ -303,20 +298,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showMessage(String message) {
-        Toast.makeText(MainActivity.this,message,Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
     }
 
     private void checkAndRequestPermissionForGallery() {
-        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Toast.makeText(MainActivity.this,"Please accept for requierdpermission", Toast.LENGTH_SHORT).show();
-            }
-            else{
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Toast.makeText(MainActivity.this, "Please accept for requierdpermission", Toast.LENGTH_SHORT).show();
+            } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         PReqCode);
             }
-        }else{
+        } else {
             openGallery();
         }
     }
@@ -326,20 +320,19 @@ public class MainActivity extends AppCompatActivity implements
         //TODO: open gallery intent and wait for user to pick an image
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,REQUSECODEG);
+        startActivityForResult(galleryIntent, REQUSECODEG);
     }
 
     private void checkAndRequestPermissionForCamera() {
-        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.CAMERA)){
-                Toast.makeText(MainActivity.this,"Please accept for requierdpermission", Toast.LENGTH_SHORT).show();
-            }
-            else{
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.CAMERA)) {
+                Toast.makeText(MainActivity.this, "Please accept for requierdpermission", Toast.LENGTH_SHORT).show();
+            } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.CAMERA},
                         PReqCode);
             }
-        }else{
+        } else {
             openCamera();
         }
     }
@@ -425,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(contentUri, proj, null, null, null);
         int column_index = cursor
                 .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -437,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUSECODEG || requestCode == REQUSECODEC){
+        if (requestCode == REQUSECODEG || requestCode == REQUSECODEC) {
             popupChooseGalleryOrCamera.dismiss();
             popupAddPost.show();
             popupTitle.setText("");
@@ -487,8 +480,8 @@ public class MainActivity extends AppCompatActivity implements
                 popupChooseGalleryOrCamera.show();
                 break;
 
-                default:
-                    break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -67,28 +67,28 @@
 
     <ImageView
         android:id="@+id/row_post_map_btn"
-        android:layout_width="44dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="61dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/row_post_yummies_btn"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_place_black_64dp" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_map" />
 
     <ImageView
         android:id="@+id/row_post_yummies_btn"
-        android:layout_width="44dp"
-        android:layout_height="47dp"
+        android:layout_width="63dp"
+        android:layout_height="109dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
+        app:srcCompat="@mipmap/tongue_foreground" />
 
     <TextView
         android:id="@+id/row_post_title"

@@ -2,10 +2,13 @@ package com.instagramy.fragments;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -113,7 +118,26 @@ public class ProfileFragment extends Fragment {
     private void updateView() {
         fullName.setText(profile.getName());
         email.setText(profile.getEmail());
-        Glide.with(getContext()).load(profile.getImageUri()).into(imageProfile);
+        Glide.with(getContext()).load(profile.getImageUri()).into(new ImageViewTarget<Drawable>(imageProfile) {
+            @Override
+            protected void setResource(@Nullable final Drawable resource) {
+
+                imageProfile.setImageDrawable(resource);
+
+                imageProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+                        View mView = getLayoutInflater().inflate(R.layout.main_photo_dialog, null);
+                        PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
+                        photoView.setImageDrawable(resource);
+                        mBuilder.setView(mView);
+                        AlertDialog mDialog = mBuilder.create();
+                        mDialog.show();
+                    }
+                });
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

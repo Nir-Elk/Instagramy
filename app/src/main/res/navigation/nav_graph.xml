@@ -66,12 +66,12 @@
             app:destination="@id/aboutActivity" />
     </fragment>
     <fragment
-        android:id="@+id/groupsFragment"
-        android:name="com.instagramy.fragments.GroupsFragment"
-        android:label="fragment_groups"
-        tools:layout="@layout/fragment_groups" >
+        android:id="@+id/favoritesFragment"
+        android:name="com.instagramy.fragments.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
         <action
-            android:id="@+id/action_groupsFragment_to_groupDetailsFragment"
+            android:id="@+id/action_favoritesFragment_to_groupDetailsFragment"
             app:destination="@id/groupDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -79,8 +79,8 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <action
-        android:id="@+id/action_global_groupsFragment"
-        app:destination="@id/groupsFragment"
+        android:id="@+id/action_global_favoritesFragment"
+        app:destination="@id/favoritesFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"

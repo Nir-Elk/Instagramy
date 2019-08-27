@@ -8,11 +8,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,6 +48,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View row = LayoutInflater.from(mContext).inflate(R.layout.row_pos_item,parent,false);
+
         return new MyViewHolder(row);
     }
 
@@ -63,10 +67,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         }
         });
         final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
-        holder.postImage.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
+
+        holder.postTitle.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
+        holder.postImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
+                View mView = LayoutInflater.from(mContext).inflate(R.layout.main_photo_dialog, null);
+                PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
+                photoView.setImageDrawable(holder.postImage.getDrawable());
+                mBuilder.setView(mView);
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        });
+
         final MainFragmentDirections.ActionHomeFragmentToProfileFragment profileAction = MainFragmentDirections.actionHomeFragmentToProfileFragment(mData.get(position).getUserId());
         holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
-        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+        holder.postUserImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
+                View mView = LayoutInflater.from(mContext).inflate(R.layout.main_photo_dialog, null);
+                PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
+                photoView.setImageDrawable(holder.postUserImage.getDrawable());
+                mBuilder.setView(mView);
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        });
 
         final NavGraphDirections.ActionGlobalMapFragment mapAction = MainFragmentDirections.actionGlobalMapFragment();
         PostsList postsList = new PostsList();
