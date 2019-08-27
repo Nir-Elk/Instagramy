@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements
         ProfileFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private static final String ARGS_SCROLL_Y = "mStateScrollY";
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements
     private BottomNavigationView bottomNavigationView;
     private Set<Integer> bottomNavigationItems;
     private Uri imageUri;
-
+    private int mStateScrollY;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +108,16 @@ public class MainActivity extends AppCompatActivity implements
         bottomNavigationItems.add(R.id.nav_settings);
         bottomNavigationItems.add(R.id.nav_map);
 
+        if(savedInstanceState != null){
+            mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ARGS_SCROLL_Y, mStateScrollY);
     }
 
     public void setSelectedItemBottomNavigation(final int itemId) {

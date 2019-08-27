@@ -1,5 +1,6 @@
 package com.instagramy.helpers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,12 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.fragments.MainFragmentDirections;
+import com.instagramy.fragments.MapFragmentDirections;
 import com.instagramy.models.Post;
+import com.instagramy.models.PostsList;
 
 import java.util.List;
 
@@ -32,6 +36,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     FirebaseDatabase  database;
     DatabaseReference mDatabaseRef;
 
+    public List<Post> getmData() {
+        return mData;
+    }
 
     public PostAdapter(Context mContext, List<Post> mData) {
         this.mContext = mContext;
@@ -41,6 +48,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         this.mDatabaseRef = database.getReference();
     }
 
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,7 +56,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         return new MyViewHolder(row);
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
@@ -81,6 +88,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         final MainFragmentDirections.ActionHomeFragmentToProfileFragment profileAction = MainFragmentDirections.actionHomeFragmentToProfileFragment(mData.get(position).getUserId());
         holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+
+        final NavGraphDirections.ActionGlobalMapFragment mapAction = MainFragmentDirections.actionGlobalMapFragment();
+        PostsList postsList = new PostsList();
+        postsList.add(mData.get(position));
+        mapAction.setPosts(postsList);
+        holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
+
         holder.postUserImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

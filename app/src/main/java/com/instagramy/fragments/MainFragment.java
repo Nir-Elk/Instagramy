@@ -54,7 +54,7 @@ public class MainFragment extends Fragment {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private List<Post> postList;
-
+    private LinearLayoutManager linearLayoutManager;
 
 
     public MainFragment() {
@@ -93,11 +93,16 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_main, container, false);
+
         postRecyclerView  = fragmentView.findViewById(R.id.postRV);
-        postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        postRecyclerView.setLayoutManager(linearLayoutManager);
         postRecyclerView.setHasFixedSize(true);
+        
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Posts");
+
         return fragmentView;
     }
 
@@ -110,26 +115,35 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        postList = new ArrayList<>();
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postList = new ArrayList<>();
-                for (DataSnapshot postsnap: dataSnapshot.getChildren()) {
+                Collections.reverse(postList);
+                int i = 0;
+                for (DataSnapshot postsnap : dataSnapshot.getChildren()) {
                     try {
                         Post post = postsnap.getValue(Post.class);
-                        postList.add(post);
-                    } catch (Exception ignored){}
+                        if (i > postList.size() - 1)
+                            postList.add(post);
+                        else
+                            postList.set(i, post);
+
+                        i++;
+                    } catch (Exception ignored) {
+                    }
                 }
                 Collections.reverse(postList);
-                postAdapter = new PostAdapter(getActivity(),postList);
-                postRecyclerView.setAdapter(postAdapter);
-
+                postAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+        postAdapter = new PostAdapter(getActivity(), postList);
+        postRecyclerView.setAdapter(postAdapter);
     }
 
 
