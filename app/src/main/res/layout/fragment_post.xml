@@ -10,47 +10,44 @@
         android:id="@+id/post_img"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_marginTop="64dp"
-        android:scaleType="centerCrop"
+        android:layout_marginTop="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_description"
         tools:srcCompat="@drawable/ic_launcher_background" />
 
     <ImageView
         android:id="@+id/post_userimg"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/post_img"
+        android:scaleType="centerInside"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/post_username"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/post_img"
+        android:layout_marginEnd="24dp"
+        android:text="userName"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
-        app:layout_constraintStart_toEndOf="@+id/post_userimg"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_userimg" />
 
     <Button
         android:id="@+id/post_yummies_btn"
         android:layout_width="97dp"
         android:layout_height="39dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:text="yummi"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_img" />
@@ -59,48 +56,45 @@
         android:id="@+id/post_map_btn"
         android:layout_width="97dp"
         android:layout_height="39dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="44dp"
         android:text="map"
         app:layout_constraintStart_toEndOf="@+id/post_yummies_btn"
         app:layout_constraintTop_toBottomOf="@+id/post_img" />
 
     <TextView
-        android:id="@+id/post_title"
-        android:layout_width="wrap_content"
+        android:id="@+id/post_description"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="TextView"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/post_img"
-        app:layout_constraintStart_toEndOf="@+id/post_username"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="24dp"
+        android:text="Description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_title" />
 
     <TextView
-        android:id="@+id/post_description"
-        android:layout_width="wrap_content"
+        android:id="@+id/post_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="Title"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/post_map_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/post_username" />
 
     <TextView
         android:id="@+id/post_yummies"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.722"
         app:layout_constraintStart_toEndOf="@+id/post_map_btn"
-        app:layout_constraintTop_toBottomOf="@+id/post_img" />
+        app:layout_constraintTop_toTopOf="@+id/post_map_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
