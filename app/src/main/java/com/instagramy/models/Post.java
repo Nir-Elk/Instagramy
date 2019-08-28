@@ -5,6 +5,12 @@ import android.location.Location;
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class Post implements Serializable {
@@ -15,11 +21,18 @@ public class Post implements Serializable {
     private String userId;
     private String userName;
     private String userimg;
-    private int yummies;
     private Double locationLatitude; // X
     private Double locationLongitude; // Y
     private Object timeStamp;
+    private List<String> yummiesSet;
 
+    public List<String> getYummiesSet() {
+        return this.yummiesSet;
+    }
+
+    public void setYummiesSet(List<String> yummiesSet) {
+        this.yummiesSet = yummiesSet;
+    }
 
     public String getUserName() {
         return userName;
@@ -61,16 +74,24 @@ public class Post implements Serializable {
         this.locationLongitude = locationLongitude;
     }
 
+    public List<String> addYumminew(String userId) {
+        this.yummiesSet.add(userId);
+        return this.yummiesSet;
+    }
+
+    public List<String> removeYumminew(String userId) {
+        if(this.yummiesSet.contains(userId)){
+            this.yummiesSet.remove(userId);
+        }
+        return this.yummiesSet;
+    }
+
+    public boolean alreadyYummi(String userId){
+        return this.yummiesSet.contains(userId);
+    }
+
     public int getYummies() {
-        return yummies;
-    }
-
-    public int addYummi() {
-        return ++this.yummies;
-    }
-
-    public void setYummies(int yummies) {
-        this.yummies = yummies;
+        return this.yummiesSet.size()-1;
     }
 
     public String getKey() {
@@ -123,7 +144,8 @@ public class Post implements Serializable {
         this.locationLatitude=location!=null?location.getLatitude():0;
         this.locationLongitude=location!=null?location.getLongitude():0;
         this.timeStamp = ServerValue.TIMESTAMP;
-        this.yummies = 0;
+        this.yummiesSet = new LinkedList<>();
+        this.yummiesSet.add("a");
     }
 
     public Post() { }
