@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_aboutActivity"
             app:destination="@id/aboutActivity" />
+        <action
+            android:id="@+id/action_settingsFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -121,7 +124,11 @@
         android:id="@+id/myPostsFragment"
         android:name="com.instagramy.fragments.MyPostsFragment"
         android:label="fragment_my_posts"
-        tools:layout="@layout/fragment_my_posts" />
+        tools:layout="@layout/fragment_my_posts" >
+        <action
+            android:id="@+id/action_myPostsFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_searchFragment"
         app:destination="@id/myPostsFragment"
@@ -153,4 +160,9 @@
         android:name="com.instagramy.activities.AboutActivity"
         android:label="activity_about"
         tools:layout="@layout/activity_about" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.instagramy.fragments.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
 </navigation>

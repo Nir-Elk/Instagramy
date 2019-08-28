@@ -1,76 +1,72 @@
 package com.instagramy.fragments;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
-import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
-import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Profile;
 
-public class ProfileFragment extends Fragment {
 
-    private String profileId;
+public class EditProfileFragment extends Fragment {
+    private FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private DatabaseReference mDatabaseRef;
-    private OnFragmentInteractionListener mListener;
     private Profile profile;
-    private TextView fullName, email;
-    private ImageView imageProfile;
-    private ProgressBar progressBarProfile;
+    private ProgressBar userProgressBar;
+    private TextView emailProfile;
+    private EditText nameProfile, passProfile, rePassProfile;
+    private ImageView userImage;
+    private Button updatebtn;
 
+    private OnFragmentInteractionListener mListener;
 
-
-    public ProfileFragment() {
+    public EditProfileFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        mAuth = FirebaseAuth.getInstance();
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).getSupportActionBar().hide();
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        assert getArguments() != null;
-        this.profileId = ProfileFragmentArgs.fromBundle(getArguments()).getProfileId();
+        final View fragmentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         this.database = FirebaseDatabase.getInstance();
-        this.mDatabaseRef = database.getReference().child("Profiles").child(profileId);
+        this.mDatabaseRef = database.getReference().child("Profiles").child(mAuth.getCurrentUser().getDisplayName());
 
-        this.progressBarProfile = view.findViewById(R.id.profile_progressBar);
-        this.imageProfile = view.findViewById(R.id.profile_image);
-        this.fullName = view.findViewById(R.id.profile_full_name);
-        this.email = view.findViewById(R.id.profile_email);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 profile = dataSnapshot.getValue(Profile.class);
-                updateView();
+                updateView(fragmentView);
             }
 
             @Override
@@ -78,53 +74,57 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        return view;
+        emailProfile = fragmentView.findViewById(R.id.user_email_profile);
+        nameProfile = fragmentView.findViewById(R.id.user_name_profile);
+        passProfile = fragmentView.findViewById(R.id.user_pass_profile);
+        rePassProfile = fragmentView.findViewById(R.id.user_repass_profile);
+        updatebtn = fragmentView.findViewById(R.id.user_update_profile_btn);
+        userProgressBar = fragmentView.findViewById(R.id.user_progressBar_profile);
+        userImage = fragmentView.findViewById(R.id.user_img_profile);
+
+        return fragmentView;
     }
 
-    private void updateView() {
-        fullName.setText(profile.getName());
-        email.setText(profile.getEmail());
-        progressBarProfile.setVisibility(View.VISIBLE);
 
-        Glide.with(getContext()).load(profile.getImageUri()).listener(new RequestListener<Drawable>() {
+    public void updateView(View fragmentView) {
+
+        emailProfile.setText(profile.getEmail());
+        nameProfile.setText(profile.getName());
+        userProgressBar.setVisibility(View.VISIBLE);
+        userImage.setVisibility(View.VISIBLE);
+
+        Glide.with(fragmentView).load(profile.getImageUri()).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                progressBarProfile.setVisibility(View.GONE);
+                userProgressBar.setVisibility(View.GONE);
                 return false;
             }
 
             @Override
             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                progressBarProfile.setVisibility(View.GONE);
+                userProgressBar.setVisibility(View.GONE);
                 return false;
             }
-        }).into(new ImageViewTarget<Drawable>(imageProfile) {
+        }).into(userImage);
+
+        updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            protected void setResource(@Nullable final Drawable resource) {
+            public void onClick(View v) {
+                if (passProfile.getText().toString().equals(rePassProfile.getText().toString()) && passProfile.getText().toString().length() > 5) {
+                    mAuth.getCurrentUser().updatePassword(passProfile.getText().toString());
 
-                imageProfile.setImageDrawable(resource);
+                    // TODO: add notification
+                }
+                if (nameProfile.getText().toString().length() > 0 && !nameProfile.getText().toString().equals(profile.getName())) {
+                    mDatabaseRef.child("name").setValue(nameProfile.getText().toString());
+                    profile.setName(nameProfile.getText().toString());
 
-                imageProfile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                        View mView = getLayoutInflater().inflate(R.layout.main_photo_dialog, null);
-                        PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
-                        photoView.setImageDrawable(resource);
-                        mBuilder.setView(mView);
-                        AlertDialog mDialog = mBuilder.create();
-                        mDialog.show();
-                    }
-                });
+                    // TODO: add notification
+                }
+                passProfile.setText("");
+                rePassProfile.setText("");
             }
         });
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

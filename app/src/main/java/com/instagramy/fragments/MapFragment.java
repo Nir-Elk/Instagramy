@@ -74,17 +74,25 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        for (Post post : posts) {
-            Double lat = post.getLocationLatitude();
-            Double lng = post.getLocationLongitude();
-            if(lat != null && lng !=null) {
-                LatLng position = new LatLng(lat, lng);
-                this.googleMap.addMarker(new MarkerOptions().position(position).title(post.getTitle()));
+        if(posts!=null) {
+            for (Post post : posts) {
+                Double lat = post.getLocationLatitude();
+                Double lng = post.getLocationLongitude();
+                if (lat != null && lng != null) {
+                    LatLng position = new LatLng(lat, lng);
+                    this.googleMap.addMarker(new MarkerOptions().position(position).title(post.getTitle()));
+                }
             }
         }
-
-        Post newestPost = posts.get(posts.size()-1);
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(newestPost.getLocationLatitude(),newestPost.getLocationLongitude())));
+        LatLng centerMap;
+        if(posts.size()>0) {
+            Post newestPost = posts.get(posts.size()-1);
+            centerMap = new LatLng(newestPost.getLocationLatitude(),newestPost.getLocationLongitude());
+        } else {
+            // Tel Aviv
+            centerMap = new LatLng(32.0853, 34.7818);
+        }
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(centerMap));
         this.googleMap.setMinZoomPreference(10);
         this.googleMap.setMaxZoomPreference(10);
     }

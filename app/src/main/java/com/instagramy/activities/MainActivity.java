@@ -50,6 +50,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
+import com.instagramy.fragments.EditProfileFragment;
 import com.instagramy.fragments.FavoritesFragment;
 import com.instagramy.fragments.MainFragment;
 import com.instagramy.fragments.PostFragment;
@@ -73,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements
         FavoritesFragment.OnFragmentInteractionListener,
         PostFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener,
-        MyPostsFragment.OnFragmentInteractionListener {
+        MyPostsFragment.OnFragmentInteractionListener,
+        EditProfileFragment.OnFragmentInteractionListener {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
     private FirebaseAuth mAuth;
