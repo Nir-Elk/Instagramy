@@ -101,7 +101,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:srcCompat="@mipmap/tongue_foreground" />
+        app:srcCompat="@mipmap/not_liked_foreground" />
 
     <TextView
         android:id="@+id/row_post_title"

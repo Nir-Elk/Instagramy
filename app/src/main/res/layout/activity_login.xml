@@ -26,7 +26,17 @@
                 android:layout_width="320dp"
                 android:layout_height="320dp"
                 android:contentDescription="logo"
-                tools:srcCompat="@drawable/ic_instagramy_logo" />
+                app:srcCompat="@drawable/ic_instagramy_logo" />
+
+
+            <EditText
+                android:id="@+id/LogEmail"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_style"
+                android:ems="10"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
 
             <EditText
                 android:id="@+id/LogPass"
@@ -38,16 +48,6 @@
                 android:ems="10"
                 android:hint="Password"
                 android:inputType="textPassword" />
-
-            <EditText
-                android:id="@+id/LogEmail"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/text_style"
-                android:ems="10"
-                android:hint="Email"
-                android:inputType="textEmailAddress" />
-
 
             <ProgressBar
                 android:id="@+id/LogprogressBar"

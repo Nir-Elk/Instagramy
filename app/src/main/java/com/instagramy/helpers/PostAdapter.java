@@ -1,6 +1,5 @@
 package com.instagramy.helpers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.fragments.MainFragmentDirections;
-import com.instagramy.fragments.MapFragmentDirections;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
 
@@ -88,12 +85,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     }
                 })
                 .into(holder.postImage);
+
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
                 mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).addYummi());
-                adapter.notifyDataSetChanged();
         }});
+
         final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
         holder.postTitle.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
         holder.postImage.setOnClickListener(new View.OnClickListener() {
