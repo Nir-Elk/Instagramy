@@ -1,99 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.LoginActivity"
-    android:background="#fafafa"
-    android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/LogEmail"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/text_style"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/LogPass"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/text_style"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LogEmail" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fafafa"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-    <Button
-        android:id="@+id/LogButton"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/reg_btn_style"
-        android:text="Log In"
-        android:textAllCaps="false"
-        android:textColor="#ffffff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LogPass" />
 
-    <ProgressBar
-        android:id="@+id/LogprogressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/LogButton"
-        app:layout_constraintEnd_toEndOf="@+id/LogButton"
-        app:layout_constraintStart_toStartOf="@+id/LogButton"
-        app:layout_constraintTop_toTopOf="@+id/LogButton" />
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="320dp"
+                android:layout_height="320dp"
+                android:contentDescription="logo"
+                tools:srcCompat="@drawable/ic_instagramy_logo" />
 
-    <TextView
-        android:id="@+id/LogNewAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/text_style"
-        android:text="Create a new account"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LogprogressBar"
-        app:layout_constraintVertical_bias="0.234" />
+            <EditText
+                android:id="@+id/LogPass"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/text_style"
+                android:ems="10"
+                android:hint="Password"
+                android:inputType="textPassword" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="215dp"
-        android:layout_height="210dp"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.021"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher_foreground" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/LogEmail"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_style"
+                android:ems="10"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+
+
+            <ProgressBar
+                android:id="@+id/LogprogressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/LogButton"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/reg_btn_style"
+                android:text="Log In"
+                android:textAllCaps="false"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:id="@+id/LogNewAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_style"
+                android:text="Create a new account" />
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

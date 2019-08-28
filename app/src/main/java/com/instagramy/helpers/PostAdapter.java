@@ -109,6 +109,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
 
+        holder.postFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // save in sql (internal storage)
+            }
+        });
+
         final MainFragmentDirections.ActionHomeFragmentToProfileFragment profileAction = MainFragmentDirections.actionHomeFragmentToProfileFragment(mData.get(position).getUserId());
         holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
 
@@ -145,6 +152,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         ImageView postUserImage;
         ImageView postYummiBtn;
         ImageView postMapBtn;
+        ImageView postFavoriteBtn;
         ProgressBar postProgressBar;
 
         public MyViewHolder(View itemView){
@@ -157,6 +165,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
             postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
             postProgressBar = itemView.findViewById(R.id.row_post_progressBar);
+            postFavoriteBtn = itemView.findViewById(R.id.row_post_favorite_btn);
         }
     }
     @Override
