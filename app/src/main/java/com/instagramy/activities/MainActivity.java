@@ -54,7 +54,7 @@ import com.instagramy.fragments.FavoritesFragment;
 import com.instagramy.fragments.MainFragment;
 import com.instagramy.fragments.PostFragment;
 import com.instagramy.fragments.ProfileFragment;
-import com.instagramy.fragments.SearchFragment;
+import com.instagramy.fragments.MyPostsFragment;
 import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements
         FavoritesFragment.OnFragmentInteractionListener,
         PostFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener,
-        SearchFragment.OnFragmentInteractionListener {
+        MyPostsFragment.OnFragmentInteractionListener {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
     private FirebaseAuth mAuth;
@@ -123,14 +123,14 @@ public class MainActivity extends AppCompatActivity implements
     public void setSelectedItemBottomNavigation(final int itemId) {
         bottomNavigationView.setSelectedItemId(itemId);
 
-        for (Integer bottomNavigationItem : bottomNavigationItems) {
-            if (bottomNavigationItem.equals(itemId)) {
-                findViewById(bottomNavigationItem).setClickable(false);
-
-            } else {
-                findViewById(bottomNavigationItem).setClickable(true);
-            }
-        }
+//        for (Integer bottomNavigationItem : bottomNavigationItems) {
+//            if (bottomNavigationItem.equals(itemId)) {
+//                findViewById(bottomNavigationItem).setClickable(false);
+//
+//            } else {
+//                findViewById(bottomNavigationItem).setClickable(true);
+//            }
+//        }
 
     }
 

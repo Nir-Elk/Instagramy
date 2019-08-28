@@ -118,13 +118,13 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.instagramy.fragments.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        android:id="@+id/myPostsFragment"
+        android:name="com.instagramy.fragments.MyPostsFragment"
+        android:label="fragment_my_posts"
+        tools:layout="@layout/fragment_my_posts" />
     <action
         android:id="@+id/action_global_searchFragment"
-        app:destination="@id/searchFragment"
+        app:destination="@id/myPostsFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"

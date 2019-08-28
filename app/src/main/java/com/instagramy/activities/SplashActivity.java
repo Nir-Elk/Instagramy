@@ -7,10 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.instagramy.R;
-import com.instagramy.utils.Navigator;
 
 public class SplashActivity extends AppCompatActivity {
-    private static int SPLASH_TIME = 2500; //This is 4 seconds
+    private static int SPLASH_TIME = 2500; //This is 2.5 seconds
     private AppCompatActivity thisActivity = SplashActivity.this;
     private Intent intent;
 
@@ -18,6 +17,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        getSupportActionBar().hide();
 
         intent = new Intent(thisActivity.getApplicationContext(), LoginActivity.class);
         new Handler().postDelayed(new Runnable() {

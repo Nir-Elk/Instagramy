@@ -79,6 +79,19 @@
         app:srcCompat="@drawable/ic_map" />
 
     <ImageView
+        android:id="@+id/row_post_favorite_btn"
+        android:layout_width="61dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/row_post_map_btn"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_favorite_svgrepo_com" />
+
+    <ImageView
         android:id="@+id/row_post_yummies_btn"
         android:layout_width="63dp"
         android:layout_height="109dp"
@@ -88,7 +101,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:srcCompat="@mipmap/tongue_foreground" />
+        app:srcCompat="@mipmap/not_liked_foreground" />
 
     <TextView
         android:id="@+id/row_post_title"
