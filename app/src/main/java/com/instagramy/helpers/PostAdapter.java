@@ -34,6 +34,8 @@ import com.instagramy.models.PostsList;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
+    private FirebaseAuth mAuth;
+    String userId;
     Context mContext;
     List<Post> mData;
     FirebaseAuth auth;
@@ -46,11 +48,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     public PostAdapter(Context mContext, List<Post> mData) {
+        this.mAuth = FirebaseAuth.getInstance();
         this.mContext = mContext;
         this.mData = mData;
         this.auth = FirebaseAuth.getInstance();
         this.database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference();
+        this.userId = mAuth.getCurrentUser().getDisplayName();
     }
 
 
@@ -62,8 +66,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return new MyViewHolder(row);
     }
 
+    private boolean ifLiked(@NonNull final MyViewHolder holder, final int position){
+        return mData.get(position).alreadyYummi(this.userId);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+
+        if(ifLiked(holder,position)) {
+            holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
+        } else {
+            holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
+        }
         holder.postUserName.setText(mData.get(position).getUserName());
         holder.postTitle.setText(mData.get(position).getTitle());
         Glide.with(mContext).load(mData.get(position).getUserimg()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
@@ -89,9 +103,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
-                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).addYummi());
-        }});
+
+
+                if(ifLiked(holder,position)) {
+                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).removeYumminew(userId));
+                    holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
+                } else {
+                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).addYumminew(userId));
+                    holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
+                }
+            }});
 
         final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
         holder.postTitle.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
@@ -111,7 +132,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // save in sql (internal storage)
+                // TODO: save in sql (internal storage)
             }
         });
 

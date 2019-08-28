@@ -9,7 +9,7 @@ import android.os.Handler;
 import com.instagramy.R;
 
 public class SplashActivity extends AppCompatActivity {
-    private static int SPLASH_TIME = 2500; //This is 2.5 seconds
+    private static int SPLASH_TIME = 500; //This is 2.5 seconds
     private AppCompatActivity thisActivity = SplashActivity.this;
     private Intent intent;
 

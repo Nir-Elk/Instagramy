@@ -117,12 +117,12 @@ public class PostFragment extends Fragment {
         title.setText(post.getTitle());
         description.setText(post.getDescription());
         yummies.setText(String.valueOf(post.getYummies()));
-        yummiBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDatabaseRef.child("yummies").setValue(post.addYummi());
-            }
-        });
+//        yummiBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mDatabaseRef.child("yummies").setValue(post.addYummi());
+//            }
+//        });
 
         username.setText(post.getUserName());
         if(getContext() != null) {
