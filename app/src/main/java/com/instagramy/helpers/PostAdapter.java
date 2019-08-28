@@ -2,20 +2,27 @@ package com.instagramy.helpers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +42,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     FirebaseAuth auth;
     FirebaseDatabase  database;
     DatabaseReference mDatabaseRef;
+    RecyclerView.Adapter adapter = this;
 
     public List<Post> getmData() {
         return mData;
@@ -63,15 +71,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postTitle.setText(mData.get(position).getTitle());
         Glide.with(mContext).load(mData.get(position).getUserimg()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
         holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
-        Glide.with(mContext).load(mData.get(position).getPicture()).into(holder.postImage);
+        holder.postProgressBar.setVisibility(View.VISIBLE);
+        Glide.with(mContext)
+                .load(mData.get(position).getPicture())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.postProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.postProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(holder.postImage);
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummies").setValue(mData.get(position).addYummi());
-        }
-        });
+                adapter.notifyDataSetChanged();
+        }});
         final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
-
         holder.postTitle.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
         holder.postImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +145,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         ImageView postUserImage;
         ImageView postYummiBtn;
         ImageView postMapBtn;
+        ProgressBar postProgressBar;
 
         public MyViewHolder(View itemView){
             super(itemView);
@@ -132,6 +156,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postYummies = itemView.findViewById(R.id.row_post_yummies);
             postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
             postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
+            postProgressBar = itemView.findViewById(R.id.row_post_progressBar);
         }
     }
     @Override

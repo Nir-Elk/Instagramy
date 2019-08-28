@@ -15,10 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,6 +58,7 @@ public class ProfileFragment extends Fragment {
     private Profile profile;
     private TextView fullName, email;
     private ImageView imageProfile;
+    private ProgressBar progressBarProfile;
 
 
 
@@ -97,6 +103,7 @@ public class ProfileFragment extends Fragment {
         this.database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference().child("Profiles").child(profileId);
 
+        this.progressBarProfile = view.findViewById(R.id.profile_progressBar);
         this.imageProfile = view.findViewById(R.id.profile_image);
         this.fullName = view.findViewById(R.id.profile_full_name);
         this.email = view.findViewById(R.id.profile_email);
@@ -118,7 +125,21 @@ public class ProfileFragment extends Fragment {
     private void updateView() {
         fullName.setText(profile.getName());
         email.setText(profile.getEmail());
-        Glide.with(getContext()).load(profile.getImageUri()).into(new ImageViewTarget<Drawable>(imageProfile) {
+        progressBarProfile.setVisibility(View.VISIBLE);
+
+        Glide.with(getContext()).load(profile.getImageUri()).listener(new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                progressBarProfile.setVisibility(View.GONE);
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                progressBarProfile.setVisibility(View.GONE);
+                return false;
+            }
+        }).into(new ImageViewTarget<Drawable>(imageProfile) {
             @Override
             protected void setResource(@Nullable final Drawable resource) {
 
