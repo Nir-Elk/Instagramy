@@ -74,14 +74,11 @@ public class Post implements Serializable {
         this.locationLongitude = locationLongitude;
     }
 
-    public List<String> addYumminew(String email) {
-        this.yummiesSet.add(email);
-        return this.yummiesSet;
-    }
-
-    public List<String> removeYumminew(String email) {
+    public List<String> toggleYummi(String email) {
         if(this.yummiesSet.contains(email)){
             this.yummiesSet.remove(email);
+        }else{
+            this.yummiesSet.add(email);
         }
         return this.yummiesSet;
     }

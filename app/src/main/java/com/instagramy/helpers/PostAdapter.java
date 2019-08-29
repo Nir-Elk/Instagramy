@@ -116,13 +116,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
 
-
+                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).toggleYummi(email));
                 if(ifLiked(holder,position)) {
-                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).removeYumminew(email));
-                    holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
-                } else {
-                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).addYumminew(email));
                     holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
+                } else {
+                    holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
                 }
             }});
 
