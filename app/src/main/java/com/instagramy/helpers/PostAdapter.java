@@ -35,7 +35,7 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
     private FirebaseAuth mAuth;
-    String userId;
+    String email;
     Context mContext;
     List<Post> mData;
     FirebaseAuth auth;
@@ -54,7 +54,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         this.auth = FirebaseAuth.getInstance();
         this.database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference();
-        this.userId = mAuth.getCurrentUser().getDisplayName();
+        this.email = mAuth.getCurrentUser().getEmail();
     }
 
 
@@ -67,7 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     private boolean ifLiked(@NonNull final MyViewHolder holder, final int position){
-        return mData.get(position).alreadyYummi(this.userId);
+        return mData.get(position).alreadyYummi(this.email);
     }
 
     private boolean userAlreadySavedThisPost(@NonNull final MyViewHolder holder, final int position) {
@@ -118,10 +118,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
 
                 if(ifLiked(holder,position)) {
-                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).removeYumminew(userId));
+                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).removeYumminew(email));
                     holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
                 } else {
-                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).addYumminew(userId));
+                    mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).addYumminew(email));
                     holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
                 }
             }});
