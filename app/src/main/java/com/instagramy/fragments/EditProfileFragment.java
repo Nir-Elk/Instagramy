@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -111,21 +112,48 @@ public class EditProfileFragment extends Fragment {
         updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (passProfile.getText().toString().equals(rePassProfile.getText().toString()) && passProfile.getText().toString().length() > 5) {
-                    mAuth.getCurrentUser().updatePassword(passProfile.getText().toString());
+                boolean isProfileUpdated = false;
+                if (!passProfile.getText().toString().isEmpty()) {
 
-                    // TODO: add notification
-                }
-                if (nameProfile.getText().toString().length() > 0 && !nameProfile.getText().toString().equals(profile.getName())) {
-                    mDatabaseRef.child("name").setValue(nameProfile.getText().toString());
-                    profile.setName(nameProfile.getText().toString());
+                    if (rePassProfile.getText().toString().isEmpty()) {
+                        toast("Please Re enter password");
 
-                    // TODO: add notification
+                    }
+
+                    if (passProfile.getText().toString().equals(rePassProfile.getText().toString()) && passProfile.getText().toString().length() > 5) {
+                        mAuth.getCurrentUser().updatePassword(passProfile.getText().toString());
+                        isProfileUpdated = true;
+                    } else {
+                        toast("Please a valid password, longer then 5");
+                    }
                 }
+
+                if(!nameProfile.getText().toString().equals(profile.getName())) {
+                    if (nameProfile.getText().toString().length() > 0) {
+                        mDatabaseRef.child("name").setValue(nameProfile.getText().toString());
+                        profile.setName(nameProfile.getText().toString());
+                        isProfileUpdated = true;
+                    } else {
+                        toast("Please select a valid name");
+                    }
+                }
+
                 passProfile.setText("");
                 rePassProfile.setText("");
+
+                if (isProfileUpdated) {
+                    toast("Profile has been updated");
+                } else {
+                    toast("Nothing to update.");
+                }
             }
         });
+    }
+
+
+    private void toast(String msg) {
+        Toast.makeText(getActivity().getApplicationContext(), msg, Toast.LENGTH_LONG)
+                .show();
     }
 
     @Override

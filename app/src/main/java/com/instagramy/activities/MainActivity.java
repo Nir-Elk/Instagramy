@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -50,13 +49,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
-import com.instagramy.fragments.EditProfileFragment;
-import com.instagramy.fragments.FavoritesFragment;
-import com.instagramy.fragments.MainFragment;
-import com.instagramy.fragments.PostFragment;
-import com.instagramy.fragments.ProfileFragment;
-import com.instagramy.fragments.MyPostsFragment;
-import com.instagramy.fragments.SettingsFragment;
+import com.instagramy.helpers.FragmentsReacter;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
@@ -68,14 +61,7 @@ import java.util.Random;
 import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity implements
-        MainFragment.OnFragmentInteractionListener,
-        SettingsFragment.OnFragmentInteractionListener,
-        FavoritesFragment.OnFragmentInteractionListener,
-        PostFragment.OnFragmentInteractionListener,
-        ProfileFragment.OnFragmentInteractionListener,
-        MyPostsFragment.OnFragmentInteractionListener,
-        EditProfileFragment.OnFragmentInteractionListener {
+public class MainActivity extends FragmentsReacter {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
     private FirebaseAuth mAuth;
@@ -92,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements
     private Set<Integer> bottomNavigationItems;
     private Uri imageUri;
     private int mStateScrollY;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
         bottomNavigationItems.add(R.id.nav_settings);
         bottomNavigationItems.add(R.id.nav_map);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
         }
 

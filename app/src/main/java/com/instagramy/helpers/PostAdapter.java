@@ -52,7 +52,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         this.mDatabaseRef = database.getReference();
         this.email = mAuth.getCurrentUser().getEmail();
     }
-    
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -89,19 +89,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postTitle.setText(mData.get(position).getTitle());
         Glide.with(mContext).load(mData.get(position).getUserimg()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
         holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
-        holder.postProgressBar.setVisibility(View.VISIBLE);
+        holder.postImageProgressBar.setVisibility(View.VISIBLE);
+        holder.postImageErrorMessage.setVisibility(View.INVISIBLE);
         Glide.with(mContext)
                 .load(mData.get(position).getPicture())
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        holder.postProgressBar.setVisibility(View.GONE);
+                        holder.postImageProgressBar.setVisibility(View.GONE);
+                        holder.postImageErrorMessage.setVisibility(View.VISIBLE);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.postProgressBar.setVisibility(View.GONE);
+                        holder.postImageProgressBar.setVisibility(View.GONE);
+
                         return false;
                     }
                 })
@@ -187,7 +190,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         ImageView postYummiBtn;
         ImageView postMapBtn;
         ImageView postFavoriteBtn;
-        ProgressBar postProgressBar;
+        ProgressBar postImageProgressBar;
+        TextView postImageErrorMessage;
 
         public MyViewHolder(View itemView){
             super(itemView);
@@ -198,7 +202,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postYummies = itemView.findViewById(R.id.row_post_yummies);
             postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
             postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
-            postProgressBar = itemView.findViewById(R.id.row_post_progressBar);
+            postImageProgressBar = itemView.findViewById(R.id.row_post_progressBar);
+            postImageErrorMessage = itemView.findViewById(R.id.row_post_image_error_msg);
             postFavoriteBtn = itemView.findViewById(R.id.row_post_favorite_btn);
         }
     }

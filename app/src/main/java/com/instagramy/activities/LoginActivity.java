@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.instagramy.R;
+import com.instagramy.helpers.KeyboardHelper;
 import com.instagramy.utils.Navigator;
 
 public class LoginActivity extends AppCompatActivity {
@@ -106,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     void hideGroup() {
+        KeyboardHelper.hideKeyboard(this);
         groupToBeHideOrNot(View.INVISIBLE);
     }
 
