@@ -51,7 +51,7 @@ public class EditProfileFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
+        this.mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
     }
 
@@ -60,7 +60,7 @@ public class EditProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View fragmentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         this.database = FirebaseDatabase.getInstance();
-        this.mDatabaseRef = database.getReference().child("Profiles").child(mAuth.getCurrentUser().getDisplayName());
+        this.mDatabaseRef = database.getReference().child("Profiles").child((this.mAuth.getCurrentUser().getDisplayName()));
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
