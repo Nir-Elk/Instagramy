@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -105,7 +106,7 @@ public class EditProfileFragment extends Fragment {
                 userProgressBar.setVisibility(View.GONE);
                 return false;
             }
-        }).into(userImage);
+        }).apply(RequestOptions.circleCropTransform()).into(userImage);
 
         updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override

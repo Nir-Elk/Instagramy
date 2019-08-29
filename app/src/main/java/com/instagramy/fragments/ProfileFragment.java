@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -98,7 +99,7 @@ public class ProfileFragment extends Fragment {
                 progressBarProfile.setVisibility(View.GONE);
                 return false;
             }
-        }).into(new ImageViewTarget<Drawable>(imageProfile) {
+        }).apply(RequestOptions.circleCropTransform()).into(new ImageViewTarget<Drawable>(imageProfile) {
             @Override
             protected void setResource(@Nullable final Drawable resource) {
 

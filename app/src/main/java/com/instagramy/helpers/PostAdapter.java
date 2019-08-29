@@ -70,6 +70,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return mData.get(position).alreadyYummi(this.userId);
     }
 
+    private boolean userAlreadySavedThisPost(@NonNull final MyViewHolder holder, final int position) {
+        return false;
+    }
+
+    private void removeFromUserSavedPosts(@NonNull final MyViewHolder holder, final int position) {
+
+    }
+
+    private void addToUserSavedPosts(@NonNull final MyViewHolder holder, final int position) {
+
+    }
+
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
 
@@ -133,6 +145,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 // TODO: save in sql (internal storage)
+                if(userAlreadySavedThisPost(holder, position)) {
+                    removeFromUserSavedPosts(holder, position);
+                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_dark);
+                } else {
+                    addToUserSavedPosts(holder, position);
+                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_svgrepo_com);
+                }
             }
         });
 

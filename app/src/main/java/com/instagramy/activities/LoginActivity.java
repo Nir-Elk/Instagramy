@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         LogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogBtn.setVisibility(View.INVISIBLE);
+                hideGroup();
                 loadingProgress.setVisibility(View.VISIBLE);
 
                 final String email = userEmail.getText().toString();
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (email.isEmpty() || pass.isEmpty()) {
                     showMessage("Please Verify all fields");
-                    LogBtn.setVisibility(View.VISIBLE);
+                    showGroup();
                     loadingProgress.setVisibility(View.INVISIBLE);
                 } else {
                     singIn(email, pass);
@@ -92,10 +92,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    LogBtn.setVisibility(View.VISIBLE);
                     loadingProgress.setVisibility(View.INVISIBLE);
                     navigator.navigate(MainActivity.class);
                 } else {
+                    showGroup();
                     LogBtn.setVisibility(View.VISIBLE);
                     loadingProgress.setVisibility(View.INVISIBLE);
                     showMessage(task.getException().getMessage());
@@ -103,6 +103,24 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    void hideGroup() {
+        groupToBeHideOrNot(View.INVISIBLE);
+    }
+
+    void showGroup() {
+        groupToBeHideOrNot(View.VISIBLE);
+    }
+
+    void groupToBeHideOrNot(int visibility) {
+        LogBtn.setVisibility(visibility);
+        userEmail.setVisibility(visibility);
+        LogNewAccount.setVisibility(visibility);
+        userEmail.setVisibility(visibility);
+        userPass.setVisibility(visibility);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
