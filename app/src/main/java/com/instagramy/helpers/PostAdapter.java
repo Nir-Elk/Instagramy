@@ -34,30 +34,25 @@ import com.instagramy.models.PostsList;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
-    private FirebaseAuth mAuth;
-    String email;
-    Context mContext;
-    List<Post> mData;
-    FirebaseAuth auth;
-    FirebaseDatabase  database;
-    DatabaseReference mDatabaseRef;
-    RecyclerView.Adapter adapter = this;
+    private String email;
+    private Context mContext;
+    private List<Post> mData;
+    private DatabaseReference mDatabaseRef;
 
     public List<Post> getmData() {
         return mData;
     }
 
     public PostAdapter(Context mContext, List<Post> mData) {
-        this.mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         this.mContext = mContext;
         this.mData = mData;
-        this.auth = FirebaseAuth.getInstance();
-        this.database = FirebaseDatabase.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference();
         this.email = mAuth.getCurrentUser().getEmail();
     }
-
-
+    
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
