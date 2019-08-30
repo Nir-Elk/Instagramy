@@ -3,6 +3,8 @@ package com.instagramy.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -18,6 +20,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         getSupportActionBar().hide();
+
+
 
         intent = new Intent(thisActivity.getApplicationContext(), LoginActivity.class);
         new Handler().postDelayed(new Runnable() {

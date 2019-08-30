@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -27,9 +29,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
+import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
+import com.instagramy.utils.InternalDB;
 
 import java.util.List;
 
@@ -38,6 +42,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private Context mContext;
     private List<Post> mData;
     private DatabaseReference mDatabaseRef;
+    public static InternalDB internalDB;
 
     public List<Post> getmData() {
         return mData;
@@ -51,6 +56,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference();
         this.email = mAuth.getCurrentUser().getEmail();
+
+        // TODO: help!!!!
+        //this.internalDB = Room.databaseBuilder(mContext, InternalDB.class,"postdb").allowMainThreadQueries().build();
     }
     
     @NonNull
@@ -74,6 +82,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     private void addToUserSavedPosts(@NonNull final MyViewHolder holder, final int position) {
+        Post post = mData.get(position);
+//        internalDB.postDao().addPost(post);
+        showMessage(post.getTitle());
 
     }
 
@@ -138,13 +149,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 // TODO: save in sql (internal storage)
-                if(userAlreadySavedThisPost(holder, position)) {
-                    removeFromUserSavedPosts(holder, position);
-                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_dark);
-                } else {
-                    addToUserSavedPosts(holder, position);
-                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_svgrepo_com);
-                }
+                addToUserSavedPosts(holder,position);
+//                if(userAlreadySavedThisPost(holder, position)) {
+//                    removeFromUserSavedPosts(holder, position);
+//                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_dark);
+//                } else {
+//                    addToUserSavedPosts(holder, position);
+//                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_svgrepo_com);
+//                }
             }
         });
 
@@ -208,5 +220,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    private void showMessage(String message) {
+        Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
 }

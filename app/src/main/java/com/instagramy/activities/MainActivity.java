@@ -35,6 +35,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.room.Room;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,6 +61,7 @@ import com.instagramy.fragments.SettingsFragment;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
+import com.instagramy.utils.InternalDB;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements
     private Set<Integer> bottomNavigationItems;
     private Uri imageUri;
     private int mStateScrollY;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements
         if(savedInstanceState != null){
             mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
         }
+
+
 
     }
 
