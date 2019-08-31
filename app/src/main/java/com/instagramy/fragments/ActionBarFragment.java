@@ -1,6 +1,8 @@
 package com.instagramy.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -14,17 +16,22 @@ import com.instagramy.activities.MainActivity;
 public class ActionBarFragment extends Fragment {
 
     ActionBar actionBar;
+
     MainActivity mainActivity;
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mainActivity = ((MainActivity) getActivity());
         this.actionBar = mainActivity.getSupportActionBar();
+
         mainActivity.setSelectedItemBottomNavigation(R.id.nav_settings);
+
     }
 
+    @SuppressLint("RestrictedApi")
     public void setTitle(String title) {
         actionBar.setTitle(title);
+
     }
 
     public void setTitle(int stringId) {

@@ -58,12 +58,14 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Uri imageUri;
     private int mStateScrollY;
+    private Menu menu;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        initBottomBarClickListeners();
         initBottomBarClickListeners();
         iniPopup();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -88,17 +90,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initBottomBarClickListeners() {
+
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                renderMenu(R.menu.toolbar_home, menu);
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
             }
         });
 
-
         findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                renderMenu(R.menu.toolbar_home, menu);
                 navHostFragmentNavigate(R.id.action_global_mapFragment);
             }
         });
@@ -106,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_settings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                renderMenu(R.menu.toolbar_home, menu);
                 navHostFragmentNavigate(R.id.action_global_settingsFragment);
             }
         });
@@ -113,17 +118,23 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                renderMenu(R.menu.toolbar_refresh_my_favorites, menu);
                 navHostFragmentNavigate(R.id.action_global_favoritesFragment);
             }
         });
-        findViewById(R.id.nav_search).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.nav_my_posts).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navHostFragmentNavigate(R.id.action_global_searchFragment);
+                renderMenu(R.menu.toolbar_my_posts, menu);
+                navHostFragmentNavigate(R.id.action_global_myPostsFragment);
             }
         });
     }
 
+    public void renderMenu(int menuRes, Menu  menu) {
+        menu.clear();
+        getMenuInflater().inflate(menuRes, menu);
+    }
     public void navHostFragmentNavigate(int fragmentId) {
         Navigation.findNavController(findViewById(R.id.nav_host_fragment)).navigate(fragmentId);
     }
@@ -345,7 +356,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.toolbar_home, this.menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -353,12 +365,27 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.add_post_btn:
+            case R.id.menu_add_post_btn:
                 popupChooseGalleryOrCamera.show();
                 break;
 
+            case R.id.menu_edit_profile_btn:
+                navHostFragmentNavigate(R.id.editProfileFragment);
+                break;
+
+            case R.id.menu_refresh_my_favorites:
+                navHostFragmentNavigate(R.id.favoritesFragment);
+                break;
+
+            case R.id.menu_logout:
+                Firebase.getInstance().signOut();
+                Intent logginActivity = new Intent(this, LoginActivity.class);
+                startActivity(logginActivity);
+                this.finish();
+                break;
             default:
                 break;
+
         }
         return super.onOptionsItemSelected(item);
     }
