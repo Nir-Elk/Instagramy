@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -85,8 +84,8 @@ public class PostFragment extends Fragment {
         postImageProgressBar.setVisibility(View.INVISIBLE);
 
 //        if (getContext() != null) {
-            Glide.with(getContext()).load(post.getUserimg()).into(postUserImage);
-            Glide.with(getContext()).load(post.getPicture()).into(postImage);
+        Glide.with(getContext()).load(post.getUserimg()).into(postUserImage);
+        Glide.with(getContext()).load(post.getPicture()).into(postImage);
 //        }
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
         postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
