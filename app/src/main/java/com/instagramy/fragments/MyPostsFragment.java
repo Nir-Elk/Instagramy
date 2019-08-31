@@ -3,17 +3,15 @@ package com.instagramy.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,14 +20,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
-import com.instagramy.helpers.PostAdapter;
+import com.instagramy.adapters.PostAdapter;
 import com.instagramy.models.Post;
 import com.instagramy.services.Firebase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 
 public class MyPostsFragment extends Fragment {
@@ -98,7 +95,8 @@ public class MyPostsFragment extends Fragment {
                             }
                             i++;
                         }
-                    } catch (Exception ignored) { }
+                    } catch (Exception ignored) {
+                    }
 
                 }
                 Collections.reverse(postList);

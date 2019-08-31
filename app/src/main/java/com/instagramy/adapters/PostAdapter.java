@@ -1,4 +1,4 @@
-package com.instagramy.helpers;
+package com.instagramy.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -13,9 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -29,11 +29,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
-import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
+import com.instagramy.models.Link;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
-import com.instagramy.utils.InternalDB;
+import com.instagramy.utils.LinkDataBase;
 
 import java.util.List;
 
@@ -42,11 +42,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private Context mContext;
     private List<Post> mData;
     private DatabaseReference mDatabaseRef;
-    public static InternalDB internalDB;
+    public static LinkDataBase linkDataBase;
 
     public List<Post> getmData() {
         return mData;
     }
+    public List<Link> linkList;
 
     public PostAdapter(Context mContext, List<Post> mData) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -57,8 +58,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         this.mDatabaseRef = database.getReference();
         this.email = mAuth.getCurrentUser().getEmail();
 
-        // TODO: help!!!!
-        //this.internalDB = Room.databaseBuilder(mContext, InternalDB.class,"postdb").allowMainThreadQueries().build();
+        this.linkDataBase = LinkDataBase.getDatabase(mContext.getApplicationContext());
+        LiveData<List<Link>> linkListLiveData = linkDataBase.linkDao().fetchAllLinks();
     }
 
     @NonNull
@@ -73,20 +74,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return mData.get(position).alreadyYummi(this.email);
     }
 
-    private boolean userAlreadySavedThisPost(@NonNull final MyViewHolder holder, final int position) {
-        return false;
+    private void addToUserSavedPosts(Link link) {
+        if(userAlreadySavedThisPost(link)) {
+            linkDataBase.linkDao().deleteLink(link);
+            showMessage("Removed from your manches!");
+
+        } else {
+            linkDataBase.linkDao().insertLink(link);
+            showMessage("Added to your manches!");
+        }
+    }
+
+    private boolean userAlreadySavedThisPost(Link link) {
+        LiveData<Link> liveData =  linkDataBase.linkDao().getLink(link.getId());
+        return liveData.getValue() != null;
     }
 
     private void removeFromUserSavedPosts(@NonNull final MyViewHolder holder, final int position) {
 
     }
 
-    private void addToUserSavedPosts(@NonNull final MyViewHolder holder, final int position) {
-        Post post = mData.get(position);
-//        internalDB.postDao().addPost(post);
-        showMessage(post.getTitle());
-
-    }
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
@@ -148,18 +155,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
 
+        final Link link = new Link(mData.get(position).getKey().hashCode(),mData.get(position).getPicture());
+        holder.postFavoriteBtn.setImageResource(userAlreadySavedThisPost(link) ? R.drawable.ic_favorite_svgrepo_com : R.drawable.ic_favorite_dark);
         holder.postFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: save in sql (internal storage)
-                addToUserSavedPosts(holder,position);
-//                if(userAlreadySavedThisPost(holder, position)) {
-//                    removeFromUserSavedPosts(holder, position);
-//                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_dark);
-//                } else {
-//                    addToUserSavedPosts(holder, position);
-//                    holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_svgrepo_com);
-//                }
+                addToUserSavedPosts(link);
             }
         });
 

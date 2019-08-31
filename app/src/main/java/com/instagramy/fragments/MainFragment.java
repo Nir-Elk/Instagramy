@@ -20,7 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
-import com.instagramy.helpers.PostAdapter;
+import com.instagramy.adapters.PostAdapter;
+import com.instagramy.models.Link;
 import com.instagramy.models.Post;
 
 import java.util.ArrayList;
