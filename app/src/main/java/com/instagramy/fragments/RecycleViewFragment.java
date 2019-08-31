@@ -1,7 +1,9 @@
 package com.instagramy.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
@@ -47,7 +49,12 @@ public class RecycleViewFragment extends ActionBarFragment {
     }
 
 
-    public View onCreateView(View view, String title) {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.fragment_recycler_view, container, false);
         actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         postRecyclerView = view.findViewById(R.id.postRV);
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -55,7 +62,6 @@ public class RecycleViewFragment extends ActionBarFragment {
         postRecyclerView.setHasFixedSize(true);
         linkListViewModel = LinkListViewModel.getInstance((MainActivity) getActivity());
         firebase = Firebase.getInstance();
-        actionBar.setTitle(title);
         return view;
     }
 

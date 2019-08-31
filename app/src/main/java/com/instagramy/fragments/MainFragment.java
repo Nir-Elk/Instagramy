@@ -1,9 +1,7 @@
 package com.instagramy.fragments;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,17 +21,9 @@ public class MainFragment extends RecycleViewFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).getSupportActionBar().show();
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
-        return super.onCreateView(view, "Instagramy");
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        super.setTitle("Instagramy");
         ((MainActivity) getActivity()).setSelectedItemBottomNavigation(R.id.nav_home);
     }
 }

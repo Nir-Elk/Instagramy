@@ -41,34 +41,6 @@ public class Firebase {
         storageBlogPhotosReference = storage.getReference().child("users_photos");
     }
 
-    public FirebaseAuth getAuth() {
-        return auth;
-    }
-
-    public FirebaseStorage getStorage() {
-        return storage;
-    }
-
-    public void setStorage(FirebaseStorage storage) {
-        this.storage = storage;
-    }
-
-    public void setAuth(FirebaseAuth auth) {
-        this.auth = auth;
-    }
-
-    public FirebaseDatabase getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(FirebaseDatabase database) {
-        this.database = database;
-    }
-
-    public DatabaseReference getDatabaseReference() {
-        return database.getReference();
-    }
-
     public FirebaseUser getCurrentUser() {
         return auth.getCurrentUser();
     }

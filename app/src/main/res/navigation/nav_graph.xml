@@ -8,7 +8,7 @@
         android:id="@+id/homeFragment"
         android:name="com.instagramy.fragments.MainFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_main">
+        tools:layout="@layout/fragment_recycler_view">
         <action
             android:id="@+id/action_homeFragment_to_postFragment"
             app:destination="@id/postFragment"
