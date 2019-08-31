@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.instagramy.R;
 import com.instagramy.activities.LoginActivity;
+import com.instagramy.services.Firebase;
 
 public class SettingsFragment extends ActionBarFragment {
 
@@ -33,11 +33,12 @@ public class SettingsFragment extends ActionBarFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
+
         Button logoutbtn = fragmentView.findViewById(R.id.logout_btn);
         logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
+                Firebase.getInstance().signOut();
                 Intent logginActivity = new Intent(getActivity(), LoginActivity.class);
                 startActivity(logginActivity);
                 getActivity().finish();

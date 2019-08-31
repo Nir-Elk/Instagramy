@@ -21,6 +21,7 @@ import com.instagramy.adapters.PostAdapter;
 import com.instagramy.models.Link;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
+import com.instagramy.services.Firebase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,8 +32,7 @@ import java.util.Set;
 public class RecycleViewFragment extends ActionBarFragment {
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
+    private Firebase firebase;
     private List<Post> postList;
     private LinearLayoutManager linearLayoutManager;
     private LinkListViewModel linkListViewModel;
@@ -58,8 +58,7 @@ public class RecycleViewFragment extends ActionBarFragment {
         postRecyclerView.setLayoutManager(linearLayoutManager);
         postRecyclerView.setHasFixedSize(true);
         linkListViewModel = LinkListViewModel.getInstance((MainActivity) getActivity());
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts");
+        firebase = Firebase.getInstance();
         actionBar.setTitle(title);
         return view;
     }
@@ -68,7 +67,7 @@ public class RecycleViewFragment extends ActionBarFragment {
     public void onStart() {
         super.onStart();
         postList = new ArrayList<>();
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        firebase.getPosts().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Collections.reverse(postList);

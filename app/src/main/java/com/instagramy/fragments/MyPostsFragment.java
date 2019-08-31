@@ -22,7 +22,7 @@ public class MyPostsFragment extends RecycleViewFragment {
 
     @Override
     boolean filter(Post post) {
-        return post.getUserId().equals(Firebase.getInstance().getAuth().getCurrentUser().getDisplayName());
+        return post.getUserId().equals(Firebase.getInstance().getCurrentUser().getDisplayName());
     }
 
     @Override
