@@ -34,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.models.Profile;
+import com.instagramy.services.Firebase;
 import com.instagramy.utils.Navigator;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -141,7 +142,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     showMessage("Account created");
-                    updateUserInfo(name,pickedImgUri,mAuth.getCurrentUser());
+
+                    updateUserInfo(name,pickedImgUri,Firebase.getInstance().getCurrentUser());
                 }else{
                     showMessage(task.getException() != null ? task.getException().getMessage() : "Error");
                     loadingProgress.setVisibility(View.INVISIBLE);

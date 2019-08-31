@@ -33,6 +33,7 @@ import com.instagramy.fragments.MainFragmentDirections;
 import com.instagramy.models.Link;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
+import com.instagramy.services.Firebase;
 import com.instagramy.utils.LinkDataBase;
 
 import java.util.List;
@@ -56,7 +57,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference();
-        this.email = mAuth.getCurrentUser().getEmail();
+        this.email = Firebase.getInstance().getCurrentUser().getEmail();
 
         this.linkDataBase = LinkDataBase.getDatabase(mContext.getApplicationContext());
         LiveData<List<Link>> linkListLiveData = linkDataBase.linkDao().fetchAllLinks();

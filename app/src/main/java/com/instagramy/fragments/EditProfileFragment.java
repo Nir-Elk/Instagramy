@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.models.Profile;
+import com.instagramy.services.Firebase;
 
 
 public class EditProfileFragment extends Fragment {
@@ -62,7 +63,7 @@ public class EditProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View fragmentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         this.database = FirebaseDatabase.getInstance();
-        this.mDatabaseRef = database.getReference().child("Profiles").child((this.mAuth.getCurrentUser().getDisplayName()));
+        this.mDatabaseRef = database.getReference().child("Profiles").child(Firebase.getInstance().getCurrentUser().getDisplayName());
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -121,7 +122,7 @@ public class EditProfileFragment extends Fragment {
                     }
 
                     if (passProfile.getText().toString().equals(rePassProfile.getText().toString()) && passProfile.getText().toString().length() > 5) {
-                        mAuth.getCurrentUser().updatePassword(passProfile.getText().toString());
+                        Firebase.getInstance().getCurrentUser().updatePassword(passProfile.getText().toString());
                         isProfileUpdated = true;
                     } else {
                         toast("Please a valid password, longer then 5");

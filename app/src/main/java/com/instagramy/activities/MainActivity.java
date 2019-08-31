@@ -46,6 +46,7 @@ import com.instagramy.R;
 import com.instagramy.helpers.FragmentsReacter;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
+import com.instagramy.services.Firebase;
 import com.instagramy.utils.GPSLocation;
 
 
@@ -67,8 +68,7 @@ public class MainActivity extends FragmentsReacter {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+        currentUser = Firebase.getInstance().getCurrentUser();
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         initBottomBarClickListeners();
         iniPopup();
