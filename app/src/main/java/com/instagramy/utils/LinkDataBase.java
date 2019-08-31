@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.instagramy.dao.LinkDao;
 import com.instagramy.models.Link;
 
-@Database(entities = {Link.class}, version = 4)
+@Database(entities = {Link.class}, version = 105)
 public abstract class LinkDataBase extends RoomDatabase {
 
     public final static String LINK_DATA_BASE_NAME = "links.db";

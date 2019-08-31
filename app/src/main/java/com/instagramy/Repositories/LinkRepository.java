@@ -1,8 +1,6 @@
 package com.instagramy.Repositories;
 
-import android.app.Application;
-import android.os.AsyncTask;
-
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 
 import com.instagramy.dao.LinkDao;
@@ -16,33 +14,27 @@ public class LinkRepository {
     private LinkDao linkDao;
     private LiveData<List<Link>> allLinks;
 
-    LinkRepository(Application application) {
-        LinkDataBase db = LinkDataBase.getDatabase(application);
+    public LinkRepository(AppCompatActivity activity) {
+        LinkDataBase db = LinkDataBase.getDatabase(activity);
         linkDao = db.linkDao();
         allLinks = linkDao.fetchAllLinks();
     }
 
-    LiveData<List<Link>> getAllWords() {
+    public LiveData<List<Link>> getAllLinks() {
         return allLinks;
     }
 
     public void insert(Link link) {
-        new insertAsyncTask(linkDao).execute(link);
+        linkDao.insertLink(link);
     }
 
-    private static class insertAsyncTask extends AsyncTask<Link, Void, Void> {
+    public Link get(Link link) {
+        return linkDao.getLink(link.getPostId()).getValue();
+    }
 
-        private LinkDao mAsyncTaskDao;
+    public void remove(Link link) {
 
-        insertAsyncTask(LinkDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Link... params) {
-            mAsyncTaskDao.insertLink(params[0]);
-            return null;
-        }
+        linkDao.deleteLink(link.getPostId());
     }
 
 

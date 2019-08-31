@@ -10,32 +10,26 @@ import java.io.Serializable;
 @Entity
 public class Link implements Serializable {
 
-    @PrimaryKey
     @NonNull
-    private int id;
+    @PrimaryKey
+    private String postId;
 
     @ColumnInfo(name = "post_img")
     private String image;
 
 
-    public Link() {
-    }
-
-
-    public Link(int id, String image) {
-        this.id = id;
+    public Link(String postId, String image) {
+        this.postId = postId;
         this.image = image;
     }
 
-
-    public int getId() {
-        return id;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
-
 
     public String getImage() {
         return image;

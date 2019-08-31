@@ -10,7 +10,6 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,21 +20,18 @@ import com.bumptech.glide.request.target.Target;
 import com.google.firebase.database.DatabaseReference;
 import com.instagramy.R;
 import com.instagramy.models.Link;
-import com.instagramy.utils.LinkDataBase;
 
 import java.util.List;
 
-public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.MyViewHolder>  {
+public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.MyViewHolder> {
     private Context mContext;
     private List<Link> mData;
     private DatabaseReference mDatabaseRef;
-    private LinkDataBase internalDB;
 
 
     public LinkAdapter(Context mContext, List<Link> mData) {
         this.mContext = mContext;
         this.mData = mData;
-        internalDB = PostAdapter.linkDataBase;
     }
 
     public List<Link> getmData() {
@@ -45,7 +41,7 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.MyViewHolder> 
     @NonNull
     @Override
     public LinkAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View row = LayoutInflater.from(mContext).inflate(R.layout.row_favorite_item,parent,false);
+        View row = LayoutInflater.from(mContext).inflate(R.layout.row_favorite_item, parent, false);
         return new LinkAdapter.MyViewHolder(row);
     }
 
@@ -78,25 +74,17 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.MyViewHolder> 
     }
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView linkImage;
         ProgressBar linkProgressBar;
 
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
             linkImage = itemView.findViewById(R.id.row_favorite_img);
             linkProgressBar = itemView.findViewById(R.id.row_favorite_progressBar);
 
 
         }
-    }
-
-    public void insertLink(final Link link) {
-        internalDB.linkDao().insertLink(link);
-    }
-
-    public LiveData<List<Link>> getLinks() {
-        return internalDB.linkDao().fetchAllLinks();
     }
 }

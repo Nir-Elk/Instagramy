@@ -1,7 +1,7 @@
 package com.instagramy.dao;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -14,11 +14,11 @@ public interface LinkDao {
     @Insert
     void insertLink(Link... link);
 
-    @Delete
-    void deleteLink(Link link);
+    @Query("DELETE FROM Link WHERE postId =:postId")
+    void deleteLink(String postId);
 
-    @Query("SELECT * FROM Link WHERE id =:id")
-    LiveData<Link> getLink(int id);
+    @Query("SELECT * FROM Link WHERE postId =:postId")
+    LiveData<Link> getLink(String postId);
 
     @Query("SELECT * FROM Link")
     LiveData<List<Link>> fetchAllLinks();
