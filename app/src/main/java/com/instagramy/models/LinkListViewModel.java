@@ -11,10 +11,18 @@ import java.util.List;
 public class LinkListViewModel extends ViewModel {
     private LiveData<List<Link>> allLinks;
     LinkRepository linkRepository;
+    static LinkListViewModel instance;
 
-    public LinkListViewModel(AppCompatActivity activity) {
+    private LinkListViewModel(AppCompatActivity activity) {
         linkRepository = new LinkRepository(activity);
         allLinks = linkRepository.getAllLinks();
+    }
+
+    public static LinkListViewModel getInstance(AppCompatActivity activity) {
+        if(instance == null) {
+            return new LinkListViewModel(activity);
+        }
+        return instance;
     }
 
     public LiveData<List<Link>> getAllLinks() {

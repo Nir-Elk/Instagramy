@@ -44,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
 import com.instagramy.helpers.FragmentsReacter;
+import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 import com.instagramy.services.Firebase;
@@ -72,6 +73,8 @@ public class MainActivity extends FragmentsReacter {
         initBottomBarClickListeners();
         iniPopup();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        LinkListViewModel.getInstance(this);
 
         if (savedInstanceState != null) {
             mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
