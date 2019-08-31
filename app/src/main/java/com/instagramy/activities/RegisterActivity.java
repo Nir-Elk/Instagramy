@@ -19,20 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.instagramy.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.instagramy.R;
 import com.instagramy.models.Profile;
 import com.instagramy.services.Firebase;
 import com.instagramy.utils.Navigator;
@@ -44,12 +37,12 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar loadingProgress;
     private Button regBtn;
     private ImageView userPhoto;
-    private static  int PReqCode = 1;
-    private static  int REQUSECODE = 1;
+    private static int PReqCode = 1;
+    private static int REQUSECODE = 1;
     private Uri pickedImgUri;
     private Intent intent;
 
-    private FirebaseAuth mAuth;
+    private Firebase firebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +60,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         loadingProgress.setVisibility(View.INVISIBLE);
 
-        mAuth = FirebaseAuth.getInstance();
+        firebase = Firebase.getInstance();
         navigator = new Navigator(this);
 
         userPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Build.VERSION.SDK_INT >=22){
+                if (Build.VERSION.SDK_INT >= 22) {
                     checkAndRequestPermission();
-                }
-                else{
+                } else {
                     openGallery();
                 }
             }
@@ -92,59 +84,27 @@ public class RegisterActivity extends AppCompatActivity {
                 final String pass = userPassword.getText().toString();
                 final String repass = userRePassword.getText().toString();
 
-                if(email.isEmpty() || name.isEmpty() || pass.isEmpty() || !pass.equals(repass))
-                {
+                if (email.isEmpty() || name.isEmpty() || pass.isEmpty() || !pass.equals(repass)) {
                     showMessage("Please Verify all fields");
                     regBtn.setVisibility(View.VISIBLE);
                     loadingProgress.setVisibility(View.INVISIBLE);
-                }else{
-                    CreateUserAccount(email,name,pass);
+                } else {
+                    CreateUserAccount(email, name, pass);
                 }
 
             }
         });
     }
 
-    private void openGallery() {
-        //TODO: open gallery intent and wait for user to pick an image
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,REQUSECODE);
-    }
-
-    private void checkAndRequestPermission() {
-        if(ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Toast.makeText(RegisterActivity.this,"Please accept for requierd permission",Toast.LENGTH_SHORT).show();
-            }
-            else{
-                ActivityCompat.requestPermissions(RegisterActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PReqCode);
-            }
-        }else{
-            openGallery();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == REQUSECODE && data != null){
-            pickedImgUri = data.getData();
-            userPhoto.setImageURI(pickedImgUri);
-        }
-    }
-
     private void CreateUserAccount(String email, final String name, String pass) {
-        mAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        firebase.CreateUserAuth(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     showMessage("Account created");
 
-                    updateUserInfo(name,pickedImgUri,Firebase.getInstance().getCurrentUser());
-                }else{
+                    updateUserInfo(name, pickedImgUri);
+                } else {
                     showMessage(task.getException() != null ? task.getException().getMessage() : "Error");
                     loadingProgress.setVisibility(View.INVISIBLE);
                     regBtn.setVisibility(View.VISIBLE);
@@ -153,17 +113,48 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUserInfo(final String name,Uri pickedImgUri, final FirebaseUser currentUser) {
-        StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos");
-        final StorageReference imageFilePath = mStorage.child(pickedImgUri.getLastPathSegment());
-        imageFilePath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+    private void openGallery() {
+        //TODO: open gallery intent and wait for user to pick an image
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, REQUSECODE);
+    }
+
+    private void checkAndRequestPermission() {
+        if (ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Toast.makeText(RegisterActivity.this, "Please accept for requierd permission", Toast.LENGTH_SHORT).show();
+            } else {
+                ActivityCompat.requestPermissions(RegisterActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PReqCode);
+            }
+        } else {
+            openGallery();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUSECODE && data != null) {
+            pickedImgUri = data.getData();
+            userPhoto.setImageURI(pickedImgUri);
+        }
+    }
+
+
+    private void updateUserInfo(final String name, Uri pickedImgUri) {
+        final String path = pickedImgUri.getLastPathSegment();
+        firebase.uploadUserPhoto(path, pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                firebase.getDownloadUserPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Profile profile = new Profile(name, currentUser.getUid(), currentUser.getEmail(), uri.toString());
-                        addProfile(profile,currentUser);
+                        Profile profile = new Profile(name, firebase.getCurrentUser().getUid(), firebase.getCurrentUser().getEmail(), uri.toString());
+                        addProfile(profile);
                     }
                 });
             }
@@ -171,25 +162,19 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    private void addProfile(Profile profile, final FirebaseUser currentUser) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Profiles").push();
-
-        final String key = myRef.getKey();
+    private void addProfile(Profile profile) {
+        final String key = firebase.createNewProfile();
         profile.setKey(key);
 
-        myRef.setValue(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+        firebase.addProfile(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(key)
-                        .build();
-                currentUser.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                firebase.updateUserAuthKey(key).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         showMessage("Register complete");
-                        intent.putExtra("Result","OK");
-                        setResult(RESULT_OK,intent);
+                        intent.putExtra("Result", "OK");
+                        setResult(RESULT_OK, intent);
                         finish();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -209,6 +194,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void showMessage(String text) {
-        Toast.makeText(getApplicationContext(),text,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
     }
 }

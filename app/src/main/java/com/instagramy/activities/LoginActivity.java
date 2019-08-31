@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.instagramy.R;
 import com.instagramy.helpers.KeyboardHelper;
+import com.instagramy.services.Firebase;
 import com.instagramy.utils.Navigator;
 
 public class LoginActivity extends AppCompatActivity {
@@ -29,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar loadingProgress;
     private Button LogBtn;
     private TextView LogNewAccount;
-    private FirebaseAuth mAuth;
+    private Firebase firebase;
     private int REQUEST_CODE = 1;
 
     @Override
@@ -45,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         loadingProgress = findViewById(R.id.LogprogressBar);
         LogNewAccount = findViewById(R.id.LogNewAccount);
         loadingProgress.setVisibility(View.INVISIBLE);
-        mAuth = FirebaseAuth.getInstance();
+        firebase = Firebase.getInstance();
         navigator = new Navigator(this);
 
         LogNewAccount.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +81,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
+        if (firebase.getCurrentUser() != null) {
             //user is already connected to redirect him to home page
             navigator.navigate(MainActivity.class);
 
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void singIn(String email, String pass) {
-        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebase.signIn(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {

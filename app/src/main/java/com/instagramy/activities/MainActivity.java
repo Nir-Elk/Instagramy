@@ -53,7 +53,7 @@ import com.instagramy.utils.GPSLocation;
 public class MainActivity extends FragmentsReacter {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
-    private FirebaseUser currentUser;
+    private Firebase firebase;
     private Dialog popupAddPost, popupChooseGalleryOrCamera;
     private ImageView popupPostImage, popupAddBtn;
     private TextView popupTitle, popupDescription;
@@ -68,7 +68,6 @@ public class MainActivity extends FragmentsReacter {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        currentUser = Firebase.getInstance().getCurrentUser();
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         initBottomBarClickListeners();
         iniPopup();
@@ -180,12 +179,11 @@ public class MainActivity extends FragmentsReacter {
                         && !popupDescription.getText().toString().isEmpty()
                         && popupPostImage != null) {
 
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("blog_images");
-                    final StorageReference imageFilePath = storageReference.child(pickedImgUri.getLastPathSegment());
-                    imageFilePath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    final String path = pickedImgUri.getLastPathSegment();
+                    firebase.uploadPhoto(path,pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            firebase.getDownloadPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     final String imageDownloadLink = uri.toString();
@@ -193,8 +191,7 @@ public class MainActivity extends FragmentsReacter {
                                     final Location location = gpsLocation.getLocation();
 
 
-                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Profiles").child(currentUser.getDisplayName());
-                                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    firebase.getProfile(firebase.getCurrentUser().getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             Profile profile = dataSnapshot.getValue(Profile.class);
@@ -202,7 +199,7 @@ public class MainActivity extends FragmentsReacter {
                                             Post post = new Post(popupTitle.getText().toString(),
                                                     popupDescription.getText().toString(),
                                                     imageDownloadLink,
-                                                    currentUser.getDisplayName(),
+                                                    firebase.getCurrentUser().getDisplayName(),
                                                     profile.getName(),
                                                     profile.getImageUri(),
                                                     location);
@@ -237,13 +234,9 @@ public class MainActivity extends FragmentsReacter {
     }
 
     private void addPost(Post post) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Posts").push();
-
-        String key = myRef.getKey();
+        String key = firebase.createNewPost();
         post.setKey(key);
-
-        myRef.setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+        firebase.addPost(post).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 showMessage("Post Added");
