@@ -26,6 +26,7 @@ import java.util.List;
 public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.MyViewHolder> {
     private Context mContext;
     private List<Link> mData;
+    private DatabaseReference mDatabaseRef;
 
 
     public LinkAdapter(Context mContext, List<Link> mData) {
