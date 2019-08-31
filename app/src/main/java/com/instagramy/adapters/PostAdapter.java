@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,77 +29,83 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
+import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
 import com.instagramy.models.Link;
+import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
-import com.instagramy.services.Firebase;
-import com.instagramy.utils.LinkDataBase;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
     private String email;
     private Context mContext;
     private List<Post> mData;
     private DatabaseReference mDatabaseRef;
-    public static LinkDataBase linkDataBase;
+    public LinkListViewModel linkListViewModel;
+    Set<String> linkSet = new HashSet<>();
 
     public List<Post> getmData() {
         return mData;
     }
-    public List<Link> linkList;
 
-    public PostAdapter(Context mContext, List<Post> mData) {
+
+    public PostAdapter(Context mContext, List<Post> mData, LinkListViewModel linkListViewModel) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         this.mContext = mContext;
         this.mData = mData;
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference();
-        this.email = Firebase.getInstance().getCurrentUser().getEmail();
+        this.email = mAuth.getCurrentUser().getEmail();
+        this.linkListViewModel = linkListViewModel;
 
-        this.linkDataBase = LinkDataBase.getDatabase(mContext.getApplicationContext());
-        LiveData<List<Link>> linkListLiveData = linkDataBase.linkDao().fetchAllLinks();
+        linkListViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Link>>() {
+            @Override
+            public void onChanged(List<Link> links) {
+                linkSet = new HashSet<>();
+                for (Link link: links) {
+                    linkSet.add(link.getPostId());
+                }
+            }
+        });
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View row = LayoutInflater.from(mContext).inflate(R.layout.row_pos_item,parent,false);
+        View row = LayoutInflater.from(mContext).inflate(R.layout.row_pos_item, parent, false);
 
         return new MyViewHolder(row);
     }
 
-    private boolean ifLiked(@NonNull final MyViewHolder holder, final int position){
+    private boolean ifLiked(@NonNull final MyViewHolder holder, final int position) {
         return mData.get(position).alreadyYummi(this.email);
     }
 
-    private void addToUserSavedPosts(Link link) {
-        if(userAlreadySavedThisPost(link)) {
-            linkDataBase.linkDao().deleteLink(link);
+    private void addToUserSavedPosts(Link link, MyViewHolder holder) {
+        if (userAlreadySavedThisPost(link)) {
+            linkListViewModel.delete(link);
+            holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_dark);
             showMessage("Removed from your manches!");
-
         } else {
-            linkDataBase.linkDao().insertLink(link);
+            holder.postFavoriteBtn.setImageResource(R.drawable.ic_favorite_svgrepo_com);
+            linkListViewModel.insert(link);
             showMessage("Added to your manches!");
         }
     }
 
     private boolean userAlreadySavedThisPost(Link link) {
-        LiveData<Link> liveData =  linkDataBase.linkDao().getLink(link.getId());
-        return liveData.getValue() != null;
+        return linkSet.contains(link.getPostId());
     }
-
-    private void removeFromUserSavedPosts(@NonNull final MyViewHolder holder, final int position) {
-
-    }
-
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
 
-        if(ifLiked(holder,position)) {
+        if (ifLiked(holder, position)) {
             holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
         } else {
             holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
@@ -134,12 +140,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             public void onClick(View view) {
 
                 mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).toggleYummi(email));
-                if(ifLiked(holder,position)) {
+                if (ifLiked(holder, position)) {
                     holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
                 } else {
                     holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
                 }
-            }});
+            }
+        });
 
         final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
         holder.postTitle.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
@@ -156,12 +163,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
 
-        final Link link = new Link(mData.get(position).getKey().hashCode(),mData.get(position).getPicture());
+        final Link link = new Link(mData.get(position).getKey(), mData.get(position).getPicture());
         holder.postFavoriteBtn.setImageResource(userAlreadySavedThisPost(link) ? R.drawable.ic_favorite_svgrepo_com : R.drawable.ic_favorite_dark);
+
         holder.postFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToUserSavedPosts(link);
+                addToUserSavedPosts(link, holder);
             }
         });
 
@@ -195,8 +203,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView postYummies,postTitle,postUserName;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView postYummies, postTitle, postUserName;
         ImageView postImage;
         ImageView postUserImage;
         ImageView postYummiBtn;
@@ -205,7 +213,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         ProgressBar postImageProgressBar;
         TextView postImageErrorMessage;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
             postImage = itemView.findViewById(R.id.row_post_img);
             postUserImage = itemView.findViewById(R.id.row_post_userimg);
@@ -219,6 +227,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postFavoriteBtn = itemView.findViewById(R.id.row_post_favorite_btn);
         }
     }
+
     @Override
     public long getItemId(int position) {
         return position;

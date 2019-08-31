@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.adapters.PostAdapter;
-import com.instagramy.models.Link;
+import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class MainFragment extends Fragment {
     private DatabaseReference databaseReference;
     private List<Post> postList;
     private LinearLayoutManager linearLayoutManager;
-
+    private LinkListViewModel linkListViewModel;
 
     public MainFragment() {
         // Required empty public constructor
@@ -46,6 +46,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        linkListViewModel = new LinkListViewModel((MainActivity) getActivity());
         super.onCreate(savedInstanceState);
     }
 
@@ -103,7 +104,7 @@ public class MainFragment extends Fragment {
 
             }
         });
-        postAdapter = new PostAdapter(getActivity(), postList);
+        postAdapter = new PostAdapter(getActivity(), postList, linkListViewModel);
         postRecyclerView.setAdapter(postAdapter);
     }
 

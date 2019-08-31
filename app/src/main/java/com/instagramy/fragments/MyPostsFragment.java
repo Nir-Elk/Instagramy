@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.adapters.PostAdapter;
+import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.services.Firebase;
 
@@ -108,7 +109,7 @@ public class MyPostsFragment extends Fragment {
 
             }
         });
-        postAdapter = new PostAdapter(getActivity(), postList);
+        postAdapter = new PostAdapter(getActivity(), postList, (new LinkListViewModel((MainActivity)getActivity())));
         postRecyclerView.setAdapter(postAdapter);
     }
 
