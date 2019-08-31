@@ -12,6 +12,7 @@ public class LinkListViewModel extends ViewModel {
     private LiveData<List<Link>> allLinks;
     LinkRepository linkRepository;
     static LinkListViewModel instance;
+
     private LinkListViewModel(AppCompatActivity activity) {
         linkRepository = new LinkRepository(activity);
         allLinks = linkRepository.getAllLinks();
