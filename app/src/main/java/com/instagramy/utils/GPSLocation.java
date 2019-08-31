@@ -18,20 +18,19 @@ public class GPSLocation implements LocationListener {
         this.context = context;
     }
 
-    public Location getLocation(){
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(context,"need a permission",Toast.LENGTH_LONG).show();
+    public Location getLocation() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "need a permission", Toast.LENGTH_LONG).show();
             return null;
         }
-        LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if(isGPSEnabled){
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,10,this);
+        if (isGPSEnabled) {
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
             Location l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             return l;
-        }
-        else{
-            Toast.makeText(context,"need a permission",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "need a permission", Toast.LENGTH_LONG).show();
         }
         return null;
     }

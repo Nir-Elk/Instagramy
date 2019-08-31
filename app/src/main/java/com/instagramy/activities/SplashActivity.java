@@ -1,15 +1,12 @@
 package com.instagramy.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.instagramy.R;
 import com.instagramy.helpers.NetworkHelper;
@@ -29,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         TextView error = findViewById(R.id.splash_error_no_connection);
 
-        if(NetworkHelper.hasNetworkAccess(getApplicationContext())) {
+        if (NetworkHelper.hasNetworkAccess(getApplicationContext())) {
             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
             error.setVisibility(View.INVISIBLE);
 

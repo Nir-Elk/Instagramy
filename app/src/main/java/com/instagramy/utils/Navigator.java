@@ -1,13 +1,13 @@
 package com.instagramy.utils;
 
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Navigator {
 
-    private Navigator() {}
+    private Navigator() {
+    }
 
     AppCompatActivity activity;
 

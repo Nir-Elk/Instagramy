@@ -2,7 +2,6 @@ package com.instagramy.models;
 
 import android.location.Location;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,12 +9,8 @@ import androidx.room.PrimaryKey;
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Entity(tableName = "<posts>")
 public class Post implements Serializable {
@@ -86,20 +81,20 @@ public class Post implements Serializable {
     }
 
     public List<String> toggleYummi(String email) {
-        if(this.yummiesSet.contains(email)){
+        if (this.yummiesSet.contains(email)) {
             this.yummiesSet.remove(email);
-        }else{
+        } else {
             this.yummiesSet.add(email);
         }
         return this.yummiesSet;
     }
 
-    public boolean alreadyYummi(String email){
+    public boolean alreadyYummi(String email) {
         return this.yummiesSet.contains(email);
     }
 
     public int getYummies() {
-        return this.yummiesSet.size()-1;
+        return this.yummiesSet.size() - 1;
     }
 
     public String getKey() {
@@ -142,23 +137,22 @@ public class Post implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public Post(String title, String description, String picture, String userId, String userName, String userimg,Location location) {
+    public Post(String title, String description, String picture, String userId, String userName, String userimg, Location location) {
         this.title = title;
         this.description = description;
         this.picture = picture;
         this.userId = userId;
         this.userName = userName;
         this.userimg = userimg;
-        this.locationLatitude=location!=null?location.getLatitude():0;
-        this.locationLongitude=location!=null?location.getLongitude():0;
+        this.locationLatitude = location != null ? location.getLatitude() : 0;
+        this.locationLongitude = location != null ? location.getLongitude() : 0;
         this.timeStamp = ServerValue.TIMESTAMP;
         this.yummiesSet = new LinkedList<>();
         this.yummiesSet.add("a");
     }
 
-    public Post() { }
-
-
+    public Post() {
+    }
 
 
 }

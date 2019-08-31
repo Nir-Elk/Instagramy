@@ -1,8 +1,5 @@
 package com.instagramy.models;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.io.Serializable;
 
 public class Profile implements Serializable {
@@ -13,7 +10,8 @@ public class Profile implements Serializable {
     private String imageUri;
     private String aboutMe;
 
-    public Profile() {}
+    public Profile() {
+    }
 
     public Profile(String name, String id, String email, String imageUri) {
         this.name = name;

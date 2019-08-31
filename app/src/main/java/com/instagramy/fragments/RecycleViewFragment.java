@@ -4,16 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
@@ -52,7 +48,7 @@ public class RecycleViewFragment extends ActionBarFragment {
 
 
     public View onCreateView(View view, String title) {
-        actionBar = ((MainActivity)getActivity()).getSupportActionBar();
+        actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         postRecyclerView = view.findViewById(R.id.postRV);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         postRecyclerView.setLayoutManager(linearLayoutManager);
@@ -83,7 +79,8 @@ public class RecycleViewFragment extends ActionBarFragment {
                             }
                             i++;
                         }
-                    } catch (Exception ignored) { }
+                    } catch (Exception ignored) {
+                    }
                 }
                 Collections.reverse(postList);
 

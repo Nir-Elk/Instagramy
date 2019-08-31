@@ -19,7 +19,7 @@ public class LinkListViewModel extends ViewModel {
     }
 
     public static LinkListViewModel getInstance(AppCompatActivity activity) {
-        if(instance == null) {
+        if (instance == null) {
             return new LinkListViewModel(activity);
         }
         return instance;

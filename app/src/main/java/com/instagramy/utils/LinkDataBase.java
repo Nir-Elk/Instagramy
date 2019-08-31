@@ -13,6 +13,7 @@ import com.instagramy.models.Link;
 public abstract class LinkDataBase extends RoomDatabase {
 
     public final static String LINK_DATA_BASE_NAME = "links.db";
+
     public abstract LinkDao linkDao();
 
     private static LinkDataBase INSTANCE;
