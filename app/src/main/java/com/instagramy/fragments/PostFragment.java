@@ -23,7 +23,7 @@ import com.instagramy.services.Firebase;
 public class PostFragment extends Fragment {
     private Firebase firebase;
     private TextView title, description, username, yummies;
-    private ImageView postImg, userImg;
+    private ImageView postImg, userImg,postMapBtn,postYummiBtn,postFavoriteBtn;
     private View view;
     private Post post;
     private String postId;
@@ -44,6 +44,13 @@ public class PostFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_post, container, false);
+
+        postYummies = itemView.findViewById(R.id.row_post_yummies);
+        postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
+        postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
+        postImageProgressBar = itemView.findViewById(R.id.row_post_progressBar);
+        postImageErrorMessage = itemView.findViewById(R.id.row_post_image_error_msg);
+        postFavoriteBtn = itemView.findViewById(R.id.post_favorite_btn);
 
 
         title = view.findViewById(R.id.post_title);

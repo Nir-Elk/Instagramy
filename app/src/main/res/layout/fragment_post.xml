@@ -7,6 +7,55 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/post_yummies_btn"
+        android:layout_width="63dp"
+        android:layout_height="109dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="168dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:srcCompat="@mipmap/not_liked_foreground" />
+
+    <TextView
+        android:id="@+id/post_yummies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="216dp"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_img"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/post_map_btn"
+        android:layout_width="61dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/post_yummies_btn"
+        app:layout_constraintTop_toBottomOf="@+id/post_img"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_map" />
+
+    <ImageView
+        android:id="@+id/post_favorite_btn"
+        android:layout_width="61dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/post_map_btn"
+        app:layout_constraintTop_toBottomOf="@+id/post_img"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_favorite_dark" />
+
+    <ImageView
         android:id="@+id/post_img"
         android:layout_width="match_parent"
         android:layout_height="250dp"
@@ -43,24 +92,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_userimg" />
 
-    <Button
-        android:id="@+id/post_yummies_btn"
-        android:layout_width="97dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="16dp"
-        android:text="yummi"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/post_img" />
-
-    <Button
-        android:id="@+id/post_map_btn"
-        android:layout_width="97dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="44dp"
-        android:text="map"
-        app:layout_constraintStart_toEndOf="@+id/post_yummies_btn"
-        app:layout_constraintTop_toBottomOf="@+id/post_img" />
-
     <TextView
         android:id="@+id/post_description"
         android:layout_width="0dp"
@@ -86,15 +117,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_username" />
 
-    <TextView
-        android:id="@+id/post_yummies"
+    <ProgressBar
+        android:id="@+id/post_progressBar"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.722"
-        app:layout_constraintStart_toEndOf="@+id/post_map_btn"
-        app:layout_constraintTop_toTopOf="@+id/post_map_btn" />
+        app:layout_constraintBottom_toBottomOf="@+id/post_img"
+        app:layout_constraintEnd_toEndOf="@+id/post_img"
+        app:layout_constraintStart_toStartOf="@+id/post_img"
+        app:layout_constraintTop_toTopOf="@+id/post_img" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
