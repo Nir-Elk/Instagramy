@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,11 +23,13 @@ import com.instagramy.services.Firebase;
 
 public class PostFragment extends Fragment {
     private Firebase firebase;
-    private TextView title, description, username, yummies;
-    private ImageView postImg, userImg;
+    private TextView postTitle, postDescription, postUserName, postYummies, postImageErrorMessage;
+    private ImageView postImage, postUserImage, postMapBtn, postYummiBtn, postFavoriteBtn;
+    private ProgressBar postImageProgressBar;
     private View view;
     private Post post;
     private String postId;
+
 
     public PostFragment() {
         // Required empty public constructor
@@ -46,14 +49,16 @@ public class PostFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_post, container, false);
 
 
-        title = view.findViewById(R.id.post_title);
-        description = view.findViewById(R.id.post_description);
-        username = view.findViewById(R.id.post_username);
-        yummies = view.findViewById(R.id.post_yummies);
-        postImg = view.findViewById(R.id.post_img);
-        userImg = view.findViewById(R.id.post_userimg);
-        Button yummiBtn = view.findViewById(R.id.post_yummies_btn);
-        Button mapBtn = view.findViewById(R.id.post_map_btn);
+        postTitle = view.findViewById(R.id.post_title);
+        postDescription = view.findViewById(R.id.post_description);
+        postUserName = view.findViewById(R.id.post_username);
+        postYummies = view.findViewById(R.id.post_yummies);
+        postImage = view.findViewById(R.id.post_img);
+        postUserImage = view.findViewById(R.id.post_userimg);
+        postMapBtn = view.findViewById(R.id.post_map_btn);
+        postYummiBtn = view.findViewById(R.id.post_yummies_btn);
+        postFavoriteBtn = view.findViewById(R.id.post_favorite_btn);
+        postImageProgressBar = view.findViewById(R.id.post_progressBar);
 
         firebase.getPost(postId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,18 +78,19 @@ public class PostFragment extends Fragment {
     public void updateView() {
 
 
-        title.setText(post.getTitle());
-        description.setText(post.getDescription());
-        yummies.setText(String.valueOf(post.getYummies()));
+        postTitle.setText(post.getTitle());
+        postDescription.setText(post.getDescription());
+        postYummies.setText(String.valueOf(post.getYummies()));
+        postUserName.setText(post.getUserName());
+        postImageProgressBar.setVisibility(View.INVISIBLE);
 
-        username.setText(post.getUserName());
-        if (getContext() != null) {
-            Glide.with(getContext()).load(post.getUserimg()).into(userImg);
-            Glide.with(getContext()).load(post.getPicture()).into(postImg);
-        }
+//        if (getContext() != null) {
+            Glide.with(getContext()).load(post.getUserimg()).into(postUserImage);
+            Glide.with(getContext()).load(post.getPicture()).into(postImage);
+//        }
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
-        username.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
-        userImg.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+        postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+        postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
     }
 
 }
