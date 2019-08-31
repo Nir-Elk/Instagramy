@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.instagramy.R;
 import com.instagramy.activities.LoginActivity;
 import com.instagramy.activities.MainActivity;
+import com.instagramy.services.Firebase;
 
 public class SettingsFragment extends Fragment {
 
@@ -40,7 +41,7 @@ public class SettingsFragment extends Fragment {
         logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
+                Firebase.getInstance().signOut();
                 Intent logginActivity = new Intent(getActivity(), LoginActivity.class);
                 startActivity(logginActivity);
                 getActivity().finish();

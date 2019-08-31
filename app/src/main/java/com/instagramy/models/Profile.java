@@ -22,27 +22,6 @@ public class Profile implements Serializable {
         this.imageUri = imageUri;
     }
 
-    public static Profile getProfileById(String id){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Profiles").child(id);
-
-
-//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-        //Profile profile = new Profile(myRef.child("name"),myRef.child("id").getKey(),myRef.child("email").getKey(),myRef.child("imageUri").getKey());
-        //profile.setKey(id);
-        return null;
-    }
-
     public String getKey() {
         return key;
     }

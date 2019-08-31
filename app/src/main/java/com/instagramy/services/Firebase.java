@@ -85,6 +85,14 @@ public class Firebase {
         return auth.signInWithEmailAndPassword(email,pass);
     }
 
+    public void changePass(String pass){
+        getCurrentUser().updatePassword(pass);
+    }
+
+    public void changeName(String name){
+        databaseUsersReference.child(getCurrentUser().getUid()).child("name").setValue(name);
+    }
+
     public UploadTask uploadUserPhoto(String path, Uri photo){
         return storageUsersPhotosReference.child(path).putFile(photo);
     }
@@ -128,7 +136,16 @@ public class Firebase {
         return databaseUsersReference.child(id);
     }
 
+    public DatabaseReference getPost(String id){
+        return databasePostsReference.child(id);
+    }
+
+    public DatabaseReference getPosts(){
+        return databasePostsReference;
+    }
+
     public void updateYummies(String key, List<String> list){
         databasePostsReference.child(key).child("yummiesSet").setValue(list);
     }
+
 }

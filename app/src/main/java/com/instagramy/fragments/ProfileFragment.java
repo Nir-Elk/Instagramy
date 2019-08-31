@@ -32,12 +32,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Profile;
+import com.instagramy.services.Firebase;
 
 public class ProfileFragment extends Fragment {
 
     private String profileId;
-    private FirebaseDatabase database;
-    private DatabaseReference mDatabaseRef;
+    private Firebase firebase;
     private Profile profile;
     private TextView fullName, email;
     private ImageView imageProfile;
@@ -56,14 +56,13 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         assert getArguments() != null;
         this.profileId = ProfileFragmentArgs.fromBundle(getArguments()).getProfileId();
-        this.database = FirebaseDatabase.getInstance();
-        this.mDatabaseRef = database.getReference().child("Profiles").child(profileId);
+        this.firebase = Firebase.getInstance();
 
         this.progressBarProfile = view.findViewById(R.id.profile_progressBar);
         this.imageProfile = view.findViewById(R.id.profile_image);
         this.fullName = view.findViewById(R.id.profile_full_name);
         this.email = view.findViewById(R.id.profile_email);
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        firebase.getProfile(this.profileId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 profile = dataSnapshot.getValue(Profile.class);

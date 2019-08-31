@@ -20,14 +20,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.models.Post;
+import com.instagramy.services.Firebase;
 
 public class PostFragment extends Fragment {
-    private FirebaseDatabase database;
-    private DatabaseReference mDatabaseRef;
+    private Firebase firebase;
     private TextView title, description, username, yummies;
     private ImageView postImg, userImg;
     private View view;
     private Post post;
+    private String postId;
 
     public PostFragment() {
         // Required empty public constructor
@@ -36,11 +37,8 @@ public class PostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String postId = PostFragmentArgs.fromBundle(getArguments()).getPostId();
-        this.database = FirebaseDatabase.getInstance();
-        this.mDatabaseRef = database.getReference().child("Posts").child(postId);
-
-
+        firebase = Firebase.getInstance();
+        postId = PostFragmentArgs.fromBundle(getArguments()).getPostId();
     }
 
     @Override
@@ -59,7 +57,7 @@ public class PostFragment extends Fragment {
         Button yummiBtn = view.findViewById(R.id.post_yummies_btn);
         Button mapBtn = view.findViewById(R.id.post_map_btn);
 
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        firebase.getPost(postId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 post = dataSnapshot.getValue(Post.class);
