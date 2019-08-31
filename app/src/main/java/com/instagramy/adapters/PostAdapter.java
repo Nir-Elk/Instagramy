@@ -1,7 +1,6 @@
 package com.instagramy.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,6 @@ import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
-import com.instagramy.fragments.PostFragmentDirections;
 import com.instagramy.models.Link;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
