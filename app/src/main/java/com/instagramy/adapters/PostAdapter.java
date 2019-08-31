@@ -142,20 +142,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
 
-        final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
-        holder.postTitle.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
-        holder.postImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
-                View mView = LayoutInflater.from(mContext).inflate(R.layout.main_photo_dialog, null);
-                PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
-                photoView.setImageDrawable(holder.postImage.getDrawable());
-                mBuilder.setView(mView);
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
-            }
-        });
+        final NavGraphDirections.ActionGlobalPostFragment postAction = NavGraphDirections.actionGlobalPostFragment(mData.get(position).getKey());
+
+        final View.OnClickListener toPostClickListener = Navigation.createNavigateOnClickListener(postAction);
+        holder.postTitle.setOnClickListener(toPostClickListener);
+
+        holder.postImage.setOnClickListener(toPostClickListener);
 
         final Link link = new Link(mData.get(position).getKey(), mData.get(position).getPicture());
         holder.postFavoriteBtn.setImageResource(userAlreadySavedThisPost(link) ? R.drawable.ic_favorite_svgrepo_com : R.drawable.ic_favorite_dark);
