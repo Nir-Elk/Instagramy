@@ -9,15 +9,13 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.instagramy.R;
 import com.instagramy.activities.LoginActivity;
-import com.instagramy.activities.MainActivity;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends ActionBarFragment {
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -26,8 +24,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((MainActivity) getActivity()).setSelectedItemBottomNavigation(R.id.nav_settings);
-
+        super.setSelectedItem(R.id.nav_settings);
+        super.setTitle(R.string.menu_settings);
     }
 
     @Override
@@ -35,7 +33,6 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
-
         Button logoutbtn = fragmentView.findViewById(R.id.logout_btn);
         logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -32,7 +31,7 @@ import com.instagramy.R;
 import com.instagramy.models.Profile;
 
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends ActionBarFragment {
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private DatabaseReference mDatabaseRef;
@@ -50,6 +49,7 @@ public class EditProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         this.mAuth = FirebaseAuth.getInstance();
+
         super.onCreate(savedInstanceState);
     }
 
@@ -59,6 +59,7 @@ public class EditProfileFragment extends Fragment {
         final View fragmentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         this.database = FirebaseDatabase.getInstance();
         this.mDatabaseRef = database.getReference().child("Profiles").child((this.mAuth.getCurrentUser().getDisplayName()));
+
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -86,6 +87,7 @@ public class EditProfileFragment extends Fragment {
 
     public void updateView(View fragmentView) {
 
+        super.setTitle("Edit Profile");
         emailProfile.setText(profile.getEmail());
         nameProfile.setText(profile.getName());
         userProgressBar.setVisibility(View.VISIBLE);
@@ -124,7 +126,7 @@ public class EditProfileFragment extends Fragment {
                     }
                 }
 
-                if(!nameProfile.getText().toString().equals(profile.getName())) {
+                if (!nameProfile.getText().toString().equals(profile.getName())) {
                     if (nameProfile.getText().toString().length() > 0) {
                         mDatabaseRef.child("name").setValue(nameProfile.getText().toString());
                         profile.setName(nameProfile.getText().toString());

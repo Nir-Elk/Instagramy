@@ -36,6 +36,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Posts");
 
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Map");
         this.posts = MapFragmentArgs.fromBundle(getArguments()).getPosts();
 
 

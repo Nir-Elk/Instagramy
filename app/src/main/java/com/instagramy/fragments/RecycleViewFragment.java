@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RecycleViewFragment extends Fragment {
+public class RecycleViewFragment extends ActionBarFragment {
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
     private FirebaseDatabase firebaseDatabase;
@@ -37,7 +37,6 @@ public class RecycleViewFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private LinkListViewModel linkListViewModel;
     static Set<String> favorites = new HashSet<>();
-    public ActionBar actionBar;
 
     public RecycleViewFragment() {
     }
