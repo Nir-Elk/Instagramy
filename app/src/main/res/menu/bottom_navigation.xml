@@ -7,19 +7,19 @@
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_user_secret_solid"
-            android:title="@string/menu_my_posts"
+            android:title="My Posts"
             />
 
         <item
             android:id="@+id/nav_favorites"
             android:icon="@drawable/ic_favorite_svgrepo_com"
-            android:title="@string/menu_favorites"
+            android:title="Manches"
             />
         <item
             android:id="@+id/nav_home"
 
             android:title="@string/menu_home"
-            android:icon="@drawable/ic_instagramy_logo_2" />
+            android:icon="@drawable/ic_instagramy_logo" />
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_place_black_24dp"

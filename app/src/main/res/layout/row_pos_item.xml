@@ -125,4 +125,15 @@
         app:layout_constraintStart_toStartOf="@+id/row_post_img"
         app:layout_constraintTop_toTopOf="@+id/row_post_img" />
 
+    <TextView
+        android:id="@+id/row_post_error_loading_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oops! Can't load image."
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/row_post_progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/row_post_img"
+        app:layout_constraintTop_toTopOf="@+id/row_post_progressBar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

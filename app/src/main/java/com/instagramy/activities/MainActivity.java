@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -29,13 +28,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-import androidx.room.Room;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,47 +47,27 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
-import com.instagramy.fragments.EditProfileFragment;
-import com.instagramy.fragments.FavoritesFragment;
-import com.instagramy.fragments.MainFragment;
-import com.instagramy.fragments.PostFragment;
-import com.instagramy.fragments.ProfileFragment;
-import com.instagramy.fragments.MyPostsFragment;
-import com.instagramy.fragments.SettingsFragment;
+import com.instagramy.helpers.AppCompatActivityFragmentListener;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
-import com.instagramy.utils.InternalDB;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity implements
-        MainFragment.OnFragmentInteractionListener,
-        SettingsFragment.OnFragmentInteractionListener,
-        FavoritesFragment.OnFragmentInteractionListener,
-        PostFragment.OnFragmentInteractionListener,
-        ProfileFragment.OnFragmentInteractionListener,
-        MyPostsFragment.OnFragmentInteractionListener,
-        EditProfileFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivityFragmentListener {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
-    private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     private Dialog popupAddPost, popupChooseGalleryOrCamera;
     private ImageView popupPostImage, popupAddBtn;
     private TextView popupTitle, popupDescription;
     private ProgressBar popupClickProgress;
-    private Button cameraBtn, galleryBtn;
-    private static final int PReqCode = 2, REQUSECODEG = 2, REQUSECODEC = 3;
+    private static final int REQUEST_EXTERNAL_STORAGE_PERMISSION = 1, REQUEST_GALLERY_OPEN = 2, REQUEST_IMAGE_CAPTURE = 3;
     private Uri pickedImgUri = null;
     private BottomNavigationView bottomNavigationView;
-    private Set<Integer> bottomNavigationItems;
     private Uri imageUri;
     private int mStateScrollY;
 
@@ -99,25 +75,16 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         initBottomBarClickListeners();
         iniPopup();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        bottomNavigationItems = new HashSet<>();
-        bottomNavigationItems.add(R.id.nav_home);
-        bottomNavigationItems.add(R.id.nav_favorites);
-        bottomNavigationItems.add(R.id.nav_search);
-        bottomNavigationItems.add(R.id.nav_settings);
-        bottomNavigationItems.add(R.id.nav_map);
-
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
         }
-
-
 
     }
 
@@ -129,16 +96,6 @@ public class MainActivity extends AppCompatActivity implements
 
     public void setSelectedItemBottomNavigation(final int itemId) {
         bottomNavigationView.setSelectedItemId(itemId);
-
-//        for (Integer bottomNavigationItem : bottomNavigationItems) {
-//            if (bottomNavigationItem.equals(itemId)) {
-//                findViewById(bottomNavigationItem).setClickable(false);
-//
-//            } else {
-//                findViewById(bottomNavigationItem).setClickable(true);
-//            }
-//        }
-
     }
 
     public void initBottomBarClickListeners() {
@@ -148,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
             }
         });
-
 
         findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,10 +138,6 @@ public class MainActivity extends AppCompatActivity implements
         Navigation.findNavController(findViewById(R.id.nav_host_fragment)).navigate(fragmentId);
     }
 
-    public void navHostFragmentNavigate(NavDirections directions) {
-        Navigation.findNavController(findViewById(R.id.nav_host_fragment)).navigate(directions);
-    }
-
     private void iniPopup() {
         popupChooseGalleryOrCamera = new Dialog(this);
         popupChooseGalleryOrCamera.setContentView(R.layout.popup_choose_gallery_or_camera);
@@ -193,14 +145,14 @@ public class MainActivity extends AppCompatActivity implements
         popupChooseGalleryOrCamera.getWindow().setLayout(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
         popupChooseGalleryOrCamera.getWindow().getAttributes().gravity = Gravity.CENTER_VERTICAL;
 
-        cameraBtn = popupChooseGalleryOrCamera.findViewById(R.id.camera_btn);
+        Button cameraBtn = popupChooseGalleryOrCamera.findViewById(R.id.camera_btn);
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkAndRequestPermissionForCamera();
             }
         });
-        galleryBtn = popupChooseGalleryOrCamera.findViewById(R.id.gallery_btn);
+        Button galleryBtn = popupChooseGalleryOrCamera.findViewById(R.id.gallery_btn);
         galleryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,12 +221,6 @@ public class MainActivity extends AppCompatActivity implements
                                         }
                                     });
 
-//                                        Post post = new Post(popupTitle.getText().toString(),
-//                                            popupDescription.getText().toString(),
-//                                            imageDownloadLink,
-//                                            currentUser.getDisplayName(),
-//                                            location);
-//                                    addPost(post);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -326,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PReqCode);
+                        REQUEST_EXTERNAL_STORAGE_PERMISSION);
             }
         } else {
             openGallery();
@@ -338,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements
         //TODO: open gallery intent and wait for user to pick an image
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, REQUSECODEG);
+        startActivityForResult(galleryIntent, REQUEST_GALLERY_OPEN);
     }
 
     private void checkAndRequestPermissionForCamera() {
@@ -348,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.CAMERA},
-                        PReqCode);
+                        REQUEST_EXTERNAL_STORAGE_PERMISSION);
             }
         } else {
             openCamera();
@@ -373,13 +319,9 @@ public class MainActivity extends AppCompatActivity implements
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            startActivityForResult(intent, REQUSECODEC);
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 
         }
-
-
-        //startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUSECODEC);
-
     }
 
 
@@ -435,29 +377,19 @@ public class MainActivity extends AppCompatActivity implements
         return inSampleSize;
     }
 
-    public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUSECODEG || requestCode == REQUSECODEC) {
+        if (requestCode == REQUEST_GALLERY_OPEN || requestCode == REQUEST_IMAGE_CAPTURE) {
             popupChooseGalleryOrCamera.dismiss();
             popupAddPost.show();
             popupTitle.setText("");
             popupDescription.setText("");
             switch (requestCode) {
-                case REQUSECODEG:
+                case REQUEST_GALLERY_OPEN:
                     pickedImgUri = data.getData();
                     break;
-                case REQUSECODEC:
+                case REQUEST_IMAGE_CAPTURE:
                     if (resultCode == Activity.RESULT_OK) {
                         try {
                             pickedImgUri = imageUri;

@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -29,7 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
-import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
@@ -100,19 +98,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postTitle.setText(mData.get(position).getTitle());
         Glide.with(mContext).load(mData.get(position).getUserimg()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
         holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
-        holder.postProgressBar.setVisibility(View.VISIBLE);
+        holder.postImageProgressBar.setVisibility(View.VISIBLE);
+        holder.postImageErrorMsg.setVisibility(View.INVISIBLE);
         Glide.with(mContext)
                 .load(mData.get(position).getPicture())
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        holder.postProgressBar.setVisibility(View.GONE);
+                        holder.postImageErrorMsg.setVisibility(View.VISIBLE);
+                        holder.postImageProgressBar.setVisibility(View.GONE);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.postProgressBar.setVisibility(View.GONE);
+                        holder.postImageProgressBar.setVisibility(View.GONE);
                         return false;
                     }
                 })
@@ -197,7 +197,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         ImageView postYummiBtn;
         ImageView postMapBtn;
         ImageView postFavoriteBtn;
-        ProgressBar postProgressBar;
+        ProgressBar postImageProgressBar;
+        TextView postImageErrorMsg;
 
         public MyViewHolder(View itemView){
             super(itemView);
@@ -208,8 +209,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postYummies = itemView.findViewById(R.id.row_post_yummies);
             postYummiBtn = itemView.findViewById(R.id.row_post_yummies_btn);
             postMapBtn = itemView.findViewById(R.id.row_post_map_btn);
-            postProgressBar = itemView.findViewById(R.id.row_post_progressBar);
+            postImageProgressBar = itemView.findViewById(R.id.row_post_progressBar);
             postFavoriteBtn = itemView.findViewById(R.id.row_post_favorite_btn);
+            postImageErrorMsg = itemView.findViewById(R.id.row_post_error_loading_image);
         }
     }
     @Override

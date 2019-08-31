@@ -74,6 +74,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        // Tel Aviv
+        LatLng centerMap = new LatLng(32.0853, 34.7818);
+
         if(posts!=null) {
             for (Post post : posts) {
                 Double lat = post.getLocationLatitude();
@@ -83,15 +86,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                     this.googleMap.addMarker(new MarkerOptions().position(position).title(post.getTitle()));
                 }
             }
+
+            if(posts.size()>0) {
+                Post newestPost = posts.get(posts.size()-1);
+                centerMap = new LatLng(newestPost.getLocationLatitude(),newestPost.getLocationLongitude());
+            }
         }
-        LatLng centerMap;
-        if(posts.size()>0) {
-            Post newestPost = posts.get(posts.size()-1);
-            centerMap = new LatLng(newestPost.getLocationLatitude(),newestPost.getLocationLongitude());
-        } else {
-            // Tel Aviv
-            centerMap = new LatLng(32.0853, 34.7818);
-        }
+
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(centerMap));
         this.googleMap.setMinZoomPreference(10);
         this.googleMap.setMaxZoomPreference(10);
