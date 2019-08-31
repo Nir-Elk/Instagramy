@@ -34,6 +34,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.room.Room;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,6 +54,7 @@ import com.instagramy.helpers.FragmentsReacter;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
+import com.instagramy.utils.InternalDB;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -100,6 +102,8 @@ public class MainActivity extends FragmentsReacter {
         if (savedInstanceState != null) {
             mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
         }
+
+
 
     }
 

@@ -2,6 +2,11 @@ package com.instagramy.models;
 
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
@@ -12,16 +17,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+@Entity(tableName = "<posts>")
 public class Post implements Serializable {
+    @PrimaryKey
     private String Key;
+    @ColumnInfo(name = "title")
     private String title;
+    @ColumnInfo(name = "description")
     private String description;
+    @ColumnInfo(name = "picture")
     private String picture;
     private String userId;
     private String userName;
     private String userimg;
+    @ColumnInfo(name = "locationLatitude")
     private Double locationLatitude; // X
+    @ColumnInfo(name = "locationLongitude")
     private Double locationLongitude; // Y
     private Object timeStamp;
     private List<String> yummiesSet;
@@ -74,14 +85,11 @@ public class Post implements Serializable {
         this.locationLongitude = locationLongitude;
     }
 
-    public List<String> addYumminew(String email) {
-        this.yummiesSet.add(email);
-        return this.yummiesSet;
-    }
-
-    public List<String> removeYumminew(String email) {
+    public List<String> toggleYummi(String email) {
         if(this.yummiesSet.contains(email)){
             this.yummiesSet.remove(email);
+        }else{
+            this.yummiesSet.add(email);
         }
         return this.yummiesSet;
     }
