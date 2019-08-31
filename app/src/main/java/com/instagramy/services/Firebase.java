@@ -14,6 +14,8 @@ import com.google.firebase.storage.UploadTask;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 
+import java.util.List;
+
 public class Firebase {
     private static final Firebase ourInstance = new Firebase();
 
@@ -124,5 +126,9 @@ public class Firebase {
 
     public DatabaseReference getProfile(String id){
         return databaseUsersReference.child(id);
+    }
+
+    public void updateYummies(String key, List<String> list){
+        databasePostsReference.child(key).child("yummiesSet").setValue(list);
     }
 }

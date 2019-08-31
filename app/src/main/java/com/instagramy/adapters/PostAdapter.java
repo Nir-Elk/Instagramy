@@ -36,16 +36,16 @@ import com.instagramy.models.Link;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
+import com.instagramy.services.Firebase;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
-    private String email;
     private Context mContext;
     private List<Post> mData;
-    private DatabaseReference mDatabaseRef;
+    private Firebase firebase;
     public LinkListViewModel linkListViewModel;
     Set<String> favorites = new HashSet<>();
 
@@ -54,13 +54,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     public PostAdapter(Context mContext, List<Post> mData, LinkListViewModel linkListViewModel) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         this.mContext = mContext;
         this.mData = mData;
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        this.mDatabaseRef = database.getReference();
-        this.email = mAuth.getCurrentUser().getEmail();
+        this.firebase = Firebase.getInstance();
         this.linkListViewModel = linkListViewModel;
 
         linkListViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Link>>() {
@@ -82,8 +78,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return new MyViewHolder(row);
     }
 
-    private boolean ifLiked(final int position) {
-        return mData.get(position).alreadyYummi(this.email);
+    private boolean ifLiked(final int position,String email) {
+        return mData.get(position).alreadyYummi(email);
     }
 
     private void addToUserSavedPosts(Link link) {
@@ -107,7 +103,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
 
-        if (ifLiked(position)) {
+        if (ifLiked(position,firebase.getCurrentUser().getEmail())) {
             holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
         } else {
             holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
@@ -140,9 +136,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                mDatabaseRef.child("Posts").child(mData.get(position).getKey()).child("yummiesSet").setValue(mData.get(position).toggleYummi(email));
-                if (ifLiked(position)) {
+                String email = firebase.getCurrentUser().getEmail();
+                firebase.updateYummies(mData.get(position).getKey(),mData.get(position).toggleYummi(email));
+                if (ifLiked(position,email)) {
                     holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
                 } else {
                     holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
