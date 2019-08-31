@@ -1,6 +1,7 @@
 package com.instagramy.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
+import com.instagramy.fragments.PostFragmentDirections;
 import com.instagramy.models.Link;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
@@ -142,20 +144,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
 
-        final MainFragmentDirections.ActionHomeFragmentToPostFragment postAction = MainFragmentDirections.actionHomeFragmentToPostFragment(mData.get(position).getKey());
-        holder.postTitle.setOnClickListener(Navigation.createNavigateOnClickListener(postAction));
-        holder.postImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
-                View mView = LayoutInflater.from(mContext).inflate(R.layout.main_photo_dialog, null);
-                PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
-                photoView.setImageDrawable(holder.postImage.getDrawable());
-                mBuilder.setView(mView);
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
-            }
-        });
+        final NavGraphDirections.ActionGlobalPostFragment postAction = NavGraphDirections.actionGlobalPostFragment(mData.get(position).getKey());
+
+        final View.OnClickListener toPostClickListener = Navigation.createNavigateOnClickListener(postAction);
+        holder.postTitle.setOnClickListener(toPostClickListener);
+
+        holder.postImage.setOnClickListener(toPostClickListener);
 
         final Link link = new Link(mData.get(position).getKey(), mData.get(position).getPicture());
         holder.postFavoriteBtn.setImageResource(userAlreadySavedThisPost(link) ? R.drawable.ic_favorite_svgrepo_com : R.drawable.ic_favorite_dark);
