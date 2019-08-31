@@ -46,7 +46,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        linkListViewModel = new LinkListViewModel((MainActivity) getActivity());
+        linkListViewModel =LinkListViewModel.getInstance((MainActivity) getActivity());
         super.onCreate(savedInstanceState);
     }
 

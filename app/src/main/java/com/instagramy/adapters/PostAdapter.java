@@ -46,12 +46,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private List<Post> mData;
     private DatabaseReference mDatabaseRef;
     public LinkListViewModel linkListViewModel;
-    Set<String> linkSet = new HashSet<>();
+    Set<String> favorites = new HashSet<>();
 
     public List<Post> getmData() {
         return mData;
     }
-
 
     public PostAdapter(Context mContext, List<Post> mData, LinkListViewModel linkListViewModel) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -66,9 +65,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         linkListViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Link>>() {
             @Override
             public void onChanged(List<Link> links) {
-                linkSet = new HashSet<>();
+                favorites = new HashSet<>();
                 for (Link link: links) {
-                    linkSet.add(link.getPostId());
+                    favorites.add(link.getPostId());
                 }
             }
         });
@@ -99,7 +98,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     private boolean userAlreadySavedThisPost(Link link) {
-        return linkSet.contains(link.getPostId());
+        return favorites.contains(link.getPostId());
+    }
+
+    public Set<String> getUserFavoritePosts() {
+        return favorites;
     }
 
     @Override

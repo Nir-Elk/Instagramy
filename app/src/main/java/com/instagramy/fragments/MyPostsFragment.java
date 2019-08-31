@@ -109,7 +109,7 @@ public class MyPostsFragment extends Fragment {
 
             }
         });
-        postAdapter = new PostAdapter(getActivity(), postList, (new LinkListViewModel((MainActivity)getActivity())));
+        postAdapter = new PostAdapter(getActivity(), postList, LinkListViewModel.getInstance((MainActivity)getActivity()));
         postRecyclerView.setAdapter(postAdapter);
     }
 
