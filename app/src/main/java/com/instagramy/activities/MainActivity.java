@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -47,7 +48,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
-import com.instagramy.helpers.AppCompatActivityFragmentListener;
+import com.instagramy.helpers.FragmentsReacter;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
 import com.instagramy.utils.GPSLocation;
@@ -57,7 +58,7 @@ import java.io.FileOutputStream;
 import java.util.Random;
 
 
-public class MainActivity extends AppCompatActivityFragmentListener {
+public class MainActivity extends FragmentsReacter {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
     private FirebaseUser currentUser;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivityFragmentListener {
     private ImageView popupPostImage, popupAddBtn;
     private TextView popupTitle, popupDescription;
     private ProgressBar popupClickProgress;
-    private static final int REQUEST_EXTERNAL_STORAGE_PERMISSION = 1, REQUEST_GALLERY_OPEN = 2, REQUEST_IMAGE_CAPTURE = 3;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE_PERMISSION = 1, REQUEST_OPEN_GALLERY = 2, REQUEST_IMAGE_CAPTURE = 3;
     private Uri pickedImgUri = null;
     private BottomNavigationView bottomNavigationView;
     private Uri imageUri;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivityFragmentListener {
         iniPopup();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+
         if (savedInstanceState != null) {
             mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
         }
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivityFragmentListener {
 
     public void setSelectedItemBottomNavigation(final int itemId) {
         bottomNavigationView.setSelectedItemId(itemId);
+
     }
 
     public void initBottomBarClickListeners() {
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivityFragmentListener {
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
             }
         });
+
 
         findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +225,12 @@ public class MainActivity extends AppCompatActivityFragmentListener {
                                         }
                                     });
 
+//                                        Post post = new Post(popupTitle.getText().toString(),
+//                                            popupDescription.getText().toString(),
+//                                            imageDownloadLink,
+//                                            currentUser.getDisplayName(),
+//                                            location);
+//                                    addPost(post);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -272,7 +282,7 @@ public class MainActivity extends AppCompatActivityFragmentListener {
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_EXTERNAL_STORAGE_PERMISSION);
+                        REQUEST_READ_EXTERNAL_STORAGE_PERMISSION);
             }
         } else {
             openGallery();
@@ -284,7 +294,7 @@ public class MainActivity extends AppCompatActivityFragmentListener {
         //TODO: open gallery intent and wait for user to pick an image
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, REQUEST_GALLERY_OPEN);
+        startActivityForResult(galleryIntent, REQUEST_OPEN_GALLERY);
     }
 
     private void checkAndRequestPermissionForCamera() {
@@ -294,7 +304,7 @@ public class MainActivity extends AppCompatActivityFragmentListener {
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.CAMERA},
-                        REQUEST_EXTERNAL_STORAGE_PERMISSION);
+                        REQUEST_READ_EXTERNAL_STORAGE_PERMISSION);
             }
         } else {
             openCamera();
@@ -322,6 +332,10 @@ public class MainActivity extends AppCompatActivityFragmentListener {
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 
         }
+
+
+        //startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE);
+
     }
 
 
@@ -377,16 +391,26 @@ public class MainActivity extends AppCompatActivityFragmentListener {
         return inSampleSize;
     }
 
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_GALLERY_OPEN || requestCode == REQUEST_IMAGE_CAPTURE) {
+        if (requestCode == REQUEST_OPEN_GALLERY || requestCode == REQUEST_IMAGE_CAPTURE) {
             popupChooseGalleryOrCamera.dismiss();
             popupAddPost.show();
             popupTitle.setText("");
             popupDescription.setText("");
             switch (requestCode) {
-                case REQUEST_GALLERY_OPEN:
+                case REQUEST_OPEN_GALLERY:
                     pickedImgUri = data.getData();
                     break;
                 case REQUEST_IMAGE_CAPTURE:

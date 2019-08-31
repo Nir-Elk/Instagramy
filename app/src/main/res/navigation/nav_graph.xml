@@ -165,4 +165,22 @@
         android:name="com.instagramy.fragments.EditProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/errorMessageFragment"
+        android:name="com.instagramy.ErrorMessageFragment"
+        android:label="fragment_error_message"
+        tools:layout="@layout/fragment_error_message" >
+        <argument
+            android:name="message"
+            app:argType="string"
+            android:defaultValue="Some error occurd" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_errorMessageFragment"
+        app:destination="@id/errorMessageFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popUpTo="@id/errorMessageFragment"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>
