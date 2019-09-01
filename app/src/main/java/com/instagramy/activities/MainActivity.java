@@ -19,13 +19,11 @@ import com.instagramy.helpers.main.activity.MainActivityDialogsHelper;
 import com.instagramy.helpers.main.activity.MainActivityMenuHelper;
 import com.instagramy.models.LinkListViewModel;
 
-import static com.instagramy.constants.MainActivityConstants.ARGS_SCROLL_Y;
 import static com.instagramy.constants.MainActivityConstants.REQUEST_IMAGE_CAPTURE;
 import static com.instagramy.constants.MainActivityConstants.REQUEST_OPEN_GALLERY;
 
 
 public class MainActivity extends AppCompatActivity {
-    private int mStateScrollY;
     private MainActivityMenuHelper menuHelper;
     private MainActivityDialogsHelper dialogsHelper;
     private MainActivityController controller;
@@ -42,25 +40,10 @@ public class MainActivity extends AppCompatActivity {
         this.dialogsHelper = new MainActivityDialogsHelper(this);
         this.bottomNavigationHelper = new MainActivityBottomNavigationHelper(this);
         LinkListViewModel.getInstance(this);
-
-        if (savedInstanceState != null) {
-            mStateScrollY = savedInstanceState.getInt(ARGS_SCROLL_Y, 0);
-        }
-
     }
 
     public MainActivityBottomNavigationHelper getBottomNavigationHelper() {
         return bottomNavigationHelper;
-    }
-
-    public MainActivityMenuHelper getMenuHelper() {
-        return menuHelper;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(ARGS_SCROLL_Y, mStateScrollY);
     }
 
     public MainActivityController getController() {
@@ -78,14 +61,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == REQUEST_OPEN_GALLERY || requestCode == REQUEST_IMAGE_CAPTURE) {
             Uri pickedImageUri = controller.onPickImageResult(requestCode, resultCode, data);
             if (pickedImageUri != null) {
                 dialogsHelper.dismissAndSwitchToCreatePostPopup(pickedImageUri);
             }
         }
-
     }
 
     @Override
