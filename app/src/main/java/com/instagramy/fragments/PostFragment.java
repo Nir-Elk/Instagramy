@@ -1,5 +1,6 @@
 package com.instagramy.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +11,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.models.Post;
+import com.instagramy.models.PostsList;
 import com.instagramy.services.Firebase;
 
 public class PostFragment extends Fragment {
@@ -84,10 +92,46 @@ public class PostFragment extends Fragment {
         postUserName.setText(post.getUserName());
         postImageProgressBar.setVisibility(View.INVISIBLE);
 
-//        if (getContext() != null) {
+        if (getContext() != null) {
+        Glide.with(getContext())
+                .load(post.getPicture())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        postImageProgressBar.setVisibility(View.GONE);
+                        postImageErrorMessage.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        postImageProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(postImage);
             Glide.with(getContext()).load(post.getUserimg()).into(postUserImage);
-            Glide.with(getContext()).load(post.getPicture()).into(postImage);
-//        }
+        }
+
+        postYummiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String email = firebase.getCurrentUser().getEmail();
+                firebase.updateYummies(post.getKey(), post.toggleYummi(email));
+                if (post.alreadyYummi(email)) {
+                    postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
+                } else {
+                    postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
+                }
+            }
+        });
+
+        final NavGraphDirections.ActionGlobalMapFragment mapAction = PostFragmentDirections.actionGlobalMapFragment();
+        PostsList postsList = new PostsList();
+        postsList.add(post);
+        mapAction.setPosts(postsList);
+        postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
+
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
         postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
         postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
