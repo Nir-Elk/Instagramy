@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.instagramy.dao.FavoriteDao;
 import com.instagramy.models.Favorite;
 
-@Database(entities = {Favorite.class}, version = 15)
+@Database(entities = {Favorite.class}, version = 16)
 public abstract class FavoritesDatabase extends RoomDatabase {
 
     public final static String LINK_DATA_BASE_NAME = "links.db";
