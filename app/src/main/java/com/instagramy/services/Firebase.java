@@ -7,7 +7,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class Firebase {
-    private static final Firebase ourInstance = new Firebase();
+    private static Firebase instance;
 
     private FirebaseAuth auth;
     private FirebaseDatabase database;
@@ -19,7 +19,10 @@ public class Firebase {
 
 
     public static Firebase getInstance() {
-        return ourInstance;
+        if (instance == null) {
+            instance = new Firebase();
+        }
+        return instance;
     }
 
     private Firebase() {

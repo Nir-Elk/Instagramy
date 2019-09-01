@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
+import com.instagramy.helpers.MainActivityMenuHelper;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
@@ -60,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Uri imageUri;
     private int mStateScrollY;
-    private Menu menu;
     private PostRepository postRepository;
     private ProfileRepository profileRepository;
     private AuthRepository authRepository;
+    private MainActivityMenuHelper menuHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,12 +99,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public Dialog getPopupChooseGalleryOrCamera() {
+        return popupChooseGalleryOrCamera;
+    }
+
     public void initBottomBarClickListeners() {
 
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderMenu(R.menu.toolbar_home, menu);
+                menuHelper.switchToHomeToolBar();
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
             }
         });
@@ -111,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderMenu(R.menu.toolbar_home, menu);
+                menuHelper.switchToHomeToolBar();
                 navHostFragmentNavigate(R.id.action_global_mapFragment);
             }
         });
@@ -119,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_settings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderMenu(R.menu.toolbar_home, menu);
+                menuHelper.switchToHomeToolBar();
                 navHostFragmentNavigate(R.id.action_global_settingsFragment);
             }
         });
@@ -127,22 +132,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderMenu(R.menu.toolbar_refresh_my_favorites, menu);
+                menuHelper.switchToMyFavoritesToolBar();
                 navHostFragmentNavigate(R.id.action_global_favoritesFragment);
             }
         });
         findViewById(R.id.nav_my_posts).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderMenu(R.menu.toolbar_my_posts, menu);
+                menuHelper.switchToMyPostsToolBar();
                 navHostFragmentNavigate(R.id.action_global_myPostsFragment);
             }
         });
-    }
-
-    public void renderMenu(int menuRes, Menu menu) {
-        menu.clear();
-        getMenuInflater().inflate(menuRes, menu);
     }
 
     public void navHostFragmentNavigate(int fragmentId) {
@@ -360,43 +360,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        getMenuInflater().inflate(R.menu.toolbar_home, this.menu);
+        this.menuHelper = new MainActivityMenuHelper(this, menu);
+        this.menuHelper.switchToHomeToolBar();
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.menu_add_post_btn:
-                popupChooseGalleryOrCamera.show();
-                break;
-
-            case R.id.menu_edit_profile_btn:
-                navHostFragmentNavigate(R.id.editProfileFragment);
-                break;
-
-            case R.id.menu_refresh_my_favorites:
-                navHostFragmentNavigate(R.id.favoritesFragment);
-                break;
-
-            case R.id.menu_logout:
-                authRepository.signOut();
-                Intent logginActivity = new Intent(this, LoginActivity.class);
-                startActivity(logginActivity);
-                this.finish();
-                break;
-            default:
-                break;
-
-        }
+        menuHelper.onOptionItemSelected(item);
         return super.onOptionsItemSelected(item);
     }
 
