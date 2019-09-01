@@ -38,17 +38,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
+import com.instagramy.helpers.MainActivityMenuHelper;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.PostRepository;
+import com.instagramy.repositories.ProfileRepository;
+import com.instagramy.repositories.RepositoryManager;
 import com.instagramy.utils.GPSLocation;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
-    private Firebase firebase;
     private Dialog popupAddPost, popupChooseGalleryOrCamera;
     private ImageView popupPostImage, popupAddBtn;
     private TextView popupTitle, popupDescription;
@@ -58,12 +61,21 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Uri imageUri;
     private int mStateScrollY;
+    private PostRepository postRepository;
+    private ProfileRepository profileRepository;
+    private AuthRepository authRepository;
+    private MainActivityMenuHelper menuHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        postRepository = RepositoryManager.getInstance().getPostRepository();
+        profileRepository = RepositoryManager.getInstance().getProfileRepository();
+        authRepository = RepositoryManager.getInstance().getAuthRepository();
+
         setContentView(R.layout.activity_main);
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        initBottomBarClickListeners();
         initBottomBarClickListeners();
         iniPopup();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -87,18 +99,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public Dialog getPopupChooseGalleryOrCamera() {
+        return popupChooseGalleryOrCamera;
+    }
+
     public void initBottomBarClickListeners() {
+
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menuHelper.switchToHomeToolBar();
                 navHostFragmentNavigate(R.id.action_global_homeFragment);
             }
         });
 
-
         findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menuHelper.switchToHomeToolBar();
                 navHostFragmentNavigate(R.id.action_global_mapFragment);
             }
         });
@@ -106,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_settings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menuHelper.switchToHomeToolBar();
                 navHostFragmentNavigate(R.id.action_global_settingsFragment);
             }
         });
@@ -113,13 +132,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menuHelper.switchToMyFavoritesToolBar();
                 navHostFragmentNavigate(R.id.action_global_favoritesFragment);
             }
         });
-        findViewById(R.id.nav_search).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.nav_my_posts).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navHostFragmentNavigate(R.id.action_global_searchFragment);
+                menuHelper.switchToMyPostsToolBar();
+                navHostFragmentNavigate(R.id.action_global_myPostsFragment);
             }
         });
     }
@@ -177,10 +198,10 @@ public class MainActivity extends AppCompatActivity {
                         && popupPostImage != null) {
 
                     final String path = pickedImgUri.getLastPathSegment();
-                    firebase.uploadPhoto(path, pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    postRepository.uploadPhoto(path, pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            firebase.getDownloadPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            postRepository.getDownloadPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     final String imageDownloadLink = uri.toString();
@@ -188,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                                     final Location location = gpsLocation.getLocation();
 
 
-                                    firebase.getProfile(firebase.getCurrentUser().getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    profileRepository.getProfile(authRepository.getCurrentUser().getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             Profile profile = dataSnapshot.getValue(Profile.class);
@@ -196,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                                             Post post = new Post(popupTitle.getText().toString(),
                                                     popupDescription.getText().toString(),
                                                     imageDownloadLink,
-                                                    firebase.getCurrentUser().getDisplayName(),
+                                                    authRepository.getCurrentUser().getDisplayName(),
                                                     profile.getName(),
                                                     profile.getImageUri(),
                                                     location);
@@ -231,9 +252,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addPost(Post post) {
-        String key = firebase.createNewPost();
+        String key = postRepository.createNewPost();
         post.setKey(key);
-        firebase.addPost(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+        postRepository.addPost(post).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 showMessage("Post Added");
@@ -339,27 +360,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        this.menuHelper = new MainActivityMenuHelper(this, menu);
+        this.menuHelper.switchToHomeToolBar();
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.add_post_btn:
-                popupChooseGalleryOrCamera.show();
-                break;
-
-            default:
-                break;
-        }
+        menuHelper.onOptionItemSelected(item);
         return super.onOptionsItemSelected(item);
     }
 

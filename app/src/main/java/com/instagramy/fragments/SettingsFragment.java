@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 
 import com.instagramy.R;
 import com.instagramy.activities.LoginActivity;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.RepositoryManager;
 
 public class SettingsFragment extends ActionBarFragment {
 
@@ -38,7 +38,7 @@ public class SettingsFragment extends ActionBarFragment {
         logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Firebase.getInstance().signOut();
+                RepositoryManager.getInstance().getAuthRepository().signOut();
                 Intent logginActivity = new Intent(getActivity(), LoginActivity.class);
                 startActivity(logginActivity);
                 getActivity().finish();

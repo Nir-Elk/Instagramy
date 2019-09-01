@@ -28,20 +28,26 @@ import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Profile;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.ProfileRepository;
+import com.instagramy.repositories.RepositoryManager;
 
 public class ProfileFragment extends Fragment {
 
     private String profileId;
-    private Firebase firebase;
     private Profile profile;
     private TextView fullName, email;
     private ImageView imageProfile;
     private ProgressBar progressBarProfile;
-
+    private ProfileRepository profileRepository;
 
     public ProfileFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.profileRepository = RepositoryManager.getInstance().getProfileRepository();
     }
 
     @Override
@@ -52,13 +58,12 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         assert getArguments() != null;
         this.profileId = ProfileFragmentArgs.fromBundle(getArguments()).getProfileId();
-        this.firebase = Firebase.getInstance();
 
         this.progressBarProfile = view.findViewById(R.id.profile_progressBar);
         this.imageProfile = view.findViewById(R.id.profile_image);
         this.fullName = view.findViewById(R.id.profile_full_name);
         this.email = view.findViewById(R.id.profile_email);
-        firebase.getProfile(this.profileId).addValueEventListener(new ValueEventListener() {
+        profileRepository.getProfile(this.profileId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 profile = dataSnapshot.getValue(Profile.class);

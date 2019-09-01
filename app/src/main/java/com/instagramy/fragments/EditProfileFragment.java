@@ -26,17 +26,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.models.Profile;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.ProfileRepository;
+import com.instagramy.repositories.RepositoryManager;
 
 
 public class EditProfileFragment extends ActionBarFragment {
-    private Firebase firebase;
     private Profile profile;
     private ProgressBar userProgressBar;
     private TextView emailProfile;
     private EditText nameProfile, passProfile, rePassProfile;
     private ImageView userImage;
     private Button updatebtn;
+    private ProfileRepository profileRepository;
+    private AuthRepository authRepository;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -44,15 +47,16 @@ public class EditProfileFragment extends ActionBarFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        this.firebase = Firebase.getInstance();
         super.onCreate(savedInstanceState);
+        profileRepository = RepositoryManager.getInstance().getProfileRepository();
+        authRepository = RepositoryManager.getInstance().getAuthRepository();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View fragmentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        firebase.getProfile(firebase.getCurrentUser().getDisplayName()).addValueEventListener(new ValueEventListener() {
+        profileRepository.getProfile(authRepository.getCurrentUser().getDisplayName()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 profile = dataSnapshot.getValue(Profile.class);
@@ -110,7 +114,7 @@ public class EditProfileFragment extends ActionBarFragment {
                     }
 
                     if (passProfile.getText().toString().equals(rePassProfile.getText().toString()) && passProfile.getText().toString().length() > 5) {
-                        firebase.changePass(passProfile.getText().toString());
+                        authRepository.changePass(passProfile.getText().toString());
                         isProfileUpdated = true;
                     } else {
                         toast("Please a valid password, longer then 5");
@@ -119,7 +123,7 @@ public class EditProfileFragment extends ActionBarFragment {
 
                 if (!nameProfile.getText().toString().equals(profile.getName())) {
                     if (nameProfile.getText().toString().length() > 0) {
-                        firebase.changeName(nameProfile.getText().toString());
+                        profileRepository.changeName(authRepository.getCurrentUser().getUid(), nameProfile.getText().toString());
                         profile.setName(nameProfile.getText().toString());
                         isProfileUpdated = true;
                     } else {

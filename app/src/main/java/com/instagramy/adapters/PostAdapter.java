@@ -32,7 +32,9 @@ import com.instagramy.models.Link;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.PostRepository;
+import com.instagramy.repositories.RepositoryManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,19 +43,21 @@ import java.util.Set;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
     private Context mContext;
     private List<Post> mData;
-    private Firebase firebase;
     public LinkListViewModel linkListViewModel;
     Set<String> favorites = new HashSet<>();
-
     public List<Post> getmData() {
         return mData;
     }
 
+    private AuthRepository authRepository;
+    private PostRepository postRepository;
+
     public PostAdapter(Context mContext, List<Post> mData, LinkListViewModel linkListViewModel) {
         this.mContext = mContext;
         this.mData = mData;
-        this.firebase = Firebase.getInstance();
         this.linkListViewModel = linkListViewModel;
+        this.postRepository = RepositoryManager.getInstance().getPostRepository();
+        this.authRepository = RepositoryManager.getInstance().getAuthRepository();
 
         linkListViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Link>>() {
             @Override
@@ -99,7 +103,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
 
-        if (ifLiked(position, firebase.getCurrentUser().getEmail())) {
+        if (ifLiked(position, authRepository.getCurrentUser().getEmail())) {
             holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
         } else {
             holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
@@ -132,8 +136,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = firebase.getCurrentUser().getEmail();
-                firebase.updateYummies(mData.get(position).getKey(), mData.get(position).toggleYummi(email));
+                String email = authRepository.getCurrentUser().getEmail();
+                postRepository.updateYummies(mData.get(position).getKey(), mData.get(position).toggleYummi(email));
                 if (ifLiked(position, email)) {
                     holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
                 } else {
