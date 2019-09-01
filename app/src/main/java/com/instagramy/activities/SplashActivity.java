@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.instagramy.R;
 import com.instagramy.helpers.NetworkHelper;
-import com.instagramy.services.Firebase;
+import com.instagramy.services.FirebaseService;
 
 public class SplashActivity extends AppCompatActivity {
     private static int SPLASH_TIME = 500; //This is 0.5 seconds
@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Firebase.getInstance(); // Open communicate as soon as possible
+        FirebaseService.getInstance(); // Open communicate as soon as possible
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);

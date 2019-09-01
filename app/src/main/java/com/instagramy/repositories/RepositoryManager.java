@@ -7,7 +7,7 @@ import com.instagramy.repositories.impl.FirebaseAuthRepository;
 import com.instagramy.repositories.impl.FirebasePostRepository;
 import com.instagramy.repositories.impl.FirebaseProfileRepository;
 import com.instagramy.repositories.impl.SqlLiteFavoriteRepository;
-import com.instagramy.services.Firebase;
+import com.instagramy.services.FirebaseService;
 
 public class RepositoryManager {
     private static RepositoryManager instance;
@@ -17,10 +17,10 @@ public class RepositoryManager {
     private AuthRepository authRepository;
 
     private RepositoryManager() {
-        Firebase firebase = Firebase.getInstance();
-        this.profileRepository = new FirebaseProfileRepository(firebase.getDatabaseUsersReference(), firebase.getStorageUsersPhotosReference());
-        this.postRepository = new FirebasePostRepository(firebase.getDatabasePostsReference(), firebase.getStorageBlogPhotosReference());
-        this.authRepository = new FirebaseAuthRepository(firebase.getAuth());
+        FirebaseService firebaseService = FirebaseService.getInstance();
+        this.profileRepository = new FirebaseProfileRepository(firebaseService.getDatabaseUsersReference(), firebaseService.getStorageUsersPhotosReference());
+        this.postRepository = new FirebasePostRepository(firebaseService.getDatabasePostsReference(), firebaseService.getStorageBlogPhotosReference());
+        this.authRepository = new FirebaseAuthRepository(firebaseService.getAuth());
     }
 
     public static RepositoryManager getInstance() {

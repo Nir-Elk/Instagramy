@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import com.instagramy.dao.FavoriteDao;
 import com.instagramy.models.Favorite;
 import com.instagramy.repositories.FavoriteRepository;
-import com.instagramy.services.FavoritesDataBase;
+import com.instagramy.services.FavoritesDatabase;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class SqlLiteFavoriteRepository implements FavoriteRepository {
     private FavoriteDao favoriteDao;
 
     public SqlLiteFavoriteRepository(AppCompatActivity activity) {
-        FavoritesDataBase db = FavoritesDataBase.getDatabase(activity);
+        FavoritesDatabase db = FavoritesDatabase.getDatabase(activity);
         favoriteDao = db.linkDao();
     }
 

@@ -10,16 +10,16 @@ import com.instagramy.dao.FavoriteDao;
 import com.instagramy.models.Favorite;
 
 @Database(entities = {Favorite.class}, version = 15)
-public abstract class FavoritesDataBase extends RoomDatabase {
+public abstract class FavoritesDatabase extends RoomDatabase {
 
     public final static String LINK_DATA_BASE_NAME = "links.db";
 
-    private static FavoritesDataBase INSTANCE;
+    private static FavoritesDatabase INSTANCE;
 
-    public static FavoritesDataBase getDatabase(Context context) {
+    public static FavoritesDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE =
-                    Room.databaseBuilder(context, FavoritesDataBase.class, LINK_DATA_BASE_NAME)
+                    Room.databaseBuilder(context, FavoritesDatabase.class, LINK_DATA_BASE_NAME)
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .build();

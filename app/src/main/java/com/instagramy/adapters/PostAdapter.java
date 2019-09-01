@@ -124,7 +124,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         holder.postImageProgressBar.setVisibility(View.GONE);
-
                         return false;
                     }
                 })
