@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -139,7 +140,9 @@ public class PostFragment extends Fragment {
                             });
                         }
                     });
-            Glide.with(getContext()).load(post.getUserimg()).into(postUserImage);
+            Glide.with(getContext()).load(post.getUserimg())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(postUserImage);
         }
 
         postYummiBtn.setOnClickListener(new View.OnClickListener() {

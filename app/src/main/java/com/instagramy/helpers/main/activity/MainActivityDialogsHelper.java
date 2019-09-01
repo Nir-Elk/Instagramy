@@ -164,6 +164,7 @@ public class MainActivityDialogsHelper {
                                                     profile.getImageUri(),
                                                     location);
                                             addPost(post);
+
                                         }
 
                                         @Override
@@ -207,8 +208,11 @@ public class MainActivityDialogsHelper {
                 popupAddBtn.setVisibility(View.VISIBLE);
                 popupClickProgress.setVisibility(View.INVISIBLE);
                 popupAddPost.dismiss();
+                popupTitle.setEnabled(true);
+                popupDescription.setEnabled(true);
             }
         });
+
     }
 
     public Dialog getPopupChooseGalleryOrCamera() {

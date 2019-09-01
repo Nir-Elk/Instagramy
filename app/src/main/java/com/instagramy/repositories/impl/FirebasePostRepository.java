@@ -94,7 +94,7 @@ public class FirebasePostRepository implements PostRepository {
                     try {
                         Post post = postsnap.getValue(Post.class);
                         if (post.getUserId().equals(key)) {
-                            databasePostsReference.child(post.getUserId()).removeValue();
+                            databasePostsReference.child(post.getKey()).removeValue();
                         }
                     } catch (Exception ignored) {
                     }
