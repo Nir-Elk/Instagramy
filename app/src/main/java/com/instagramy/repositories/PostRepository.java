@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.models.Post;
+import com.instagramy.models.PostsList;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface PostRepository {
 
     DatabaseReference getPost(String id);
 
-    DatabaseReference getPosts();
+    void getPosts(GetAllPostsListener getAllPostsListener);
 
     void updateYummies(String key, List<String> list);
 
@@ -26,5 +27,9 @@ public interface PostRepository {
     UploadTask uploadPhoto(String path, Uri photo);
 
     Task getDownloadPhotoUrl(String path);
+
+    public interface GetAllPostsListener {
+        public void onSuccsess(PostsList posts);
+    }
 
 }

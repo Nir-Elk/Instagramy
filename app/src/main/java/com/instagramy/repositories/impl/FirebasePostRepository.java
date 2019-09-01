@@ -2,11 +2,17 @@ package com.instagramy.repositories.impl;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.models.Post;
+import com.instagramy.models.PostsList;
 import com.instagramy.repositories.PostRepository;
 
 import java.util.List;
@@ -39,8 +45,25 @@ public class FirebasePostRepository implements PostRepository {
     }
 
     @Override
-    public DatabaseReference getPosts() {
-        return databasePostsReference;
+    public void getPosts(final GetAllPostsListener getAllPostsListener) {
+        databasePostsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                PostsList postList = new PostsList();
+                for (DataSnapshot postDataSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        postList.add(postDataSnapshot.getValue(Post.class));
+                    } catch (Exception ignored) {
+                    }
+                }
+                getAllPostsListener.onSuccsess(postList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

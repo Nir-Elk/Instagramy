@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
+import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Profile;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.ProfileRepository;
@@ -40,6 +41,7 @@ public class EditProfileFragment extends ActionBarFragment {
     private Button updatebtn;
     private ProfileRepository profileRepository;
     private AuthRepository authRepository;
+    private MainActivity mainActivity;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -50,6 +52,15 @@ public class EditProfileFragment extends ActionBarFragment {
         super.onCreate(savedInstanceState);
         profileRepository = RepositoryManager.getInstance().getProfileRepository();
         authRepository = RepositoryManager.getInstance().getAuthRepository();
+        mainActivity = (MainActivity) getActivity();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        super.setTitle("Edit Profile");
+        mainActivity.getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_settings);
+        mainActivity.getMenuHelper().switchToSettingsToolBar();
     }
 
     @Override
@@ -80,9 +91,7 @@ public class EditProfileFragment extends ActionBarFragment {
     }
 
 
-    public void updateView(View fragmentView) {
-
-        super.setTitle("Edit Profile");
+    private void updateView(View fragmentView) {
         emailProfile.setText(profile.getEmail());
         nameProfile.setText(profile.getName());
         userProgressBar.setVisibility(View.VISIBLE);

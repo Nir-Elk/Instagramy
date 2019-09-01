@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
-import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 
 public class ActionBarFragment extends Fragment {
@@ -21,9 +20,6 @@ public class ActionBarFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mainActivity = ((MainActivity) getActivity());
         this.actionBar = mainActivity.getSupportActionBar();
-
-        mainActivity.getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_settings);
-
     }
 
     @SuppressLint("RestrictedApi")

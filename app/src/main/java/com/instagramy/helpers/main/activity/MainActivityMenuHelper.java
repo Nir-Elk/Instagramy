@@ -5,6 +5,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.navigation.Navigation;
+
+import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.LoginActivity;
 import com.instagramy.activities.MainActivity;
@@ -15,6 +18,16 @@ public class MainActivityMenuHelper {
     private MainActivity mainActivity;
     private AuthRepository authRepository;
     private Menu menu;
+    private NavGraphDirections.ActionGlobalEditPostFragment editPostAction;
+    private Runnable deletePostRunnableAction;
+
+    public void setEditPostAction(NavGraphDirections.ActionGlobalEditPostFragment editPostAction) {
+        this.editPostAction = editPostAction;
+    }
+
+    public void setDeletePostRunnableAction(Runnable deletePostRunnableAction) {
+        this.deletePostRunnableAction = deletePostRunnableAction;
+    }
 
     private MainActivityMenuHelper() {
     }
@@ -44,6 +57,13 @@ public class MainActivityMenuHelper {
                 navigate(R.id.settingsFragment);
                 break;
 
+            case R.id.menu_delete_post:
+                deletePostRunnableAction.run();
+                break;
+
+            case R.id.menu_edit_post:
+                Navigation.findNavController(mainActivity, R.id.nav_host_fragment).navigate(editPostAction);
+                break;
             case R.id.menu_logout:
                 authRepository.signOut();
                 Intent logginActivity = new Intent(mainActivity, LoginActivity.class);
@@ -61,6 +81,14 @@ public class MainActivityMenuHelper {
         this.inflate(R.menu.toolbar_home);
     }
 
+    public void switchToEditPostToolBar() {
+        this.inflate(R.menu.toolbar_edit_post);
+    }
+
+    public void switchToSettingsToolBar() {
+        this.inflate(R.menu.toolbar_settings);
+    }
+
     private void switchToMyFavoritesToolBar() {
         this.inflate(R.menu.toolbar_refresh_my_favorites);
     }
@@ -73,7 +101,6 @@ public class MainActivityMenuHelper {
         this.menu.clear();
         this.mainActivity.getMenuInflater().inflate(menuRes, this.menu);
     }
-
 
     private void initBottomBarClickListeners() {
 
@@ -96,7 +123,7 @@ public class MainActivityMenuHelper {
         findViewById(R.id.nav_settings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchToHomeToolBar();
+                switchToSettingsToolBar();
                 navigate(R.id.action_global_settingsFragment);
             }
         });
@@ -125,4 +152,27 @@ public class MainActivityMenuHelper {
         this.mainActivity.getController().navHostFragmentNavigate(action);
     }
 
+    public void onBackPressed(int selectedItemBottomNavigation) {
+
+        switch (selectedItemBottomNavigation) {
+            case R.id.nav_home:
+                switchToHomeToolBar();
+                break;
+            case R.id.nav_map:
+                switchToHomeToolBar();
+                break;
+            case R.id.nav_favorites:
+                switchToMyFavoritesToolBar();
+                break;
+            case R.id.nav_my_posts:
+                switchToMyPostsToolBar();
+                break;
+            case R.id.nav_settings:
+                switchToSettingsToolBar();
+                break;
+
+            default:
+                break;
+        }
+    }
 }

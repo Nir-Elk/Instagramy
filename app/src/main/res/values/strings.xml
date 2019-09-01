@@ -45,5 +45,7 @@
     <string name="take_a_photo">Take a photo</string>
     <string name="edit_profile">Edit profile</string>
     <string name="refresh">Refresh</string>
+    <string name="edit_post">Edit Post</string>
+    <string name="delete_post">Delete Post</string>
 
 </resources>

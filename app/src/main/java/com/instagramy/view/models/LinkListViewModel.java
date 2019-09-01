@@ -1,9 +1,10 @@
-package com.instagramy.models;
+package com.instagramy.view.models;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.instagramy.models.Link;
 import com.instagramy.repositories.LinkRepository;
 import com.instagramy.repositories.RepositoryManager;
 
