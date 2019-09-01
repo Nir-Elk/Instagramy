@@ -6,8 +6,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class Firebase {
-    private static Firebase instance;
+public class FirebaseService {
+    private static FirebaseService instance;
 
     private FirebaseAuth auth;
     private FirebaseDatabase database;
@@ -18,14 +18,7 @@ public class Firebase {
     private StorageReference storageBlogPhotosReference;
 
 
-    public static Firebase getInstance() {
-        if (instance == null) {
-            instance = new Firebase();
-        }
-        return instance;
-    }
-
-    private Firebase() {
+    private FirebaseService() {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -33,6 +26,13 @@ public class Firebase {
         databasePostsReference = database.getReference("Posts");
         storageUsersPhotosReference = storage.getReference().child("users_photos");
         storageBlogPhotosReference = storage.getReference().child("users_photos");
+    }
+
+    public static FirebaseService getInstance() {
+        if (instance == null) {
+            instance = new FirebaseService();
+        }
+        return instance;
     }
 
     public FirebaseAuth getAuth() {

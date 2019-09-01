@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey;
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -155,4 +156,7 @@ public class Post implements Serializable {
     }
 
 
+    public static class PostList extends ArrayList<Post> implements Serializable {
+
+    }
 }

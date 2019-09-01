@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_edit_post"
+        android:icon="@drawable/ic_edit_post_menu"
+        android:title="@string/edit_post"
+        app:showAsAction="collapseActionView|ifRoom" />
+
+    <item
+        android:id="@+id/menu_delete_post"
+        android:icon="@drawable/ic_trash"
+        android:title="@string/delete_post"
+        app:showAsAction="collapseActionView|ifRoom" />
+
+    <item
+        android:id="@+id/menu_edit_profile_btn"
+        android:icon="@drawable/ic_edit_profile"
+        android:title="@string/edit_profile"
+        app:showAsAction="collapseActionView|never" />
+
+    <item
+        android:id="@+id/menu_add_post_btn"
+        android:icon="@drawable/ic_menu_camera"
+        android:title="@string/take_a_photo"
+        app:showAsAction="collapseActionView|never" />
+
+    <item
+        android:id="@+id/menu_logout"
+        android:icon="@drawable/ic_logout_sign"
+        android:title="@string/logout"
+        app:showAsAction="collapseActionView|never" />
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/action_settings"
+        app:showAsAction="collapseActionView|never" />
+</menu>

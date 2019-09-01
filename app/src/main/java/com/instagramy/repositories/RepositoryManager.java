@@ -6,9 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.instagramy.repositories.impl.FirebaseAuthRepository;
 import com.instagramy.repositories.impl.FirebasePostRepository;
 import com.instagramy.repositories.impl.FirebaseProfileRepository;
-import com.instagramy.repositories.impl.InternalStorageRepository;
-import com.instagramy.repositories.impl.SqlLiteLinkRepository;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.impl.SqlLiteFavoriteRepository;
+import com.instagramy.services.FirebaseService;
 
 public class RepositoryManager {
     private static RepositoryManager instance;
@@ -16,14 +15,12 @@ public class RepositoryManager {
     private ProfileRepository profileRepository;
     private PostRepository postRepository;
     private AuthRepository authRepository;
-    private StorageRepository storageRepository;
 
     private RepositoryManager() {
-        Firebase firebase = Firebase.getInstance();
-        this.profileRepository = new FirebaseProfileRepository(firebase.getDatabaseUsersReference(), firebase.getStorageUsersPhotosReference());
-        this.postRepository = new FirebasePostRepository(firebase.getDatabasePostsReference(), firebase.getStorageBlogPhotosReference());
-        this.authRepository = new FirebaseAuthRepository(firebase.getAuth());
-        this.storageRepository = new InternalStorageRepository();
+        FirebaseService firebaseService = FirebaseService.getInstance();
+        this.profileRepository = new FirebaseProfileRepository(firebaseService.getDatabaseUsersReference(), firebaseService.getStorageUsersPhotosReference());
+        this.postRepository = new FirebasePostRepository(firebaseService.getDatabasePostsReference(), firebaseService.getStorageBlogPhotosReference());
+        this.authRepository = new FirebaseAuthRepository(firebaseService.getAuth());
     }
 
     public static RepositoryManager getInstance() {
@@ -33,8 +30,8 @@ public class RepositoryManager {
         return instance;
     }
 
-    public LinkRepository getLinkRepository(AppCompatActivity activity) {
-        return new SqlLiteLinkRepository(activity);
+    public FavoriteRepository getLinkRepository(AppCompatActivity activity) {
+        return new SqlLiteFavoriteRepository(activity);
     }
 
     public ProfileRepository getProfileRepository() {
@@ -48,11 +45,5 @@ public class RepositoryManager {
     public AuthRepository getAuthRepository() {
         return this.authRepository;
     }
-
-    public StorageRepository getStorageRepository() {
-        return this.storageRepository;
-    }
-
-
 
 }

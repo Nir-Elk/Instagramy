@@ -44,8 +44,25 @@ public class FirebasePostRepository implements PostRepository {
     }
 
     @Override
-    public DatabaseReference getPosts() {
-        return databasePostsReference;
+    public void getPosts(final GetAllPostsListener getAllPostsListener) {
+        databasePostsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Post.PostList postList = new Post.PostList();
+                for (DataSnapshot postDataSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        postList.add(postDataSnapshot.getValue(Post.class));
+                    } catch (Exception ignored) {
+                    }
+                }
+                getAllPostsListener.onSuccsess(postList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

@@ -17,7 +17,7 @@ import com.instagramy.conrollers.MainActivityController;
 import com.instagramy.helpers.main.activity.MainActivityBottomNavigationHelper;
 import com.instagramy.helpers.main.activity.MainActivityDialogsHelper;
 import com.instagramy.helpers.main.activity.MainActivityMenuHelper;
-import com.instagramy.models.LinkListViewModel;
+import com.instagramy.view.models.FavoritesViewModel;
 
 import static com.instagramy.constants.MainActivityConstants.REQUEST_IMAGE_CAPTURE;
 import static com.instagramy.constants.MainActivityConstants.REQUEST_OPEN_GALLERY;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         this.controller = new MainActivityController(this);
         this.dialogsHelper = new MainActivityDialogsHelper(this);
         this.bottomNavigationHelper = new MainActivityBottomNavigationHelper(this);
-        LinkListViewModel.getInstance(this);
+        FavoritesViewModel.getInstance(this);
     }
 
     public MainActivityBottomNavigationHelper getBottomNavigationHelper() {
@@ -56,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+    }
+
+    public MainActivityMenuHelper getMenuHelper() {
+        return menuHelper;
     }
 
     @Override
@@ -84,4 +88,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.getMenuHelper().onBackPressed(bottomNavigationHelper.getSelectedItemBottomNavigation());
+    }
 }

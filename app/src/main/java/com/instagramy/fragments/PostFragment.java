@@ -27,8 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
+import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
@@ -37,12 +37,12 @@ public class PostFragment extends Fragment {
     private PostRepository postRepository;
     private AuthRepository authRepository;
     private TextView postTitle, postDescription, postUserName, postYummies, postImageErrorMessage;
-    private ImageView postImage, postUserImage, postMapBtn, postYummiBtn, postFavoriteBtn, postUpdateBtn, postDeleteBtn;
+    private ImageView postImage, postUserImage, postMapBtn, postYummiBtn, postFavoriteBtn;
     private ProgressBar postImageProgressBar;
     private View view;
     private Post post;
     private String postId;
-
+    private MainActivity mainActivity;
 
     public PostFragment() {
         // Required empty public constructor
@@ -51,6 +51,7 @@ public class PostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.mainActivity = (MainActivity) getActivity();
         this.postRepository = RepositoryManager.getInstance().getPostRepository();
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
         postId = PostFragmentArgs.fromBundle(getArguments()).getPostId();
@@ -73,14 +74,12 @@ public class PostFragment extends Fragment {
         postYummiBtn = view.findViewById(R.id.post_yummies_btn);
         postFavoriteBtn = view.findViewById(R.id.post_favorite_btn);
         postImageProgressBar = view.findViewById(R.id.post_progressBar);
-        postUpdateBtn = view.findViewById(R.id.row_post_update_btn);
-        postDeleteBtn = view.findViewById(R.id.row_post_delete_btn);
         postRepository.getPost(postId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 post = dataSnapshot.getValue(Post.class);
                 if (post == null) {
-                    getActivity().onBackPressed();
+                    mainActivity.onBackPressed();
                 } else {
                     updateView();
                 }
@@ -156,24 +155,25 @@ public class PostFragment extends Fragment {
             }
         });
         if (post.getUserId().equals(authRepository.getCurrentUser().getDisplayName())) {
+            mainActivity.getMenuHelper().switchToEditPostToolBar();
             final NavGraphDirections.ActionGlobalEditPostFragment editPostAction = NavGraphDirections.actionGlobalEditPostFragment(post.getKey());
-            postUpdateBtn.setOnClickListener(Navigation.createNavigateOnClickListener(editPostAction));
-            postDeleteBtn.setOnClickListener(new View.OnClickListener() {
+            mainActivity.getMenuHelper().setEditPostAction(editPostAction);
+            mainActivity.getMenuHelper().setDeletePostRunnableAction(new Runnable() {
                 @Override
-                public void onClick(View v) {
+                public void run() {
                     postRepository.deletePost(post.getKey());
+                    mainActivity.getMenuHelper().switchToHomeToolBar();
                 }
             });
         } else {
-            postUpdateBtn.setVisibility(View.INVISIBLE);
-            postDeleteBtn.setVisibility(View.INVISIBLE);
+            mainActivity.getMenuHelper().switchToHomeToolBar();
         }
 
 
         final NavGraphDirections.ActionGlobalMapFragment mapAction = PostFragmentDirections.actionGlobalMapFragment();
-        PostsList postsList = new PostsList();
-        postsList.add(post);
-        mapAction.setPosts(postsList);
+        Post.PostList postList = new Post.PostList();
+        postList.add(post);
+        mapAction.setPosts(postList);
         postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
         postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
