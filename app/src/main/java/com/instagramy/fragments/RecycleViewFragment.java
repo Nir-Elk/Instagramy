@@ -19,7 +19,8 @@ import com.instagramy.adapters.PostAdapter;
 import com.instagramy.models.Link;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.PostRepository;
+import com.instagramy.repositories.RepositoryManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,18 +31,19 @@ import java.util.Set;
 public class RecycleViewFragment extends ActionBarFragment {
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
-    private Firebase firebase;
     private List<Post> postList;
     private LinearLayoutManager linearLayoutManager;
     private LinkListViewModel linkListViewModel;
     static Set<String> favorites = new HashSet<>();
-
+    private PostRepository postRepository;
     public RecycleViewFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.postRepository = RepositoryManager.getInstance().getPostRepository();
+
     }
 
     boolean filter(Post post) {
@@ -61,7 +63,6 @@ public class RecycleViewFragment extends ActionBarFragment {
         postRecyclerView.setLayoutManager(linearLayoutManager);
         postRecyclerView.setHasFixedSize(true);
         linkListViewModel = LinkListViewModel.getInstance((MainActivity) getActivity());
-        firebase = Firebase.getInstance();
         return view;
     }
 
@@ -69,7 +70,7 @@ public class RecycleViewFragment extends ActionBarFragment {
     public void onStart() {
         super.onStart();
         postList = new ArrayList<>();
-        firebase.getPosts().addValueEventListener(new ValueEventListener() {
+        postRepository.getPosts().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Collections.reverse(postList);

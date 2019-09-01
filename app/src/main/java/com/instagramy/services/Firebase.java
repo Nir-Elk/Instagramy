@@ -1,20 +1,10 @@
 package com.instagramy.services;
 
-import android.net.Uri;
-
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.instagramy.models.Post;
-import com.instagramy.models.Profile;
-
-import java.util.List;
 
 public class Firebase {
     private static final Firebase ourInstance = new Firebase();
@@ -26,6 +16,7 @@ public class Firebase {
     private DatabaseReference databasePostsReference;
     private StorageReference storageUsersPhotosReference;
     private StorageReference storageBlogPhotosReference;
+
 
     public static Firebase getInstance() {
         return ourInstance;
@@ -41,83 +32,23 @@ public class Firebase {
         storageBlogPhotosReference = storage.getReference().child("users_photos");
     }
 
-    public FirebaseUser getCurrentUser() {
-        return auth.getCurrentUser();
+    public FirebaseAuth getAuth() {
+        return auth;
     }
 
-    public void signOut() {
-        auth.signOut();
+    public DatabaseReference getDatabaseUsersReference() {
+        return databaseUsersReference;
     }
 
-    public Task CreateUserAuth(String email, String pass) {
-        return auth.createUserWithEmailAndPassword(email, pass);
-    }
-
-    public Task signIn(String email, String pass) {
-        return auth.signInWithEmailAndPassword(email, pass);
-    }
-
-    public void changePass(String pass) {
-        getCurrentUser().updatePassword(pass);
-    }
-
-    public void changeName(String name) {
-        databaseUsersReference.child(getCurrentUser().getUid()).child("name").setValue(name);
-    }
-
-    public UploadTask uploadUserPhoto(String path, Uri photo) {
-        return storageUsersPhotosReference.child(path).putFile(photo);
-    }
-
-    public Task getDownloadUserPhotoUrl(String path) {
-        return storageUsersPhotosReference.child(path).getDownloadUrl();
-    }
-
-    public UploadTask uploadPhoto(String path, Uri photo) {
-        return storageBlogPhotosReference.child(path).putFile(photo);
-    }
-
-    public Task getDownloadPhotoUrl(String path) {
-        return storageBlogPhotosReference.child(path).getDownloadUrl();
-    }
-
-    public String createNewProfile() {
-        return databaseUsersReference.push().getKey();
-    }
-
-    public Task addProfile(Profile profile) {
-        return databaseUsersReference.setValue(profile);
-    }
-
-    public String createNewPost() {
-        return databasePostsReference.push().getKey();
-    }
-
-    public Task addPost(Post post) {
-        return databasePostsReference.setValue(post);
-    }
-
-    public Task updateUserAuthKey(String key) {
-        UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
-                .setDisplayName(key)
-                .build();
-        return auth.getCurrentUser().updateProfile(profileUpdate);
-    }
-
-    public DatabaseReference getProfile(String id) {
-        return databaseUsersReference.child(id);
-    }
-
-    public DatabaseReference getPost(String id) {
-        return databasePostsReference.child(id);
-    }
-
-    public DatabaseReference getPosts() {
+    public DatabaseReference getDatabasePostsReference() {
         return databasePostsReference;
     }
 
-    public void updateYummies(String key, List<String> list) {
-        databasePostsReference.child(key).child("yummiesSet").setValue(list);
+    public StorageReference getStorageUsersPhotosReference() {
+        return storageUsersPhotosReference;
     }
 
+    public StorageReference getStorageBlogPhotosReference() {
+        return storageBlogPhotosReference;
+    }
 }

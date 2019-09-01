@@ -18,10 +18,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.models.Post;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.PostRepository;
+import com.instagramy.repositories.RepositoryManager;
 
 public class PostFragment extends Fragment {
-    private Firebase firebase;
+    private PostRepository postRepository;
     private TextView postTitle, postDescription, postUserName, postYummies, postImageErrorMessage;
     private ImageView postImage, postUserImage, postMapBtn, postYummiBtn, postFavoriteBtn;
     private ProgressBar postImageProgressBar;
@@ -37,7 +38,7 @@ public class PostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firebase = Firebase.getInstance();
+        this.postRepository = RepositoryManager.getInstance().getPostRepository();
         postId = PostFragmentArgs.fromBundle(getArguments()).getPostId();
     }
 
@@ -59,7 +60,7 @@ public class PostFragment extends Fragment {
         postFavoriteBtn = view.findViewById(R.id.post_favorite_btn);
         postImageProgressBar = view.findViewById(R.id.post_progressBar);
 
-        firebase.getPost(postId).addValueEventListener(new ValueEventListener() {
+        postRepository.getPost(postId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 post = dataSnapshot.getValue(Post.class);

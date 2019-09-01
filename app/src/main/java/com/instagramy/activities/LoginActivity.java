@@ -18,7 +18,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.instagramy.R;
 import com.instagramy.helpers.KeyboardHelper;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.RepositoryManager;
 import com.instagramy.utils.Navigator;
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,12 +29,13 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar loadingProgress;
     private Button LogBtn;
     private TextView LogNewAccount;
-    private Firebase firebase;
     private int REQUEST_CODE = 1;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.authRepository = RepositoryManager.getInstance().getAuthRepository();
 
         setContentView(R.layout.activity_login);
 
@@ -44,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         loadingProgress = findViewById(R.id.LogprogressBar);
         LogNewAccount = findViewById(R.id.LogNewAccount);
         loadingProgress.setVisibility(View.INVISIBLE);
-        firebase = Firebase.getInstance();
         navigator = new Navigator(this);
 
         LogNewAccount.setOnClickListener(new View.OnClickListener() {
@@ -70,16 +71,14 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     singIn(email, pass);
                 }
-
             }
         });
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (firebase.getCurrentUser() != null) {
+        if (authRepository.getCurrentUser() != null) {
             //user is already connected to redirect him to home page
             navigator.navigate(MainActivity.class);
 
@@ -87,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void singIn(String email, String pass) {
-        firebase.signIn(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        authRepository.signIn(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {

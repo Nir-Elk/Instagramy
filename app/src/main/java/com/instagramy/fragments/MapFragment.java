@@ -19,26 +19,27 @@ import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.PostRepository;
+import com.instagramy.repositories.RepositoryManager;
 
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
     private GoogleMap googleMap;
     private PostsList posts;
-    private Firebase firebase;
+    private PostRepository postRepository;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        this.firebase = Firebase.getInstance();
+        this.postRepository = RepositoryManager.getInstance().getPostRepository();
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Map");
         this.posts = MapFragmentArgs.fromBundle(getArguments()).getPosts();
 
 
         if (posts == null || posts.size() == 0) {
-            firebase.getPosts().addValueEventListener(new ValueEventListener() {
+            postRepository.getPosts().addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     posts = new PostsList();

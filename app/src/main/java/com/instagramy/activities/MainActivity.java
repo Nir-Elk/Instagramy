@@ -41,14 +41,16 @@ import com.instagramy.R;
 import com.instagramy.models.LinkListViewModel;
 import com.instagramy.models.Post;
 import com.instagramy.models.Profile;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.PostRepository;
+import com.instagramy.repositories.ProfileRepository;
+import com.instagramy.repositories.RepositoryManager;
 import com.instagramy.utils.GPSLocation;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final String ARGS_SCROLL_Y = "mStateScrollY";
-    private Firebase firebase;
     private Dialog popupAddPost, popupChooseGalleryOrCamera;
     private ImageView popupPostImage, popupAddBtn;
     private TextView popupTitle, popupDescription;
@@ -59,10 +61,17 @@ public class MainActivity extends AppCompatActivity {
     private Uri imageUri;
     private int mStateScrollY;
     private Menu menu;
+    private PostRepository postRepository;
+    private ProfileRepository profileRepository;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        postRepository = RepositoryManager.getInstance().getPostRepository();
+        profileRepository = RepositoryManager.getInstance().getProfileRepository();
+        authRepository = RepositoryManager.getInstance().getAuthRepository();
+
         setContentView(R.layout.activity_main);
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         initBottomBarClickListeners();
@@ -131,10 +140,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void renderMenu(int menuRes, Menu  menu) {
+    public void renderMenu(int menuRes, Menu menu) {
         menu.clear();
         getMenuInflater().inflate(menuRes, menu);
     }
+
     public void navHostFragmentNavigate(int fragmentId) {
         Navigation.findNavController(findViewById(R.id.nav_host_fragment)).navigate(fragmentId);
     }
@@ -188,10 +198,10 @@ public class MainActivity extends AppCompatActivity {
                         && popupPostImage != null) {
 
                     final String path = pickedImgUri.getLastPathSegment();
-                    firebase.uploadPhoto(path, pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    postRepository.uploadPhoto(path, pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            firebase.getDownloadPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            postRepository.getDownloadPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     final String imageDownloadLink = uri.toString();
@@ -199,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                                     final Location location = gpsLocation.getLocation();
 
 
-                                    firebase.getProfile(firebase.getCurrentUser().getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    profileRepository.getProfile(authRepository.getCurrentUser().getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             Profile profile = dataSnapshot.getValue(Profile.class);
@@ -207,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                                             Post post = new Post(popupTitle.getText().toString(),
                                                     popupDescription.getText().toString(),
                                                     imageDownloadLink,
-                                                    firebase.getCurrentUser().getDisplayName(),
+                                                    authRepository.getCurrentUser().getDisplayName(),
                                                     profile.getName(),
                                                     profile.getImageUri(),
                                                     location);
@@ -242,9 +252,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addPost(Post post) {
-        String key = firebase.createNewPost();
+        String key = postRepository.createNewPost();
         post.setKey(key);
-        firebase.addPost(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+        postRepository.addPost(post).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 showMessage("Post Added");
@@ -378,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.menu_logout:
-                Firebase.getInstance().signOut();
+                authRepository.signOut();
                 Intent logginActivity = new Intent(this, LoginActivity.class);
                 startActivity(logginActivity);
                 this.finish();

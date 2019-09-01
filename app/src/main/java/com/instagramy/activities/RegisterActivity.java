@@ -27,7 +27,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.R;
 import com.instagramy.models.Profile;
-import com.instagramy.services.Firebase;
+import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.ProfileRepository;
+import com.instagramy.repositories.RepositoryManager;
 import com.instagramy.utils.Navigator;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -41,8 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
     private static int REQUSECODE = 1;
     private Uri pickedImgUri;
     private Intent intent;
-
-    private Firebase firebase;
+    private ProfileRepository profileRepository;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         loadingProgress.setVisibility(View.INVISIBLE);
 
-        firebase = Firebase.getInstance();
+        profileRepository = RepositoryManager.getInstance().getProfileRepository();
         navigator = new Navigator(this);
 
         userPhoto.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void CreateUserAccount(String email, final String name, String pass) {
-        firebase.CreateUserAuth(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        authRepository.createUserAuth(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -147,13 +149,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void updateUserInfo(final String name, Uri pickedImgUri) {
         final String path = pickedImgUri.getLastPathSegment();
-        firebase.uploadUserPhoto(path, pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        profileRepository.uploadUserPhoto(path, pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                firebase.getDownloadUserPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                profileRepository.getDownloadUserPhotoUrl(path).addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Profile profile = new Profile(name, firebase.getCurrentUser().getUid(), firebase.getCurrentUser().getEmail(), uri.toString());
+                        Profile profile = new Profile(name, authRepository.getCurrentUser().getUid(), authRepository.getCurrentUser().getEmail(), uri.toString());
                         addProfile(profile);
                     }
                 });
@@ -163,13 +165,13 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void addProfile(Profile profile) {
-        final String key = firebase.createNewProfile();
+        final String key = profileRepository.createNewProfile();
         profile.setKey(key);
 
-        firebase.addProfile(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+        profileRepository.addProfile(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                firebase.updateUserAuthKey(key).addOnCompleteListener(new OnCompleteListener<Void>() {
+                authRepository.updateUserAuthKey(key).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         showMessage("Register complete");

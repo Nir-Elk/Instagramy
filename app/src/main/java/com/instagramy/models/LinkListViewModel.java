@@ -4,7 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.instagramy.Repositories.LinkRepository;
+import com.instagramy.repositories.LinkRepository;
+import com.instagramy.repositories.RepositoryManager;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class LinkListViewModel extends ViewModel {
     static LinkListViewModel instance;
 
     private LinkListViewModel(AppCompatActivity activity) {
-        linkRepository = new LinkRepository(activity);
+        linkRepository = RepositoryManager.getInstance().getLinkRepository(activity);
         allLinks = linkRepository.getAllLinks();
     }
 
