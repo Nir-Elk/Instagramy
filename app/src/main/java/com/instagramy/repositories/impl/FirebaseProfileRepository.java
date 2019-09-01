@@ -30,7 +30,7 @@ public class FirebaseProfileRepository implements ProfileRepository {
 
     @Override
     public Task addProfile(Profile profile) {
-        return databaseUsersReference.setValue(profile);
+        return databaseUsersReference.child(profile.getKey()).setValue(profile);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class FirebasePostRepository implements PostRepository {
 
     @Override
     public Task addPost(Post post) {
-        return databasePostsReference.setValue(post);
+        return databasePostsReference.child(post.getKey()).setValue(post);
     }
 
     @Override

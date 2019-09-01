@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -23,14 +22,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
-import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
 import com.instagramy.repositories.AuthRepository;
@@ -83,7 +79,11 @@ public class PostFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 post = dataSnapshot.getValue(Post.class);
-                updateView();
+                if (post == null) {
+                    getActivity().onBackPressed();
+                } else {
+                    updateView();
+                }
             }
 
             @Override
@@ -155,22 +155,16 @@ public class PostFragment extends Fragment {
                 }
             }
         });
-        if(post.getUserId().equals(authRepository.getCurrentUser().getDisplayName())) {
+        if (post.getUserId().equals(authRepository.getCurrentUser().getDisplayName())) {
             final NavGraphDirections.ActionGlobalEditPostFragment editPostAction = NavGraphDirections.actionGlobalEditPostFragment(post.getKey());
             postUpdateBtn.setOnClickListener(Navigation.createNavigateOnClickListener(editPostAction));
             postDeleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    postRepository.deletePost(post.getKey()).addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task task) {
-                            getActivity().onBackPressed();
-                        }
-                    });
+                    postRepository.deletePost(post.getKey());
                 }
             });
-        }
-        else{
+        } else {
             postUpdateBtn.setVisibility(View.INVISIBLE);
             postDeleteBtn.setVisibility(View.INVISIBLE);
         }
