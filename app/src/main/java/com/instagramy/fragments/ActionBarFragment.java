@@ -2,7 +2,6 @@ package com.instagramy.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import com.instagramy.activities.MainActivity;
 public class ActionBarFragment extends Fragment {
 
     ActionBar actionBar;
-
     MainActivity mainActivity;
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -24,7 +22,7 @@ public class ActionBarFragment extends Fragment {
         mainActivity = ((MainActivity) getActivity());
         this.actionBar = mainActivity.getSupportActionBar();
 
-        mainActivity.setSelectedItemBottomNavigation(R.id.nav_settings);
+        mainActivity.getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_settings);
 
     }
 
@@ -47,6 +45,6 @@ public class ActionBarFragment extends Fragment {
     }
 
     public void setSelectedItem(int itemId) {
-        mainActivity.setSelectedItemBottomNavigation(itemId);
+        mainActivity.getBottomNavigationHelper().setSelectedItemBottomNavigation(itemId);
     }
 }

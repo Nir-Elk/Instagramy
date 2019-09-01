@@ -24,6 +24,6 @@ public class MainFragment extends RecycleViewFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         super.setTitle("Instagramy");
-        ((MainActivity) getActivity()).setSelectedItemBottomNavigation(R.id.nav_home);
+        ((MainActivity) getActivity()).getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_home);
     }
 }

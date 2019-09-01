@@ -97,7 +97,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimaryDark"
         android:text="Back"
+        android:textColor="@color/colorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
