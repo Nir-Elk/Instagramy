@@ -45,5 +45,4 @@ public class RepositoryManager {
     public AuthRepository getAuthRepository() {
         return this.authRepository;
     }
-
 }

@@ -11,15 +11,14 @@ import com.instagramy.models.Favorite;
 
 @Database(entities = {Favorite.class}, version = 16)
 public abstract class FavoritesDatabase extends RoomDatabase {
-
-    public final static String LINK_DATA_BASE_NAME = "links.db";
+    private final static String DB_NAME = "links.db";
 
     private static FavoritesDatabase INSTANCE;
 
     public static FavoritesDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE =
-                    Room.databaseBuilder(context, FavoritesDatabase.class, LINK_DATA_BASE_NAME)
+                    Room.databaseBuilder(context, FavoritesDatabase.class, DB_NAME)
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .build();
@@ -30,9 +29,4 @@ public abstract class FavoritesDatabase extends RoomDatabase {
     }
 
     public abstract FavoriteDao linkDao();
-
-    public static void destroyInstance() {
-        INSTANCE = null;
-    }
-
 }
