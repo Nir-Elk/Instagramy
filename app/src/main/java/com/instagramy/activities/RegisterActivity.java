@@ -82,10 +82,11 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 regBtn.setVisibility(View.INVISIBLE);
-                userName.setFocusable(false);
-                userEmail.setFocusable(false);
-                userPassword.setFocusable(false);
-                userRePassword.setFocusable(false);
+                userName.setEnabled(false);
+                userEmail.setEnabled(false);
+                userPassword.setEnabled(false);
+                userRePassword.setEnabled(false);
+                userPhoto.setEnabled(false);
                 loadingProgress.setVisibility(View.VISIBLE);
 
                 final String email = userEmail.getText().toString();
@@ -96,10 +97,11 @@ public class RegisterActivity extends AppCompatActivity {
                 if (email.isEmpty() || name.isEmpty() || pass.isEmpty() || !pass.equals(repass) || pickedImgUri == null) {
                     showMessage("Please Verify all fields");
                     regBtn.setVisibility(View.VISIBLE);
-                    userName.setFocusable(true);
-                    userEmail.setFocusable(true);
-                    userPassword.setFocusable(true);
-                    userRePassword.setFocusable(true);
+                    userName.setEnabled(true);
+                    userEmail.setEnabled(true);
+                    userPassword.setEnabled(true);
+                    userRePassword.setEnabled(true);
+                    userPhoto.setEnabled(true);
                     loadingProgress.setVisibility(View.INVISIBLE);
                 } else {
                     CreateUserAccount(email, name, pass);

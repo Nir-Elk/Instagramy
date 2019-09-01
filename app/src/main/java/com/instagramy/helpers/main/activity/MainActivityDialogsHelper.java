@@ -131,8 +131,8 @@ public class MainActivityDialogsHelper {
             @Override
             public void onClick(View v) {
                 popupAddBtn.setVisibility(View.INVISIBLE);
-                popupTitle.setFocusable(false);
-                popupDescription.setFocusable(false);
+                popupTitle.setEnabled(false);
+                popupDescription.setEnabled(false);
                 popupClickProgress.setVisibility(View.VISIBLE);
 
                 // we need to test all input fields
@@ -179,8 +179,8 @@ public class MainActivityDialogsHelper {
                                     mainActivity.showMessage(e.getMessage());
                                     popupAddBtn.setVisibility(View.VISIBLE);
                                     popupClickProgress.setVisibility(View.INVISIBLE);
-                                    popupTitle.setFocusable(true);
-                                    popupDescription.setFocusable(true);
+                                    popupTitle.setEnabled(true);
+                                    popupDescription.setEnabled(true);
                                 }
                             });
                         }
@@ -189,8 +189,8 @@ public class MainActivityDialogsHelper {
                     mainActivity.showMessage("Please verify all input and choose post image");
                     popupAddBtn.setVisibility(View.VISIBLE);
                     popupClickProgress.setVisibility(View.INVISIBLE);
-                    popupTitle.setFocusable(true);
-                    popupDescription.setFocusable(true);
+                    popupTitle.setEnabled(true);
+                    popupDescription.setEnabled(true);
                 }
             }
 
