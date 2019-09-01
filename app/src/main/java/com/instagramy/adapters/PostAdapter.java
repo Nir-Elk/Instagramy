@@ -26,13 +26,12 @@ import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
-import com.instagramy.models.Link;
+import com.instagramy.models.Favorite;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
-import com.instagramy.view.models.LinkListViewModel;
+import com.instagramy.view.models.FavoritesViewModel;
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +40,7 @@ import java.util.Set;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
     private Context mContext;
     private List<Post> mData;
-    public LinkListViewModel linkListViewModel;
+    public FavoritesViewModel favoritesViewModel;
     Set<String> favorites = new HashSet<>();
     public List<Post> getmData() {
         return mData;
@@ -50,19 +49,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private AuthRepository authRepository;
     private PostRepository postRepository;
 
-    public PostAdapter(Context mContext, List<Post> mData, LinkListViewModel linkListViewModel) {
+    public PostAdapter(Context mContext, List<Post> mData, FavoritesViewModel favoritesViewModel) {
         this.mContext = mContext;
         this.mData = mData;
-        this.linkListViewModel = linkListViewModel;
+        this.favoritesViewModel = favoritesViewModel;
         this.postRepository = RepositoryManager.getInstance().getPostRepository();
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
 
-        linkListViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Link>>() {
+        favoritesViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Favorite>>() {
             @Override
-            public void onChanged(List<Link> links) {
-                favorites = new HashSet<>();
-                for (Link link : links) {
-                    favorites.add(link.getPostId());
+            public void onChanged(List<Favorite> favorites) {
+                PostAdapter.this.favorites = new HashSet<>();
+                for (Favorite favorite : favorites) {
+                    PostAdapter.this.favorites.add(favorite.getPostId());
                 }
             }
         });
@@ -80,22 +79,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return mData.get(position).alreadyYummi(email);
     }
 
-    private void addToUserSavedPosts(Link link) {
-        if (userAlreadySavedThisPost(link)) {
-            linkListViewModel.delete(link);
-            favorites.remove(link.getPostId());
+    private void addToUserSavedPosts(Favorite favorite) {
+        if (userAlreadySavedThisPost(favorite)) {
+            favoritesViewModel.delete(favorite);
+            favorites.remove(favorite.getPostId());
             showMessage("Removed from your manches!");
         } else {
-            linkListViewModel.insert(link);
-            favorites.add(link.getPostId());
+            favoritesViewModel.insert(favorite);
+            favorites.add(favorite.getPostId());
             showMessage("Added to your manches!");
         }
 
         this.notifyDataSetChanged();
     }
 
-    private boolean userAlreadySavedThisPost(Link link) {
-        return favorites.contains(link.getPostId());
+    private boolean userAlreadySavedThisPost(Favorite favorite) {
+        return favorites.contains(favorite.getPostId());
     }
 
     @Override
@@ -150,13 +149,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postTitle.setOnClickListener(toPostClickListener);
         holder.postImage.setOnClickListener(toPostClickListener);
 
-        final Link link = new Link(mData.get(position).getKey(), mData.get(position).getPicture());
-        holder.postFavoriteBtn.setImageResource(userAlreadySavedThisPost(link) ? R.drawable.ic_favorite_svgrepo_com : R.drawable.ic_favorite_dark);
+        final Favorite favorite = new Favorite(mData.get(position).getKey());
+        holder.postFavoriteBtn.setImageResource(userAlreadySavedThisPost(favorite) ? R.drawable.ic_favorite_svgrepo_com : R.drawable.ic_favorite_dark);
 
         holder.postFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToUserSavedPosts(link);
+                addToUserSavedPosts(favorite);
             }
         });
 
@@ -165,9 +164,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
 
         final NavGraphDirections.ActionGlobalMapFragment mapAction = MainFragmentDirections.actionGlobalMapFragment();
-        PostsList postsList = new PostsList();
-        postsList.add(mData.get(position));
-        mapAction.setPosts(postsList);
+        Post.PostList postList = new Post.PostList();
+        postList.add(mData.get(position));
+        mapAction.setPosts(postList);
         holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
 
     }

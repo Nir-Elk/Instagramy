@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
 import com.instagramy.view.models.PostListViewModel;
 
 
@@ -25,7 +24,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     private GoogleMap googleMap;
     PostListViewModel postListViewModel;
-    PostsList posts;
+    Post.PostList posts;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -36,9 +35,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         this.posts = MapFragmentArgs.fromBundle(getArguments()).getPosts();
 
         if (posts == null || posts.size() == 0) {
-            postListViewModel.getLiveData().observe(this, new Observer<PostsList>() {
+            postListViewModel.getLiveData().observe(this, new Observer<Post.PostList>() {
                 @Override
-                public void onChanged(PostsList anotherPosts) {
+                public void onChanged(Post.PostList anotherPosts) {
                     posts = anotherPosts;
                     if (googleMap != null) {
                         redrawMap();

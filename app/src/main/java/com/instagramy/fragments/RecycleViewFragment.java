@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,10 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.adapters.PostAdapter;
-import com.instagramy.models.Link;
+import com.instagramy.models.Favorite;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
-import com.instagramy.view.models.LinkListViewModel;
+import com.instagramy.view.models.FavoritesViewModel;
 import com.instagramy.view.models.PostListViewModel;
 
 import java.util.HashSet;
@@ -27,10 +27,11 @@ import java.util.Set;
 
 public class RecycleViewFragment extends ActionBarFragment {
     private PostListViewModel postListViewModel;
+    private FavoritesViewModel favoritesViewModel;
+
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private LinkListViewModel linkListViewModel;
     static Set<String> favorites = new HashSet<>();
 
     public RecycleViewFragment() {
@@ -40,6 +41,7 @@ public class RecycleViewFragment extends ActionBarFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.postListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
+        this.favoritesViewModel = FavoritesViewModel.getInstance((AppCompatActivity) getActivity());
     }
 
     @Override
@@ -61,24 +63,20 @@ public class RecycleViewFragment extends ActionBarFragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         postRecyclerView.setLayoutManager(linearLayoutManager);
         postRecyclerView.setHasFixedSize(true);
-        linkListViewModel = LinkListViewModel.getInstance((MainActivity) getActivity());
+        favoritesViewModel = FavoritesViewModel.getInstance((MainActivity) getActivity());
         return view;
     }
 
-    private void connectPostAdapter(List<Post> postList) {
-        postAdapter = new PostAdapter(getActivity(), postList, LinkListViewModel.getInstance((MainActivity) getActivity()));
+    private void generateAdapter(List<Post> postList) {
+        postAdapter = new PostAdapter(getActivity(), postList, FavoritesViewModel.getInstance((MainActivity) getActivity()));
         postRecyclerView.setAdapter(postAdapter);
         postAdapter.notifyDataSetChanged();
-    }
-
-    private void updateUserFavoritesLinks() {
-        linkListViewModel.getAllLinks().observe(getActivity(), new Observer<List<Link>>() {
+        this.favoritesViewModel.getAllLinks().removeObservers(this);
+        this.favoritesViewModel.getAllLinks().observe(this, new Observer<List<Favorite>>() {
             @Override
-            public void onChanged(List<Link> links) {
-                favorites = new HashSet<>();
-                for (Link link : links) {
-                    favorites.add(link.getPostId());
-                }
+            public void onChanged(List<Favorite> favorites) {
+                RecycleViewFragment.favorites = convertToLiteWeigtSet(favorites);
+                postAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -86,18 +84,25 @@ public class RecycleViewFragment extends ActionBarFragment {
     @Override
     public void onStart() {
         super.onStart();
-        this.postListViewModel.getLiveData().observe(this, new Observer<PostsList>() {
+        this.postListViewModel.getLiveData().observe(this, new Observer<Post.PostList>() {
             @Override
-            public void onChanged(PostsList posts) {
-                PostsList filtered = new PostsList();
+            public void onChanged(Post.PostList posts) {
+                Post.PostList filtered = new Post.PostList();
                 for (Post post : posts) {
                     if (filter(post)) {
                         filtered.add(post);
                     }
                 }
-                connectPostAdapter(filtered);
-                updateUserFavoritesLinks();
+                generateAdapter(filtered);
             }
         });
+    }
+
+    Set<String> convertToLiteWeigtSet(List<Favorite> favoriteList) {
+        HashSet<String> result = new HashSet<>();
+        for (Favorite favorite : favoriteList) {
+            result.add(favorite.getPostId());
+        }
+        return result;
     }
 }

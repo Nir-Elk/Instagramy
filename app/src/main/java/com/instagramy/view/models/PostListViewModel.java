@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.instagramy.models.PostsList;
+import com.instagramy.models.Post;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
 
@@ -17,14 +17,14 @@ public class PostListViewModel extends ViewModel {
         this.postListLiveData = new PostListLiveData();
     }
 
-    public LiveData<PostsList> getLiveData() {
+    public LiveData<Post.PostList> getLiveData() {
         return postListLiveData;
     }
 
-    class PostListLiveData extends MutableLiveData<PostsList> {
+    class PostListLiveData extends MutableLiveData<Post.PostList> {
 
         PostListLiveData() {
-            setValue(new PostsList());
+            setValue(new Post.PostList());
         }
 
         @Override
@@ -33,7 +33,7 @@ public class PostListViewModel extends ViewModel {
 
             postRepository.getPosts(new PostRepository.GetAllPostsListener() {
                 @Override
-                public void onSuccsess(PostsList posts) {
+                public void onSuccsess(Post.PostList posts) {
                     setValue(posts);
                 }
             });

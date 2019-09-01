@@ -148,8 +148,8 @@
         android:name="com.instagramy.fragments.MapFragment"
         android:label="MapFragment" >
         <argument
-            android:name="Posts"
-            app:argType="com.instagramy.models.PostsList"
+            android:name="posts"
+            app:argType="com.instagramy.models.Post$PostList"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

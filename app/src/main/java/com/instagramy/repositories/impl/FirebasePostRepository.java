@@ -12,7 +12,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
 import com.instagramy.repositories.PostRepository;
 
 import java.util.List;
@@ -49,7 +48,7 @@ public class FirebasePostRepository implements PostRepository {
         databasePostsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                PostsList postList = new PostsList();
+                Post.PostList postList = new Post.PostList();
                 for (DataSnapshot postDataSnapshot : dataSnapshot.getChildren()) {
                     try {
                         postList.add(postDataSnapshot.getValue(Post.class));

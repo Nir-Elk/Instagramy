@@ -29,7 +29,6 @@ import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Post;
-import com.instagramy.models.PostsList;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
@@ -172,9 +171,9 @@ public class PostFragment extends Fragment {
 
 
         final NavGraphDirections.ActionGlobalMapFragment mapAction = PostFragmentDirections.actionGlobalMapFragment();
-        PostsList postsList = new PostsList();
-        postsList.add(post);
-        mapAction.setPosts(postsList);
+        Post.PostList postList = new Post.PostList();
+        postList.add(post);
+        mapAction.setPosts(postList);
         postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
         final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
         postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));

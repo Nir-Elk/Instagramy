@@ -1,4 +1,4 @@
-package com.instagramy.utils;
+package com.instagramy.services;
 
 import android.content.Context;
 
@@ -6,22 +6,20 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.instagramy.dao.LinkDao;
-import com.instagramy.models.Link;
+import com.instagramy.dao.FavoriteDao;
+import com.instagramy.models.Favorite;
 
-@Database(entities = {Link.class}, version = 105)
-public abstract class LinkDataBase extends RoomDatabase {
+@Database(entities = {Favorite.class}, version = 15)
+public abstract class FavoritesDataBase extends RoomDatabase {
 
     public final static String LINK_DATA_BASE_NAME = "links.db";
 
-    public abstract LinkDao linkDao();
+    private static FavoritesDataBase INSTANCE;
 
-    private static LinkDataBase INSTANCE;
-
-    public static LinkDataBase getDatabase(Context context) {
+    public static FavoritesDataBase getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE =
-                    Room.databaseBuilder(context, LinkDataBase.class, LINK_DATA_BASE_NAME)
+                    Room.databaseBuilder(context, FavoritesDataBase.class, LINK_DATA_BASE_NAME)
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .build();
@@ -30,6 +28,8 @@ public abstract class LinkDataBase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract FavoriteDao linkDao();
 
     public static void destroyInstance() {
         INSTANCE = null;

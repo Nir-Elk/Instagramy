@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.instagramy.repositories.impl.FirebaseAuthRepository;
 import com.instagramy.repositories.impl.FirebasePostRepository;
 import com.instagramy.repositories.impl.FirebaseProfileRepository;
-import com.instagramy.repositories.impl.SqlLiteLinkRepository;
+import com.instagramy.repositories.impl.SqlLiteFavoriteRepository;
 import com.instagramy.services.Firebase;
 
 public class RepositoryManager {
@@ -30,8 +30,8 @@ public class RepositoryManager {
         return instance;
     }
 
-    public LinkRepository getLinkRepository(AppCompatActivity activity) {
-        return new SqlLiteLinkRepository(activity);
+    public FavoriteRepository getLinkRepository(AppCompatActivity activity) {
+        return new SqlLiteFavoriteRepository(activity);
     }
 
     public ProfileRepository getProfileRepository() {
