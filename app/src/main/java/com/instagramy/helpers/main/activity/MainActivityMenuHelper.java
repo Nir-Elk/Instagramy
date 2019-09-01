@@ -40,12 +40,17 @@ public class MainActivityMenuHelper {
                 navigate(R.id.favoritesFragment);
                 break;
 
+            case R.id.menu_settings:
+                navigate(R.id.settingsFragment);
+                break;
+
             case R.id.menu_logout:
                 authRepository.signOut();
                 Intent logginActivity = new Intent(mainActivity, LoginActivity.class);
                 mainActivity.startActivity(logginActivity);
                 mainActivity.finish();
                 break;
+
             default:
                 break;
 
@@ -70,7 +75,7 @@ public class MainActivityMenuHelper {
     }
 
 
-    public void initBottomBarClickListeners() {
+    private void initBottomBarClickListeners() {
 
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
             @Override
