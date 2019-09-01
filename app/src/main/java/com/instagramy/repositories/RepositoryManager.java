@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.instagramy.repositories.impl.FirebaseAuthRepository;
 import com.instagramy.repositories.impl.FirebasePostRepository;
 import com.instagramy.repositories.impl.FirebaseProfileRepository;
+import com.instagramy.repositories.impl.SqlLiteDrawableRepository;
 import com.instagramy.repositories.impl.SqlLiteFavoriteRepository;
 import com.instagramy.services.FirebaseService;
 
@@ -15,7 +16,6 @@ public class RepositoryManager {
     private ProfileRepository profileRepository;
     private PostRepository postRepository;
     private AuthRepository authRepository;
-
     private RepositoryManager() {
         FirebaseService firebaseService = FirebaseService.getInstance();
         this.profileRepository = new FirebaseProfileRepository(firebaseService.getDatabaseUsersReference(), firebaseService.getStorageUsersPhotosReference());
@@ -30,7 +30,7 @@ public class RepositoryManager {
         return instance;
     }
 
-    public FavoriteRepository getLinkRepository(AppCompatActivity activity) {
+    public FavoriteRepository getFavoriteRepository(AppCompatActivity activity) {
         return new SqlLiteFavoriteRepository(activity);
     }
 
@@ -44,5 +44,9 @@ public class RepositoryManager {
 
     public AuthRepository getAuthRepository() {
         return this.authRepository;
+    }
+
+    public DrawableRepository getDrawableRepository(AppCompatActivity activity) {
+        return new SqlLiteDrawableRepository(activity);
     }
 }

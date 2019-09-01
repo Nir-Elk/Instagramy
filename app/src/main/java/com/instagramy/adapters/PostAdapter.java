@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,9 +27,11 @@ import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.fragments.MainFragmentDirections;
+import com.instagramy.models.DrawableResource;
 import com.instagramy.models.Favorite;
 import com.instagramy.models.Post;
 import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.DrawableRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
 import com.instagramy.view.models.FavoritesViewModel;
@@ -41,6 +44,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private Context mContext;
     private List<Post> mData;
     public FavoritesViewModel favoritesViewModel;
+    public DrawableRepository drawableRepository;
+    AppCompatActivity activity;
     Set<String> favorites = new HashSet<>();
     public List<Post> getmData() {
         return mData;
@@ -49,14 +54,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private AuthRepository authRepository;
     private PostRepository postRepository;
 
-    public PostAdapter(Context mContext, List<Post> mData, FavoritesViewModel favoritesViewModel) {
+    public PostAdapter(Context mContext, List<Post> mData) {
         this.mContext = mContext;
+        this.activity = (MainActivity) mContext;
         this.mData = mData;
-        this.favoritesViewModel = favoritesViewModel;
+        this.favoritesViewModel = FavoritesViewModel.getInstance(activity);
         this.postRepository = RepositoryManager.getInstance().getPostRepository();
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
-
-        favoritesViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Favorite>>() {
+        this.drawableRepository = RepositoryManager.getInstance().getDrawableRepository(activity);
+        favoritesViewModel.getAllLinks().observe(activity, new Observer<List<Favorite>>() {
             @Override
             public void onChanged(List<Favorite> favorites) {
                 PostAdapter.this.favorites = new HashSet<>();
@@ -111,23 +117,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
         holder.postImageProgressBar.setVisibility(View.VISIBLE);
         holder.postImageErrorMessage.setVisibility(View.INVISIBLE);
-        Glide.with(mContext)
-                .load(mData.get(position).getPicture())
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        holder.postImageProgressBar.setVisibility(View.GONE);
-                        holder.postImageErrorMessage.setVisibility(View.VISIBLE);
-                        return false;
-                    }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.postImageProgressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.postImage);
+        final String pictureUrl = mData.get(position).getPicture();
+
+        DrawableResource fromCash = drawableRepository.getDrawableResource(pictureUrl.hashCode());
+
+        if (fromCash == null) {
+            Glide.with(mContext)
+                    .load(pictureUrl)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            holder.postImageProgressBar.setVisibility(View.GONE);
+                            holder.postImageErrorMessage.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            holder.postImageProgressBar.setVisibility(View.GONE);
+                            drawableRepository.insertDrawable(new DrawableResource(pictureUrl.hashCode(), resource));
+                            return false;
+                        }
+                    })
+                    .into(holder.postImage);
+        } else {
+            //holder.postImageProgressBar.setVisibility(View.GONE);
+            holder.postImage.setImageDrawable(fromCash.getDrawable());
+        }
 
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override

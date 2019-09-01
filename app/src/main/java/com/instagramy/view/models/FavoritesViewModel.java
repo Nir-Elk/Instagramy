@@ -19,7 +19,7 @@ public class FavoritesViewModel extends ViewModel {
     }
 
     public static FavoritesViewModel getInstance(AppCompatActivity activity) {
-        favoriteRepository = RepositoryManager.getInstance().getLinkRepository(activity);
+        favoriteRepository = RepositoryManager.getInstance().getFavoriteRepository(activity);
         linkListLiveData = favoriteRepository.getAllLinks();
         return ViewModelProviders.of(activity).get(FavoritesViewModel.class);
     }

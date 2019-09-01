@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
@@ -29,10 +30,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
+import com.instagramy.models.Favorite;
 import com.instagramy.models.Post;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
+import com.instagramy.utils.HashSets;
+import com.instagramy.view.models.FavoritesViewModel;
+
+import java.util.List;
 
 public class PostFragment extends Fragment {
     private PostRepository postRepository;
@@ -44,6 +50,7 @@ public class PostFragment extends Fragment {
     private Post post;
     private String postId;
     private MainActivity mainActivity;
+    FavoritesViewModel favoritesViewModel;
 
     public PostFragment() {
         // Required empty public constructor
@@ -56,6 +63,7 @@ public class PostFragment extends Fragment {
         this.postRepository = RepositoryManager.getInstance().getPostRepository();
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
         postId = PostFragmentArgs.fromBundle(getArguments()).getPostId();
+        this.favoritesViewModel = FavoritesViewModel.getInstance(mainActivity);
     }
 
     @Override
@@ -63,7 +71,6 @@ public class PostFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_post, container, false);
-
 
         postTitle = view.findViewById(R.id.post_title);
         postDescription = view.findViewById(R.id.post_description);
@@ -91,6 +98,34 @@ public class PostFragment extends Fragment {
             }
         });
 
+        favoritesViewModel.getAllLinks().observe(mainActivity, new Observer<List<Favorite>>() {
+            @Override
+            public void onChanged(List<Favorite> favorites) {
+
+                View.OnClickListener clickListener;
+                int imageResoucse;
+                if (HashSets.convertToLiteWeigtSet(favorites).contains(postId)) {
+                    imageResoucse = R.drawable.ic_favorite_svgrepo_com;
+                    clickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            favoritesViewModel.delete(new Favorite(postId));
+                        }
+                    };
+                } else {
+                    imageResoucse = R.drawable.ic_favorite_dark;
+                    clickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            favoritesViewModel.insert(new Favorite(postId));
+                        }
+                    };
+                }
+
+                postFavoriteBtn.setImageResource(imageResoucse);
+                postFavoriteBtn.setOnClickListener(clickListener);
+            }
+        });
         return view;
     }
 

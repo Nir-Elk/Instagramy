@@ -1,6 +1,5 @@
 package com.instagramy.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -18,5 +17,5 @@ public interface DrawableDao {
     void deleteDrawableResource(DrawableResource drawableResource);
 
     @Query("SELECT * FROM DrawableResource WHERE `key` =:key")
-    LiveData<DrawableResource> getDrawableResource(int key);
+    DrawableResource getDrawableResource(int key);
 }

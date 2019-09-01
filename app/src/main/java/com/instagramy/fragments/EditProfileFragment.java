@@ -91,7 +91,6 @@ public class EditProfileFragment extends ActionBarFragment {
         return fragmentView;
     }
 
-
     private void updateView(View fragmentView) {
         emailProfile.setText(profile.getEmail());
         nameProfile.setText(profile.getName());

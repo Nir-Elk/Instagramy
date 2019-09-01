@@ -27,10 +27,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import static com.instagramy.utils.HashSets.convertToLiteWeigtSet;
+
 public class RecycleViewFragment extends ActionBarFragment {
     private PostListViewModel postListViewModel;
     private FavoritesViewModel favoritesViewModel;
-
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -70,9 +71,8 @@ public class RecycleViewFragment extends ActionBarFragment {
     }
 
     private void generateAdapter(List<Post> postList) {
-        postAdapter = new PostAdapter(getActivity(), postList, FavoritesViewModel.getInstance((MainActivity) getActivity()));
+        postAdapter = new PostAdapter(getActivity(), postList);
         postRecyclerView.setAdapter(postAdapter);
-        this.favoritesViewModel.getAllLinks().removeObservers(this);
         this.favoritesViewModel.getAllLinks().observe(this, new Observer<List<Favorite>>() {
             @Override
             public void onChanged(List<Favorite> favorites) {
@@ -81,7 +81,6 @@ public class RecycleViewFragment extends ActionBarFragment {
             }
         });
     }
-
 
     @Override
     public void onStart() {
@@ -102,11 +101,4 @@ public class RecycleViewFragment extends ActionBarFragment {
         });
     }
 
-    Set<String> convertToLiteWeigtSet(List<Favorite> favoriteList) {
-        HashSet<String> result = new HashSet<>();
-        for (Favorite favorite : favoriteList) {
-            result.add(favorite.getPostId());
-        }
-        return result;
-    }
 }

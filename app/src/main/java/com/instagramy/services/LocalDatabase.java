@@ -8,20 +8,21 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.instagramy.dao.DrawableDao;
+import com.instagramy.dao.FavoriteDao;
 import com.instagramy.models.DrawableResource;
+import com.instagramy.models.Favorite;
 
-@Database(entities = {DrawableResource.class}, version = 1)
+@Database(entities = {Favorite.class, DrawableResource.class}, version = 1)
 @TypeConverters({DrawableResource.Converters.class})
-public abstract class DrawableDatabase extends RoomDatabase {
-    public final static String DRAWABLE_DB_NAME = "links.db";
-    private final static String DB_NAME = "links.db";
+public abstract class LocalDatabase extends RoomDatabase {
+    private final static String DB_NAME = "local.db";
 
-    private static DrawableDatabase INSTANCE;
+    private static LocalDatabase INSTANCE;
 
-    public static DrawableDatabase getDatabase(Context context) {
+    public static LocalDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE =
-                    Room.databaseBuilder(context, DrawableDatabase.class, DB_NAME)
+                    Room.databaseBuilder(context, LocalDatabase.class, DB_NAME)
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .build();
@@ -30,6 +31,8 @@ public abstract class DrawableDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract FavoriteDao linkDao();
 
     public abstract DrawableDao drawableDao();
 }
