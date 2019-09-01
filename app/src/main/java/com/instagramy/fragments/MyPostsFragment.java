@@ -27,6 +27,6 @@ public class MyPostsFragment extends RecycleViewFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         super.setTitle("My Posts");
-        ((MainActivity) getActivity()).setSelectedItemBottomNavigation(R.id.nav_my_posts);
+        ((MainActivity) getActivity()).getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_my_posts);
     }
 }

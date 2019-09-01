@@ -26,7 +26,7 @@ public class FavoritesFragment extends RecycleViewFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         super.setTitle("My Manches!");
-        ((MainActivity) getActivity()).setSelectedItemBottomNavigation(R.id.nav_favorites);
+        ((MainActivity) getActivity()).getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_favorites);
     }
 
 }

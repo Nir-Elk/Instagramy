@@ -16,11 +16,12 @@ public class SplashActivity extends AppCompatActivity {
     private static int SPLASH_TIME = 500; //This is 0.5 seconds
     private AppCompatActivity thisActivity = SplashActivity.this;
     private Intent intent;
-    private Firebase firebase = Firebase.getInstance();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Firebase.getInstance(); // Open communicate as soon as possible
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         getSupportActionBar().hide();

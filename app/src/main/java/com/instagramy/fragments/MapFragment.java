@@ -66,7 +66,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         MainActivity activity = (MainActivity) getActivity();
-        activity.setSelectedItemBottomNavigation(R.id.nav_map);
+        activity.getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_map);
         super.getMapAsync(this);
 
     }
