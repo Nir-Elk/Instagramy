@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +25,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -41,6 +45,7 @@ public class EditPostFragment extends Fragment {
     private TextView postImageErrorMessage;
     private ImageView postImage;
     private ProgressBar postImageProgressBar;
+    private Button postUpdateBtn;
     private View view;
     private Post post;
     private String postId;
@@ -67,6 +72,7 @@ public class EditPostFragment extends Fragment {
         postDescription = view.findViewById(R.id.post_edit_description);
         postImage = view.findViewById(R.id.post_edit_img);
         postImageProgressBar = view.findViewById(R.id.post_edit_progressBar);
+        postUpdateBtn = view.findViewById(R.id.post_edit_update);
 
         postRepository.getPost(postId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -129,7 +135,49 @@ public class EditPostFragment extends Fragment {
 
 
 
+        postUpdateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean ispostUpdated = false;
+                if (!postTitle.getText().toString().equals(post.getTitle())) {
+                    if (postTitle.getText().toString().length() > 0) {
+                        post.setTitle(postTitle.getText().toString());
+                        ispostUpdated = true;
+                    } else {
+                        toast("Please select a valid title");
+                    }
+                }
+                if (!postDescription.getText().toString().equals(post.getDescription())) {
+                    if (postDescription.getText().toString().length() > 0) {
+                        post.setDescription(postDescription.getText().toString());
+                        ispostUpdated = true;
+                    } else {
+                        toast("Please select a valid title");
+                    }
+                }
+
+                postTitle.setText(post.getTitle());
+                postDescription.setText(post.getDescription());
+
+                if (ispostUpdated) {
+                    postRepository.addPost(post).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            toast("Post has been updated");
+                            getActivity().onBackPressed();
+                        }
+                    });
+                } else {
+                    toast("Nothing to update.");
+                }
+            }
+        });
 
     }
 
+
+    private void toast(String msg) {
+        Toast.makeText(getActivity().getApplicationContext(), msg, Toast.LENGTH_LONG)
+                .show();
+    }
 }
