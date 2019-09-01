@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,9 +22,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.github.chrisbanes.photoview.PhotoView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
@@ -37,6 +33,7 @@ import com.instagramy.models.PostsList;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
+import com.instagramy.repositories.StorageRepository;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,12 +44,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private List<Post> mData;
     public LinkListViewModel linkListViewModel;
     Set<String> favorites = new HashSet<>();
+
     public List<Post> getmData() {
         return mData;
     }
 
     private AuthRepository authRepository;
     private PostRepository postRepository;
+    private StorageRepository storageRepository;
 
     public PostAdapter(Context mContext, List<Post> mData, LinkListViewModel linkListViewModel) {
         this.mContext = mContext;
@@ -60,6 +59,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         this.linkListViewModel = linkListViewModel;
         this.postRepository = RepositoryManager.getInstance().getPostRepository();
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
+        this.storageRepository = RepositoryManager.getInstance().getStorageRepository();
 
         linkListViewModel.getAllLinks().observe((MainActivity) mContext, new Observer<List<Link>>() {
             @Override
@@ -94,7 +94,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             favorites.add(link.getPostId());
             showMessage("Added to your manches!");
         }
-
         this.notifyDataSetChanged();
     }
 
@@ -116,6 +115,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
         holder.postImageProgressBar.setVisibility(View.VISIBLE);
         holder.postImageErrorMessage.setVisibility(View.INVISIBLE);
+
+
+        // TODO: -----------------------------
+
+
+//        storageRepository.
+
+
+        // -----------------------------------
         Glide.with(mContext)
                 .load(mData.get(position).getPicture())
                 .listener(new RequestListener<Drawable>() {

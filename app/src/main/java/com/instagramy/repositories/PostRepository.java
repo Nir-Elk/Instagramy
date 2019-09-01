@@ -27,4 +27,5 @@ public interface PostRepository {
 
     Task getDownloadPhotoUrl(String path);
 
+    void deleteAllPostsByUserKey(String key);
 }

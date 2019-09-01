@@ -9,12 +9,17 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.instagramy.R;
+import com.instagramy.activities.LoginActivity;
 import com.instagramy.activities.MainActivity;
+import com.instagramy.repositories.RepositoryManager;
 
 import static com.instagramy.constants.MainActivityConstants.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 import static com.instagramy.constants.MainActivityConstants.REQUEST_IMAGE_CAPTURE;
@@ -117,5 +122,20 @@ public class MainActivityController {
 
     public void navHostFragmentNavigate(int fragmentId) {
         Navigation.findNavController(mainActivity.findViewById(R.id.nav_host_fragment)).navigate(fragmentId);
+    }
+
+    public void deleteCurrentUser() {
+        RepositoryManager manager = RepositoryManager.getInstance();
+        String key = manager.getAuthRepository().getCurrentUser().getDisplayName();
+        manager.getProfileRepository().deleteUser(key);
+        manager.getPostRepository().deleteAllPostsByUserKey(key);
+        manager.getAuthRepository().delete().addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                Intent logginActivity = new Intent(mainActivity, LoginActivity.class);
+                mainActivity.startActivity(logginActivity);
+                mainActivity.finish();
+            }
+        });
     }
 }

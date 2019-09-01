@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
+import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Profile;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.ProfileRepository;
@@ -37,7 +38,7 @@ public class EditProfileFragment extends ActionBarFragment {
     private TextView emailProfile;
     private EditText nameProfile, passProfile, rePassProfile;
     private ImageView userImage;
-    private Button updatebtn;
+    private Button updateBtn, deleteBtn;
     private ProfileRepository profileRepository;
     private AuthRepository authRepository;
 
@@ -60,7 +61,8 @@ public class EditProfileFragment extends ActionBarFragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 profile = dataSnapshot.getValue(Profile.class);
-                updateView(fragmentView);
+                if(profile != null)
+                    updateView(fragmentView);
             }
 
             @Override
@@ -72,10 +74,10 @@ public class EditProfileFragment extends ActionBarFragment {
         nameProfile = fragmentView.findViewById(R.id.user_name_profile);
         passProfile = fragmentView.findViewById(R.id.user_pass_profile);
         rePassProfile = fragmentView.findViewById(R.id.user_repass_profile);
-        updatebtn = fragmentView.findViewById(R.id.user_update_profile_btn);
+        updateBtn = fragmentView.findViewById(R.id.user_update_profile_btn);
         userProgressBar = fragmentView.findViewById(R.id.user_progressBar_profile);
         userImage = fragmentView.findViewById(R.id.user_img_profile);
-
+        deleteBtn = fragmentView.findViewById(R.id.user_delete_profile_btn);
         return fragmentView;
     }
 
@@ -102,7 +104,14 @@ public class EditProfileFragment extends ActionBarFragment {
             }
         }).apply(RequestOptions.circleCropTransform()).into(userImage);
 
-        updatebtn.setOnClickListener(new View.OnClickListener() {
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).getDialogsHelper().getDeleteProfile().show();
+            }
+        });
+
+        updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isProfileUpdated = false;
@@ -110,7 +119,6 @@ public class EditProfileFragment extends ActionBarFragment {
 
                     if (rePassProfile.getText().toString().isEmpty()) {
                         toast("Please Re enter password");
-
                     }
 
                     if (passProfile.getText().toString().equals(rePassProfile.getText().toString()) && passProfile.getText().toString().length() > 5) {
@@ -148,4 +156,5 @@ public class EditProfileFragment extends ActionBarFragment {
         Toast.makeText(getActivity().getApplicationContext(), msg, Toast.LENGTH_LONG)
                 .show();
     }
+
 }

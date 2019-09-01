@@ -9,6 +9,8 @@ public interface AuthRepository {
 
     void signOut();
 
+    Task delete();
+
     Task createUserAuth(String email, String pass);
 
     Task updateUserAuthKey(String key);

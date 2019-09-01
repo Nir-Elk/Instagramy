@@ -36,6 +36,7 @@ public class RecycleViewFragment extends ActionBarFragment {
     private LinkListViewModel linkListViewModel;
     static Set<String> favorites = new HashSet<>();
     private PostRepository postRepository;
+
     public RecycleViewFragment() {
     }
 
@@ -51,12 +52,11 @@ public class RecycleViewFragment extends ActionBarFragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         postRecyclerView = view.findViewById(R.id.postRV);
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -73,18 +73,12 @@ public class RecycleViewFragment extends ActionBarFragment {
         postRepository.getPosts().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Collections.reverse(postList);
-                int i = 0;
+                postList.clear();
                 for (DataSnapshot postsnap : dataSnapshot.getChildren()) {
                     try {
                         Post post = postsnap.getValue(Post.class);
                         if (filter(post)) {
-                            if (i > postList.size() - 1) {
-                                postList.add(post);
-                            } else {
-                                postList.set(i, post);
-                            }
-                            i++;
+                            postList.add(post);
                         }
                     } catch (Exception ignored) {
                     }

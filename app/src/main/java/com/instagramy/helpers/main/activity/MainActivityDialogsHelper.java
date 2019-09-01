@@ -34,12 +34,14 @@ import com.instagramy.utils.GPSLocation;
 public class MainActivityDialogsHelper {
     private Dialog popupAddPost;
     private Dialog popupChooseGalleryOrCamera;
+    private Dialog popupDeleteProfile;
     private ImageView popupPostImage, popupAddBtn;
     private TextView popupTitle, popupDescription;
     private ProgressBar popupClickProgress;
     private PostRepository postRepository;
     private AuthRepository authRepository;
     private ProfileRepository profileRepository;
+    private Button deleteProfileYesBtn, deleteProfileNoBtn;
 
     private MainActivity mainActivity;
     private Uri pickedImageUri;
@@ -65,6 +67,28 @@ public class MainActivityDialogsHelper {
     }
 
     public void initPopup() {
+
+        popupDeleteProfile = new Dialog(mainActivity);
+        popupDeleteProfile.setContentView(R.layout.popup_delete_profile);
+        popupDeleteProfile.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupDeleteProfile.getWindow().setLayout(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
+        popupDeleteProfile.getWindow().getAttributes().gravity = Gravity.CENTER_VERTICAL;
+        deleteProfileYesBtn = popupDeleteProfile.findViewById(R.id.delete_yes_btn);
+        deleteProfileNoBtn = popupDeleteProfile.findViewById(R.id.delete_no_btn);
+
+        deleteProfileYesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivity.getController().deleteCurrentUser();
+            }
+        });
+        deleteProfileNoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupDeleteProfile.dismiss();
+            }
+        });
+
 
         popupChooseGalleryOrCamera = new Dialog(mainActivity);
         popupChooseGalleryOrCamera.setContentView(R.layout.popup_choose_gallery_or_camera);
@@ -107,6 +131,8 @@ public class MainActivityDialogsHelper {
             @Override
             public void onClick(View v) {
                 popupAddBtn.setVisibility(View.INVISIBLE);
+                popupTitle.setFocusable(false);
+                popupDescription.setFocusable(false);
                 popupClickProgress.setVisibility(View.VISIBLE);
 
                 // we need to test all input fields
@@ -153,6 +179,8 @@ public class MainActivityDialogsHelper {
                                     mainActivity.showMessage(e.getMessage());
                                     popupAddBtn.setVisibility(View.VISIBLE);
                                     popupClickProgress.setVisibility(View.INVISIBLE);
+                                    popupTitle.setFocusable(true);
+                                    popupDescription.setFocusable(true);
                                 }
                             });
                         }
@@ -161,6 +189,8 @@ public class MainActivityDialogsHelper {
                     mainActivity.showMessage("Please verify all input and choose post image");
                     popupAddBtn.setVisibility(View.VISIBLE);
                     popupClickProgress.setVisibility(View.INVISIBLE);
+                    popupTitle.setFocusable(true);
+                    popupDescription.setFocusable(true);
                 }
             }
 
@@ -183,5 +213,9 @@ public class MainActivityDialogsHelper {
 
     public Dialog getPopupChooseGalleryOrCamera() {
         return popupChooseGalleryOrCamera;
+    }
+
+    public Dialog getDeleteProfile() {
+        return popupDeleteProfile;
     }
 }
