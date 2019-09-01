@@ -10,7 +10,7 @@ import com.instagramy.repositories.impl.SqlLiteLinkRepository;
 import com.instagramy.services.Firebase;
 
 public class RepositoryManager {
-    private static RepositoryManager instnace;
+    private static RepositoryManager instance;
 
     private ProfileRepository profileRepository;
     private PostRepository postRepository;
@@ -24,10 +24,10 @@ public class RepositoryManager {
     }
 
     public static RepositoryManager getInstance() {
-        if (instnace == null) {
-            instnace = new RepositoryManager();
+        if (instance == null) {
+            instance = new RepositoryManager();
         }
-        return instnace;
+        return instance;
     }
 
     public LinkRepository getLinkRepository(AppCompatActivity activity) {
