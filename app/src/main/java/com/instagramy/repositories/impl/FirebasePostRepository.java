@@ -49,6 +49,11 @@ public class FirebasePostRepository implements PostRepository {
     }
 
     @Override
+    public Task deletePost(String key) {
+        return databasePostsReference.child(key).removeValue();
+    }
+
+    @Override
     public UploadTask uploadPhoto(String path, Uri photo) {
         return storageBlogPhotosReference.child(path).putFile(photo);
     }

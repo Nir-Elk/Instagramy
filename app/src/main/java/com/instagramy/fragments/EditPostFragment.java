@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -23,32 +23,30 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
-import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Post;
 import com.instagramy.models.PostsList;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
 
-public class PostFragment extends Fragment {
+public class EditPostFragment extends Fragment {
     private PostRepository postRepository;
     private AuthRepository authRepository;
-    private TextView postTitle, postDescription, postUserName, postYummies, postImageErrorMessage;
-    private ImageView postImage, postUserImage, postMapBtn, postYummiBtn, postFavoriteBtn, postUpdateBtn, postDeleteBtn;
+    private EditText postTitle, postDescription;
+    private TextView postImageErrorMessage;
+    private ImageView postImage;
     private ProgressBar postImageProgressBar;
     private View view;
     private Post post;
     private String postId;
 
 
-    public PostFragment() {
+    public EditPostFragment() {
         // Required empty public constructor
     }
 
@@ -64,22 +62,13 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_post, container, false);
+        view = inflater.inflate(R.layout.fragment_edit_post, container, false);
+        postTitle = view.findViewById(R.id.post_edit_title);
+        postDescription = view.findViewById(R.id.post_edit_description);
+        postImage = view.findViewById(R.id.post_edit_img);
+        postImageProgressBar = view.findViewById(R.id.post_edit_progressBar);
 
-
-        postTitle = view.findViewById(R.id.post_title);
-        postDescription = view.findViewById(R.id.post_description);
-        postUserName = view.findViewById(R.id.post_username);
-        postYummies = view.findViewById(R.id.post_yummies);
-        postImage = view.findViewById(R.id.post_img);
-        postUserImage = view.findViewById(R.id.post_userimg);
-        postMapBtn = view.findViewById(R.id.post_map_btn);
-        postYummiBtn = view.findViewById(R.id.post_yummies_btn);
-        postFavoriteBtn = view.findViewById(R.id.post_favorite_btn);
-        postImageProgressBar = view.findViewById(R.id.post_progressBar);
-        postUpdateBtn = view.findViewById(R.id.row_post_update_btn);
-        postDeleteBtn = view.findViewById(R.id.row_post_delete_btn);
-        postRepository.getPost(postId).addValueEventListener(new ValueEventListener() {
+        postRepository.getPost(postId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 post = dataSnapshot.getValue(Post.class);
@@ -96,13 +85,9 @@ public class PostFragment extends Fragment {
 
     public void updateView() {
 
-
         postTitle.setText(post.getTitle());
         postDescription.setText(post.getDescription());
-        postYummies.setText(String.valueOf(post.getYummies()));
-        postUserName.setText(post.getUserName());
         postImageProgressBar.setVisibility(View.INVISIBLE);
-
         if (getContext() != null) {
             Glide.with(getContext())
                     .load(post.getPicture())
@@ -140,50 +125,11 @@ public class PostFragment extends Fragment {
                             });
                         }
                     });
-            Glide.with(getContext()).load(post.getUserimg()).into(postUserImage);
-        }
-
-        postYummiBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = authRepository.getCurrentUser().getEmail();
-                postRepository.updateYummies(post.getKey(), post.toggleYummi(email));
-                if (post.alreadyYummi(email)) {
-                    postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
-                } else {
-                    postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
-                }
-            }
-        });
-        if(post.getUserId().equals(authRepository.getCurrentUser().getDisplayName())) {
-            final NavGraphDirections.ActionGlobalEditPostFragment editPostAction = NavGraphDirections.actionGlobalEditPostFragment(post.getKey());
-            postUpdateBtn.setOnClickListener(Navigation.createNavigateOnClickListener(editPostAction));
-            postDeleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    postRepository.deletePost(post.getKey()).addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task task) {
-                            getActivity().onBackPressed();
-                        }
-                    });
-                }
-            });
-        }
-        else{
-            postUpdateBtn.setVisibility(View.INVISIBLE);
-            postDeleteBtn.setVisibility(View.INVISIBLE);
         }
 
 
-        final NavGraphDirections.ActionGlobalMapFragment mapAction = PostFragmentDirections.actionGlobalMapFragment();
-        PostsList postsList = new PostsList();
-        postsList.add(post);
-        mapAction.setPosts(postsList);
-        postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
-        final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
-        postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
-        postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+
+
     }
 
 }

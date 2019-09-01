@@ -24,6 +24,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
@@ -150,7 +152,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         final View.OnClickListener toPostClickListener = Navigation.createNavigateOnClickListener(postAction);
         holder.postTitle.setOnClickListener(toPostClickListener);
-
         holder.postImage.setOnClickListener(toPostClickListener);
 
         final Link link = new Link(mData.get(position).getKey(), mData.get(position).getPicture());
@@ -165,25 +166,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         final MainFragmentDirections.ActionHomeFragmentToProfileFragment profileAction = MainFragmentDirections.actionHomeFragmentToProfileFragment(mData.get(position).getUserId());
         holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
+        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
 
         final NavGraphDirections.ActionGlobalMapFragment mapAction = MainFragmentDirections.actionGlobalMapFragment();
         PostsList postsList = new PostsList();
         postsList.add(mData.get(position));
         mapAction.setPosts(postsList);
         holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
-
-        holder.postUserImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
-                View mView = LayoutInflater.from(mContext).inflate(R.layout.main_photo_dialog, null);
-                PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
-                photoView.setImageDrawable(holder.postUserImage.getDrawable());
-                mBuilder.setView(mView);
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
-            }
-        });
 
     }
 
@@ -200,6 +189,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         ImageView postYummiBtn;
         ImageView postMapBtn;
         ImageView postFavoriteBtn;
+
         ProgressBar postImageProgressBar;
         TextView postImageErrorMessage;
 
@@ -215,6 +205,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postImageProgressBar = itemView.findViewById(R.id.row_post_progressBar);
             postImageErrorMessage = itemView.findViewById(R.id.row_post_image_error_msg);
             postFavoriteBtn = itemView.findViewById(R.id.row_post_favorite_btn);
+
         }
     }
 

@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_postFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -193,4 +196,20 @@
     <action
         android:id="@+id/action_global_editProfileFragment"
         app:destination="@id/editProfileFragment" />
+    <fragment
+        android:id="@+id/editPostFragment"
+        android:name="com.instagramy.fragments.EditPostFragment"
+        android:label="fragment_edit_post"
+        tools:layout="@layout/fragment_edit_post" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_editPostFragment"
+        app:destination="@id/editPostFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>

@@ -21,6 +21,8 @@ public interface PostRepository {
 
     void updateYummies(String key, List<String> list);
 
+    Task deletePost(String key);
+
     UploadTask uploadPhoto(String path, Uri photo);
 
     Task getDownloadPhotoUrl(String path);

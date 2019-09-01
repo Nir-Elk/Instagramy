@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
     private static int SPLASH_TIME = 500; //This is 0.5 seconds
     private AppCompatActivity thisActivity = SplashActivity.this;
     private Intent intent;
-    private Firebase firebase = Firebase.getInstance();
+    private Firebase firebase;
 
 
     @Override
@@ -25,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         getSupportActionBar().hide();
         TextView error = findViewById(R.id.splash_error_no_connection);
+        this.firebase = Firebase.getInstance();
 
         if (NetworkHelper.hasNetworkAccess(getApplicationContext())) {
             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
