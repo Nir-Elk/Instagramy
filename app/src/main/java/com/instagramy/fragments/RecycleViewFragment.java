@@ -21,7 +21,9 @@ import com.instagramy.models.Post;
 import com.instagramy.view.models.FavoritesViewModel;
 import com.instagramy.view.models.PostListViewModel;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +72,6 @@ public class RecycleViewFragment extends ActionBarFragment {
     private void generateAdapter(List<Post> postList) {
         postAdapter = new PostAdapter(getActivity(), postList, FavoritesViewModel.getInstance((MainActivity) getActivity()));
         postRecyclerView.setAdapter(postAdapter);
-        postAdapter.notifyDataSetChanged();
         this.favoritesViewModel.getAllLinks().removeObservers(this);
         this.favoritesViewModel.getAllLinks().observe(this, new Observer<List<Favorite>>() {
             @Override
@@ -81,19 +82,22 @@ public class RecycleViewFragment extends ActionBarFragment {
         });
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
+        generateAdapter(new LinkedList<Post>());
         this.postListViewModel.getLiveData().observe(this, new Observer<Post.PostList>() {
             @Override
             public void onChanged(Post.PostList posts) {
-                Post.PostList filtered = new Post.PostList();
+                postAdapter.getmData().clear();
                 for (Post post : posts) {
                     if (filter(post)) {
-                        filtered.add(post);
+                        postAdapter.getmData().add(post);
                     }
                 }
-                generateAdapter(filtered);
+                Collections.reverse(postAdapter.getmData());
+                postAdapter.notifyDataSetChanged();
             }
         });
     }

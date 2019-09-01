@@ -27,6 +27,11 @@ public class FirebaseAuthRepository implements AuthRepository {
     }
 
     @Override
+    public Task delete() {
+        return auth.getCurrentUser().delete();
+    }
+
+    @Override
     public Task createUserAuth(String email, String pass) {
         return auth.createUserWithEmailAndPassword(email, pass);
     }

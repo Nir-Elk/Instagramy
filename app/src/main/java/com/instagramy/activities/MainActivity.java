@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 dialogsHelper.dismissAndSwitchToCreatePostPopup(pickedImageUri);
             }
         }
+
+
     }
 
     @Override

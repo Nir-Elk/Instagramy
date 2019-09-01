@@ -85,4 +85,27 @@ public class FirebasePostRepository implements PostRepository {
         return storageBlogPhotosReference.child(path).getDownloadUrl();
     }
 
+    @Override
+    public void deleteAllPostsByUserKey(final String key) {
+        databasePostsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postsnap : dataSnapshot.getChildren()) {
+                    try {
+                        Post post = postsnap.getValue(Post.class);
+                        if (post.getUserId().equals(key)) {
+                            databasePostsReference.child(post.getKey()).removeValue();
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

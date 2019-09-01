@@ -48,4 +48,9 @@ public class FirebaseProfileRepository implements ProfileRepository {
         databaseUsersReference.child(uid).child("name").setValue(name);
     }
 
+    @Override
+    public void deleteUser(String key) {
+        databaseUsersReference.child(key).removeValue();
+    }
+
 }

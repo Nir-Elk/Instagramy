@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ImageView userPhoto;
     private static int PReqCode = 1;
     private static int REQUSECODE = 1;
-    private Uri pickedImgUri;
+    private Uri pickedImgUri = null;
     private Intent intent;
     private ProfileRepository profileRepository;
     private AuthRepository authRepository;
@@ -63,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         loadingProgress.setVisibility(View.INVISIBLE);
 
         profileRepository = RepositoryManager.getInstance().getProfileRepository();
+        authRepository = RepositoryManager.getInstance().getAuthRepository();
         navigator = new Navigator(this);
 
         userPhoto.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +82,11 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 regBtn.setVisibility(View.INVISIBLE);
+                userName.setEnabled(false);
+                userEmail.setEnabled(false);
+                userPassword.setEnabled(false);
+                userRePassword.setEnabled(false);
+                userPhoto.setEnabled(false);
                 loadingProgress.setVisibility(View.VISIBLE);
 
                 final String email = userEmail.getText().toString();
@@ -86,9 +94,14 @@ public class RegisterActivity extends AppCompatActivity {
                 final String pass = userPassword.getText().toString();
                 final String repass = userRePassword.getText().toString();
 
-                if (email.isEmpty() || name.isEmpty() || pass.isEmpty() || !pass.equals(repass)) {
+                if (email.isEmpty() || name.isEmpty() || pass.isEmpty() || !pass.equals(repass) || pickedImgUri == null) {
                     showMessage("Please Verify all fields");
                     regBtn.setVisibility(View.VISIBLE);
+                    userName.setEnabled(true);
+                    userEmail.setEnabled(true);
+                    userPassword.setEnabled(true);
+                    userRePassword.setEnabled(true);
+                    userPhoto.setEnabled(true);
                     loadingProgress.setVisibility(View.INVISIBLE);
                 } else {
                     CreateUserAccount(email, name, pass);
@@ -142,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUSECODE && data != null) {
             pickedImgUri = data.getData();
-            userPhoto.setImageURI(pickedImgUri);
+            Glide.with(getApplicationContext()).load(pickedImgUri).apply(RequestOptions.circleCropTransform()).into(userPhoto);
         }
     }
 
