@@ -16,6 +16,7 @@ public class RepositoryManager {
     private ProfileRepository profileRepository;
     private PostRepository postRepository;
     private AuthRepository authRepository;
+
     private RepositoryManager() {
         FirebaseService firebaseService = FirebaseService.getInstance();
         this.profileRepository = new FirebaseProfileRepository(firebaseService.getDatabaseUsersReference(), firebaseService.getStorageUsersPhotosReference());

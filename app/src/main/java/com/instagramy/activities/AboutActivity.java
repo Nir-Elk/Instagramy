@@ -30,14 +30,14 @@ public class AboutActivity extends AppCompatActivity {
         findViewById(R.id.textView10).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(--countDown==0) {
-                    if(iluzGay.getVisibility()==View.VISIBLE) {
+                if (--countDown == 0) {
+                    if (iluzGay.getVisibility() == View.VISIBLE) {
                         iluzGay.setVisibility(View.INVISIBLE);
                     } else {
                         iluzGay.setVisibility(View.VISIBLE);
                     }
                     countDown = 10;
-                } else if (countDown <7) {
+                } else if (countDown < 7) {
                     Toast.makeText(getApplicationContext(), "Only more " + countDown + " Steps!", Toast.LENGTH_SHORT).show();
                 }
             }

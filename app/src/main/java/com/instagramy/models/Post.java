@@ -33,6 +33,23 @@ public class Post implements Serializable {
     private Object timeStamp;
     private List<String> yummiesSet;
 
+    public Post(String title, String description, String picture, String userId, String userName, String userimg, Location location) {
+        this.title = title;
+        this.description = description;
+        this.picture = picture;
+        this.userId = userId;
+        this.userName = userName;
+        this.userimg = userimg;
+        this.locationLatitude = location != null ? location.getLatitude() : 0;
+        this.locationLongitude = location != null ? location.getLongitude() : 0;
+        this.timeStamp = ServerValue.TIMESTAMP;
+        this.yummiesSet = new LinkedList<>();
+        this.yummiesSet.add("a");
+    }
+
+    public Post() {
+    }
+
     public List<String> getYummiesSet() {
         return this.yummiesSet;
     }
@@ -137,24 +154,6 @@ public class Post implements Serializable {
     public void setTimeStamp(Object timeStamp) {
         this.timeStamp = timeStamp;
     }
-
-    public Post(String title, String description, String picture, String userId, String userName, String userimg, Location location) {
-        this.title = title;
-        this.description = description;
-        this.picture = picture;
-        this.userId = userId;
-        this.userName = userName;
-        this.userimg = userimg;
-        this.locationLatitude = location != null ? location.getLatitude() : 0;
-        this.locationLongitude = location != null ? location.getLongitude() : 0;
-        this.timeStamp = ServerValue.TIMESTAMP;
-        this.yummiesSet = new LinkedList<>();
-        this.yummiesSet.add("a");
-    }
-
-    public Post() {
-    }
-
 
     public static class PostList extends ArrayList<Post> implements Serializable {
 

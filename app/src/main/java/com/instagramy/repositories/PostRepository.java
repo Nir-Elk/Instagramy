@@ -29,8 +29,8 @@ public interface PostRepository {
 
     void deleteAllPostsByUserKey(String key);
 
-    public interface GetAllPostsListener {
-        public void onSuccsess(Post.PostList posts);
+    interface GetAllPostsListener {
+        void onSuccsess(Post.PostList posts);
     }
 
 }

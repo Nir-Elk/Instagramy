@@ -36,13 +36,13 @@ import com.instagramy.utils.Navigator;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private static int PReqCode = 1;
+    private static int REQUSECODE = 1;
     private Navigator navigator;
     private EditText userEmail, userName, userPassword, userRePassword;
     private ProgressBar loadingProgress;
     private Button regBtn;
     private ImageView userPhoto;
-    private static int PReqCode = 1;
-    private static int REQUSECODE = 1;
     private Uri pickedImgUri = null;
     private Intent intent;
     private ProfileRepository profileRepository;

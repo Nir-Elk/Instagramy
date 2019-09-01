@@ -1,6 +1,7 @@
 package com.instagramy.repositories.impl;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 
 import com.instagramy.dao.DrawableDao;
 import com.instagramy.models.DrawableResource;
@@ -27,7 +28,7 @@ public class SqlLiteDrawableRepository implements DrawableRepository {
     }
 
     @Override
-    public DrawableResource getDrawableResource(int key) {
+    public LiveData<DrawableResource> getDrawableResource(int key) {
         return drawableDao.getDrawableResource(key);
     }
 }

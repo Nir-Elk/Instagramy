@@ -25,7 +25,7 @@ public class FirebaseService {
         databaseUsersReference = database.getReference("Profiles");
         databasePostsReference = database.getReference("Posts");
         storageUsersPhotosReference = storage.getReference().child("users_photos");
-        storageBlogPhotosReference = storage.getReference().child("users_photos");
+        storageBlogPhotosReference = storage.getReference().child("blog_photos");
     }
 
     public static FirebaseService getInstance() {

@@ -71,7 +71,7 @@ public class EditProfileFragment extends ActionBarFragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 profile = dataSnapshot.getValue(Profile.class);
-                if(profile != null)
+                if (profile != null)
                     updateView(fragmentView);
             }
 
@@ -114,7 +114,7 @@ public class EditProfileFragment extends ActionBarFragment {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).getDialogsHelper().getDeleteProfile().show();
+                ((MainActivity) getActivity()).getDialogsHelper().getDeleteProfile().show();
             }
         });
 

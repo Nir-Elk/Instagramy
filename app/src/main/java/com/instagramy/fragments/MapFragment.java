@@ -22,9 +22,9 @@ import com.instagramy.view.models.PostListViewModel;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
-    private GoogleMap googleMap;
     PostListViewModel postListViewModel;
     Post.PostList posts;
+    private GoogleMap googleMap;
 
     @Override
     public void onCreate(Bundle bundle) {

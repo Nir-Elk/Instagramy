@@ -47,6 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public DrawableRepository drawableRepository;
     AppCompatActivity activity;
     Set<String> favorites = new HashSet<>();
+
     public List<Post> getmData() {
         return mData;
     }
@@ -120,31 +121,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         final String pictureUrl = mData.get(position).getPicture();
 
-        DrawableResource fromCash = drawableRepository.getDrawableResource(pictureUrl.hashCode());
 
-        if (fromCash == null) {
-            Glide.with(mContext)
-                    .load(pictureUrl)
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            holder.postImageProgressBar.setVisibility(View.GONE);
-                            holder.postImageErrorMessage.setVisibility(View.VISIBLE);
-                            return false;
-                        }
+        drawableRepository.getDrawableResource(pictureUrl.hashCode()).observe(activity, new Observer<DrawableResource>() {
+            @Override
+            public void onChanged(DrawableResource drawableResource) {
+                if (drawableResource == null) {
+                    Glide.with(mContext)
+                            .load(pictureUrl)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    holder.postImageProgressBar.setVisibility(View.GONE);
+                                    holder.postImageErrorMessage.setVisibility(View.VISIBLE);
+                                    return false;
+                                }
 
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            holder.postImageProgressBar.setVisibility(View.GONE);
-                            drawableRepository.insertDrawable(new DrawableResource(pictureUrl.hashCode(), resource));
-                            return false;
-                        }
-                    })
-                    .into(holder.postImage);
-        } else {
-            //holder.postImageProgressBar.setVisibility(View.GONE);
-            holder.postImage.setImageDrawable(fromCash.getDrawable());
-        }
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    holder.postImageProgressBar.setVisibility(View.GONE);
+                                    drawableRepository.insertDrawable(new DrawableResource(pictureUrl.hashCode(), resource));
+                                    return false;
+                                }
+                            }).into(holder.postImage);
+                } else {
+                    holder.postImageProgressBar.setVisibility(View.GONE);
+                    holder.postImage.setImageDrawable(drawableResource.getDrawable());
+                }
+            }
+        });
 
         holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -20,6 +20,6 @@ public interface ProfileRepository {
     Task getDownloadUserPhotoUrl(String path);
 
     void changeName(String uid, String name);
-    
+
     void deleteUser(String key);
 }

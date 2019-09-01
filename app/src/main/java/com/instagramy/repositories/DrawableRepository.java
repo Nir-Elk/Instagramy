@@ -1,5 +1,7 @@
 package com.instagramy.repositories;
 
+import androidx.lifecycle.LiveData;
+
 import com.instagramy.models.DrawableResource;
 
 public interface DrawableRepository {
@@ -8,5 +10,5 @@ public interface DrawableRepository {
 
     void deleteDrawableResource(DrawableResource drawableResource);
 
-    DrawableResource getDrawableResource(int key);
+    LiveData<DrawableResource> getDrawableResource(int key);
 }

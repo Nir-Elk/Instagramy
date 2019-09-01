@@ -6,10 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Navigator {
 
+    AppCompatActivity activity;
+
     private Navigator() {
     }
-
-    AppCompatActivity activity;
 
     public Navigator(AppCompatActivity baseActivity) {
         this.activity = baseActivity;

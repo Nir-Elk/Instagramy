@@ -21,14 +21,6 @@ public class MainActivityMenuHelper {
     private NavGraphDirections.ActionGlobalEditPostFragment editPostAction;
     private Runnable deletePostRunnableAction;
 
-    public void setEditPostAction(NavGraphDirections.ActionGlobalEditPostFragment editPostAction) {
-        this.editPostAction = editPostAction;
-    }
-
-    public void setDeletePostRunnableAction(Runnable deletePostRunnableAction) {
-        this.deletePostRunnableAction = deletePostRunnableAction;
-    }
-
     private MainActivityMenuHelper() {
     }
 
@@ -37,6 +29,14 @@ public class MainActivityMenuHelper {
         this.menu = menu;
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
         this.initBottomBarClickListeners();
+    }
+
+    public void setEditPostAction(NavGraphDirections.ActionGlobalEditPostFragment editPostAction) {
+        this.editPostAction = editPostAction;
+    }
+
+    public void setDeletePostRunnableAction(Runnable deletePostRunnableAction) {
+        this.deletePostRunnableAction = deletePostRunnableAction;
     }
 
     public void onOptionItemSelected(MenuItem item) {

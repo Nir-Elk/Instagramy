@@ -30,12 +30,12 @@ import java.util.Set;
 import static com.instagramy.utils.HashSets.convertToLiteWeigtSet;
 
 public class RecycleViewFragment extends ActionBarFragment {
+    static Set<String> favorites = new HashSet<>();
     private PostListViewModel postListViewModel;
     private FavoritesViewModel favoritesViewModel;
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
     private LinearLayoutManager linearLayoutManager;
-    static Set<String> favorites = new HashSet<>();
 
     public RecycleViewFragment() {
     }
