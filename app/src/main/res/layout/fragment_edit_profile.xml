@@ -24,10 +24,12 @@
 
             <Button
                 android:id="@+id/user_update_profile_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_width="212dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/reg_btn_style"
                 android:text="@string/common_google_play_services_update_button"
+                android:textColor="@color/colorBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
@@ -37,13 +39,13 @@
                 android:id="@+id/user_delete_profile_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/reg_btn_style"
                 android:text="delete"
+                android:textColor="@android:color/holo_red_dark"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_update_profile_btn"
-                app:layout_constraintVertical_bias="0.110000014" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <EditText
                 android:id="@+id/user_pass_profile"

@@ -114,6 +114,7 @@ public class PostFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             favoritesViewModel.delete(new Favorite(postId));
+                            mainActivity.showMessage("Removed from your Manches");
                         }
                     };
                 } else {
@@ -122,6 +123,8 @@ public class PostFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             favoritesViewModel.insert(new Favorite(postId));
+                            mainActivity.showMessage("Added to your Manches");
+
                         }
                     };
                 }
@@ -226,8 +229,10 @@ public class PostFragment extends Fragment {
                 postRepository.updateYummies(post.getKey(), post.toggleYummi(email));
                 if (post.alreadyYummi(email)) {
                     postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
+                    mainActivity.showMessage("Yummi :)");
                 } else {
                     postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
+                    mainActivity.showMessage("Yummi removed");
                 }
             }
         });
@@ -245,7 +250,6 @@ public class PostFragment extends Fragment {
         } else {
             mainActivity.getMenuHelper().switchToHomeToolBar();
         }
-
 
         final NavGraphDirections.ActionGlobalMapFragment mapAction = PostFragmentDirections.actionGlobalMapFragment();
         Post.PostList postList = new Post.PostList();

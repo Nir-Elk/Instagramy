@@ -20,7 +20,7 @@ public class MainActivityMenuHelper {
     private Menu menu;
     private NavGraphDirections.ActionGlobalEditPostFragment editPostAction;
     private Runnable deletePostRunnableAction;
-
+    private int deletePostCounter = 10;
     private MainActivityMenuHelper() {
     }
 
@@ -58,7 +58,11 @@ public class MainActivityMenuHelper {
                 break;
 
             case R.id.menu_delete_post:
-                deletePostRunnableAction.run();
+                if (deletePostCounter == 0) {
+                    deletePostRunnableAction.run();
+                } else {
+                    mainActivity.showMessage("Are you sure? keep clicking (" + --deletePostCounter + ")");
+                }
                 break;
 
             case R.id.menu_edit_post:
@@ -156,8 +160,6 @@ public class MainActivityMenuHelper {
 
         switch (selectedItemBottomNavigation) {
             case R.id.nav_home:
-                switchToHomeToolBar();
-                break;
             case R.id.nav_map:
                 switchToHomeToolBar();
                 break;

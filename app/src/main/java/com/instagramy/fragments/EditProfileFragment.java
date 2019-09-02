@@ -42,6 +42,7 @@ public class EditProfileFragment extends ActionBarFragment {
     private ProfileRepository profileRepository;
     private AuthRepository authRepository;
     private MainActivity mainActivity;
+    private int deleteCounter = 10;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -114,7 +115,11 @@ public class EditProfileFragment extends ActionBarFragment {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).getDialogsHelper().getDeleteProfile().show();
+                if (deleteCounter == 0) {
+                    ((MainActivity) getActivity()).getDialogsHelper().getDeleteProfile().show();
+                } else {
+                    mainActivity.showMessage("Are you sure? keep clicking (" + --deleteCounter + ")");
+                }
             }
         });
 

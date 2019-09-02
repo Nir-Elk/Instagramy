@@ -26,7 +26,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
-import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Profile;
 import com.instagramy.repositories.ProfileRepository;
 import com.instagramy.repositories.RepositoryManager;
@@ -53,7 +52,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).getSupportActionBar().hide();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         assert getArguments() != null;

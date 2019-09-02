@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ public class RecycleViewFragment extends ActionBarFragment {
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private ProgressBar recycleViewProgressbar;
 
     public RecycleViewFragment() {
     }
@@ -67,6 +69,7 @@ public class RecycleViewFragment extends ActionBarFragment {
         postRecyclerView.setLayoutManager(linearLayoutManager);
         postRecyclerView.setHasFixedSize(true);
         favoritesViewModel = FavoritesViewModel.getInstance((MainActivity) getActivity());
+        recycleViewProgressbar = view.findViewById(R.id.post_rv_preloader);
         return view;
     }
 
@@ -96,6 +99,8 @@ public class RecycleViewFragment extends ActionBarFragment {
                     }
                 }
                 Collections.reverse(postAdapter.getmData());
+                postRecyclerView.setVisibility(View.VISIBLE);
+                recycleViewProgressbar.setVisibility(View.INVISIBLE);
                 postAdapter.notifyDataSetChanged();
             }
         });

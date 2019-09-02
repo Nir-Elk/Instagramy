@@ -111,8 +111,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     public void onClick(View v) {
                         if (isSavedThisPost) {
                             favoritesViewModel.delete(favorite);
+                            showMessage("Removed from your Manches");
                         } else {
                             favoritesViewModel.insert(favorite);
+                            showMessage("Added to your Manches");
                         }
                     }
                 });
@@ -201,9 +203,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     String email = authRepository.getCurrentUser().getEmail();
                     postRepository.updateYummies(mData.get(position).getKey(), mData.get(position).toggleYummi(email));
                     if (ifLiked(position, email)) {
+                        showMessage("Yummi :)");
                         holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
                     } else {
                         holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
+                        showMessage("Yummi removed");
                     }
                 }
             });
