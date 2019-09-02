@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -26,8 +28,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
+import com.instagramy.models.DrawableResource;
 import com.instagramy.models.Profile;
 import com.instagramy.repositories.AuthRepository;
+import com.instagramy.repositories.DrawableRepository;
 import com.instagramy.repositories.ProfileRepository;
 import com.instagramy.repositories.RepositoryManager;
 
@@ -42,6 +46,7 @@ public class EditProfileFragment extends ActionBarFragment {
     private ProfileRepository profileRepository;
     private AuthRepository authRepository;
     private MainActivity mainActivity;
+    private DrawableRepository drawableRepository;
     private int deleteCounter = 10;
 
     public EditProfileFragment() {
@@ -51,6 +56,7 @@ public class EditProfileFragment extends ActionBarFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        drawableRepository = RepositoryManager.getInstance().getDrawableRepository((AppCompatActivity) getActivity());
         profileRepository = RepositoryManager.getInstance().getProfileRepository();
         authRepository = RepositoryManager.getInstance().getAuthRepository();
         mainActivity = (MainActivity) getActivity();
@@ -92,25 +98,38 @@ public class EditProfileFragment extends ActionBarFragment {
         return fragmentView;
     }
 
-    private void updateView(View fragmentView) {
+    private void updateView(final View fragmentView) {
         emailProfile.setText(profile.getEmail());
         nameProfile.setText(profile.getName());
         userProgressBar.setVisibility(View.VISIBLE);
         userImage.setVisibility(View.VISIBLE);
 
-        Glide.with(fragmentView).load(profile.getImageUri()).listener(new RequestListener<Drawable>() {
+        final String profilePictureUrl = profile.getImageUri();
+        drawableRepository.getDrawableResource(profilePictureUrl.hashCode()).observe(this, new Observer<DrawableResource>() {
             @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                userProgressBar.setVisibility(View.GONE);
-                return false;
-            }
+            public void onChanged(DrawableResource drawableResource) {
+                if (drawableResource == null) {
+                    Glide.with(fragmentView).load(profilePictureUrl).listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                userProgressBar.setVisibility(View.GONE);
-                return false;
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            userProgressBar.setVisibility(View.GONE);
+                            drawableRepository.insertDrawable(new DrawableResource(profilePictureUrl.hashCode(), resource));
+                            return false;
+                        }
+                    }).apply(RequestOptions.circleCropTransform()).into(userImage);
+
+                } else {
+                    Glide.with(fragmentView).load(drawableResource.getDrawable()).apply(RequestOptions.circleCropTransform()).into(userImage);
+                    userProgressBar.setVisibility(View.GONE);
+
+                }
             }
-        }).apply(RequestOptions.circleCropTransform()).into(userImage);
+        });
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override

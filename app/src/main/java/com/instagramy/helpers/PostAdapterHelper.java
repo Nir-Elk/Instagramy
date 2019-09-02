@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +35,7 @@ public class PostAdapterHelper {
 
 
     public static void populatePostView(
-            AppCompatActivity activity,
+            final AppCompatActivity activity,
             final Context mContext,
             final Post post,
             final FavoritesViewModel favoritesViewModel,
@@ -53,10 +52,8 @@ public class PostAdapterHelper {
             final ImageView postFavoriteBtn,
             final ProgressBar postProfileImagePreloader,
             final ProgressBar postImageProgressBar,
-            final boolean heLikeThisPost,
             TextView postDescription,
-            final ShowDialog showDialog
-    ) {
+            final ShowDialog showDialog) {
         final Favorite favorite = new Favorite(post.getKey());
 
         favoritesViewModel.getAllLinks().observe(activity, new Observer<List<Favorite>>() {
@@ -72,17 +69,15 @@ public class PostAdapterHelper {
                     public void onClick(View v) {
                         if (isSavedThisPost) {
                             favoritesViewModel.delete(favorite);
-                            showMessage(mContext, "Removed from your Manches");
                         } else {
                             favoritesViewModel.insert(favorite);
-                            showMessage(mContext, "Added to your Manches");
                         }
                     }
                 });
             }
         });
 
-        if (heLikeThisPost) {
+        if (post.alreadyYummi(authRepository.getCurrentUser().getEmail())) {
             postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
         } else {
             postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
@@ -161,12 +156,10 @@ public class PostAdapterHelper {
                 public void onClick(View view) {
                     String email = authRepository.getCurrentUser().getEmail();
                     postRepository.updateYummies(post.getKey(), post.toggleYummi(email));
-                    if (heLikeThisPost) {
-                        showMessage(mContext, "Yummi :)");
+                    if (post.alreadyYummi(authRepository.getCurrentUser().getEmail())) {
                         postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
                     } else {
                         postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
-                        showMessage(mContext, "Yummi removed");
                     }
                 }
             });
@@ -202,11 +195,6 @@ public class PostAdapterHelper {
         if (postDescription != null) {
             postDescription.setText(post.getDescription());
         }
-    }
-
-
-    private static void showMessage(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
     public interface ShowDialog {

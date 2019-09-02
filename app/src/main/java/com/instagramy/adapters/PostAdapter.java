@@ -75,7 +75,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 holder.postFavoriteBtn,
                 holder.postProfileImagePreloader,
                 holder.postImageProgressBar,
-                mData.get(position).alreadyYummi(authRepository.getCurrentUser().getEmail()),
                 null,
                 null
         );

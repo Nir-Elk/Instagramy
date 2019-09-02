@@ -29,4 +29,8 @@ public class FavoritesFragment extends RecycleViewFragment {
         ((MainActivity) getActivity()).getBottomNavigationHelper().setSelectedItemBottomNavigation(R.id.nav_favorites);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 }
