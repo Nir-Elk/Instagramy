@@ -114,7 +114,39 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         }
         holder.postUserName.setText(mData.get(position).getUserName());
         holder.postTitle.setText(mData.get(position).getTitle());
-        Glide.with(mContext).load(mData.get(position).getUserimg()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
+
+        final String profileImageUrl = mData.get(position).getUserimg();
+
+        holder.postProfileImagePreloader.setVisibility(View.VISIBLE);
+        drawableRepository.getDrawableResource(profileImageUrl.hashCode()).observe(activity, new Observer<DrawableResource>() {
+            @Override
+            public void onChanged(DrawableResource drawableResource) {
+                if (drawableResource == null) {
+                    Glide.with(mContext).load(mData.get(position).getUserimg())
+                            .apply(RequestOptions.circleCropTransform())
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    holder.postProfileImagePreloader.setVisibility(View.INVISIBLE);
+                                    drawableRepository.insertDrawable(new DrawableResource(profileImageUrl.hashCode(), resource));
+                                    return false;
+                                }
+                            })
+                            .into(holder.postUserImage);
+
+                } else {
+                    holder.postProfileImagePreloader.setVisibility(View.INVISIBLE);
+                    Glide.with(mContext).load(drawableResource.getDrawable()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
+                }
+            }
+        });
+
+
         holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
         holder.postImageProgressBar.setVisibility(View.VISIBLE);
         holder.postImageErrorMessage.setVisibility(View.INVISIBLE);
@@ -204,7 +236,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         ImageView postYummiBtn;
         ImageView postMapBtn;
         ImageView postFavoriteBtn;
-
+        ProgressBar postProfileImagePreloader;
         ProgressBar postImageProgressBar;
         TextView postImageErrorMessage;
 
@@ -220,6 +252,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             postImageProgressBar = itemView.findViewById(R.id.row_post_progressBar);
             postImageErrorMessage = itemView.findViewById(R.id.row_post_image_error_msg);
             postFavoriteBtn = itemView.findViewById(R.id.row_post_favorite_btn);
+            postProfileImagePreloader = itemView.findViewById(R.id.post_profile_image_preloader);
 
         }
     }
