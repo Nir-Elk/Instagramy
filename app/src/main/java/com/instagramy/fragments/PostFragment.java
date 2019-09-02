@@ -17,6 +17,7 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.helpers.PostAdapterHelper;
@@ -129,6 +130,20 @@ public class PostFragment extends Fragment {
                         showBigImageDialog(drawable);
                     }
                 });
+
+        if (post.getUserId().equals(authRepository.getCurrentUser().getDisplayName())) {
+            mainActivity.getMenuHelper().switchToEditPostToolBar();
+        }
+
+
+        mainActivity.getMenuHelper().setDeletePostRunnableAction(new Runnable() {
+            @Override
+            public void run() {
+                postRepository.deletePost(postId);
+            }
+        });
+
+        mainActivity.getMenuHelper().setEditPostAction(NavGraphDirections.actionGlobalEditPostFragment(postId));
     }
 
 }

@@ -166,8 +166,9 @@ public class PostAdapterHelper {
         }
 
         final NavGraphDirections.ActionGlobalPostFragment postAction = NavGraphDirections.actionGlobalPostFragment(post.getKey());
-        
+
         final View.OnClickListener toPostClickListener = Navigation.createNavigateOnClickListener(postAction);
+
         postTitle.setOnClickListener(toPostClickListener);
 
         if (showDialog == null) {

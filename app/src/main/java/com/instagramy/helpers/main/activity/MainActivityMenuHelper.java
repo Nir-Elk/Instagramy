@@ -3,7 +3,6 @@ package com.instagramy.helpers.main.activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.navigation.Navigation;
 
@@ -14,21 +13,17 @@ import com.instagramy.activities.MainActivity;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.RepositoryManager;
 
-public class MainActivityMenuHelper {
-    private MainActivity mainActivity;
+public class MainActivityMenuHelper extends MainActivityHelper {
     private AuthRepository authRepository;
     private Menu menu;
     private NavGraphDirections.ActionGlobalEditPostFragment editPostAction;
     private Runnable deletePostRunnableAction;
-    private int deletePostCounter = 10;
-    private MainActivityMenuHelper() {
-    }
+    private boolean areYouSure = false;
 
     public MainActivityMenuHelper(MainActivity mainActivity, Menu menu) {
-        this.mainActivity = mainActivity;
+        super(mainActivity);
         this.menu = menu;
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
-        this.initBottomBarClickListeners();
     }
 
     public void setEditPostAction(NavGraphDirections.ActionGlobalEditPostFragment editPostAction) {
@@ -58,10 +53,12 @@ public class MainActivityMenuHelper {
                 break;
 
             case R.id.menu_delete_post:
-                if (deletePostCounter == 0) {
+                if (areYouSure) {
+                    areYouSure = false;
                     deletePostRunnableAction.run();
                 } else {
-                    mainActivity.showMessage("Are you sure? keep clicking (" + --deletePostCounter + ")");
+                    mainActivity.showMessage("Are you sure? click again.");
+                    areYouSure = true;
                 }
                 break;
 
@@ -93,67 +90,17 @@ public class MainActivityMenuHelper {
         this.inflate(R.menu.toolbar_settings);
     }
 
-    private void switchToMyFavoritesToolBar() {
+    public void switchToMyFavoritesToolBar() {
         this.inflate(R.menu.toolbar_refresh_my_favorites);
     }
 
-    private void switchToMyPostsToolBar() {
+    public void switchToMyPostsToolBar() {
         this.inflate(R.menu.toolbar_my_posts);
     }
 
     private void inflate(int menuRes) {
         this.menu.clear();
         this.mainActivity.getMenuInflater().inflate(menuRes, this.menu);
-    }
-
-    private void initBottomBarClickListeners() {
-
-        findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchToHomeToolBar();
-                navigate(R.id.action_global_homeFragment);
-            }
-        });
-
-        findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchToHomeToolBar();
-                navigate(R.id.action_global_mapFragment);
-            }
-        });
-
-        findViewById(R.id.nav_settings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchToSettingsToolBar();
-                navigate(R.id.action_global_settingsFragment);
-            }
-        });
-
-        findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchToMyFavoritesToolBar();
-                navigate(R.id.action_global_favoritesFragment);
-            }
-        });
-        findViewById(R.id.nav_my_posts).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchToMyPostsToolBar();
-                navigate(R.id.action_global_myPostsFragment);
-            }
-        });
-    }
-
-    private View findViewById(int viewId) {
-        return mainActivity.findViewById(viewId);
-    }
-
-    private void navigate(int action) {
-        this.mainActivity.getController().navHostFragmentNavigate(action);
     }
 
     public void onBackPressed(int selectedItemBottomNavigation) {
