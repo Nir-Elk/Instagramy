@@ -3,6 +3,7 @@ package com.instagramy.helpers.main.activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.navigation.Navigation;
 
@@ -24,6 +25,49 @@ public class MainActivityMenuHelper extends MainActivityHelper {
         super(mainActivity);
         this.menu = menu;
         this.authRepository = RepositoryManager.getInstance().getAuthRepository();
+        initBottomBarClickListeners();
+    }
+
+    private void initBottomBarClickListeners() {
+
+        findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToHomeToolBar();
+                navigate(R.id.action_global_homeFragment);
+            }
+        });
+
+        findViewById(R.id.nav_map).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToHomeToolBar();
+                navigate(R.id.action_global_mapFragment);
+            }
+        });
+
+        findViewById(R.id.nav_settings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToSettingsToolBar();
+                navigate(R.id.action_global_settingsFragment);
+            }
+        });
+
+        findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToMyFavoritesToolBar();
+                navigate(R.id.action_global_favoritesFragment);
+            }
+        });
+        findViewById(R.id.nav_my_posts).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToMyPostsToolBar();
+                navigate(R.id.action_global_myPostsFragment);
+            }
+        });
     }
 
     public void setEditPostAction(NavGraphDirections.ActionGlobalEditPostFragment editPostAction) {

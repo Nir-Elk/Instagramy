@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -38,6 +40,7 @@ public class ProfileFragment extends Fragment {
     private ImageView imageProfile;
     private ProgressBar progressBarProfile;
     private ProfileRepository profileRepository;
+    private Button viewAllPosts;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -57,10 +60,20 @@ public class ProfileFragment extends Fragment {
         assert getArguments() != null;
         this.profileId = ProfileFragmentArgs.fromBundle(getArguments()).getProfileId();
 
+        this.viewAllPosts = view.findViewById(R.id.go_to_all_user_posts);
         this.progressBarProfile = view.findViewById(R.id.profile_progressBar);
         this.imageProfile = view.findViewById(R.id.profile_image);
         this.fullName = view.findViewById(R.id.profile_full_name);
         this.email = view.findViewById(R.id.profile_email);
+
+
+        this.viewAllPosts
+                .setOnClickListener(
+                        Navigation.createNavigateOnClickListener(
+                                ProfileFragmentDirections.actionProfileFragmentToUserPostsFragment(profileId)
+                        )
+                );
+
         profileRepository.getProfile(this.profileId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
