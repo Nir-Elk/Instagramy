@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,10 +17,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
 import com.instagramy.models.Post;
 import com.instagramy.view.models.PostListViewModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
@@ -27,6 +32,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     PostListViewModel postListViewModel;
     Post.PostList posts;
     private GoogleMap googleMap;
+    private Map<String, String> postMap;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -70,7 +76,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @SuppressLint("CheckResult")
     void redrawMap() {
         googleMap.clear();
-
+        postMap = new HashMap<>();
 
         // Tel Aviv
         LatLng centerMap = new LatLng(32.0853, 34.7818);
@@ -80,13 +86,14 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 Double lng = post.getLocationLongitude();
                 if (lat != null && lng != null) {
                     LatLng position = new LatLng(lat, lng);
-                    googleMap.addMarker(
+
+                    Marker marker = googleMap.addMarker(
                             new MarkerOptions()
                                     .position(position)
                                     .title(post.getTitle())
                                     .snippet(post.getDescription())
                     );
-
+                    postMap.put(marker.getId(), post.getKey());
                 }
             }
 
@@ -96,22 +103,20 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             }
         }
 
-        this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                if (marker.isInfoWindowShown()) {
-                    marker.hideInfoWindow();
-                } else {
-                    marker.showInfoWindow();
-                }
-                return true;
+            public void onInfoWindowClick(Marker marker) {
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.actionGlobalPostFragment(
+                                postMap.get(marker.getId())
+                        )
+                );
             }
         });
-
-
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(centerMap));
         this.googleMap.setMinZoomPreference(10);
         this.googleMap.setMaxZoomPreference(10);
     }
+
 
 }
