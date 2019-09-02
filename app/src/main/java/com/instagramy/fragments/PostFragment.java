@@ -47,7 +47,7 @@ public class PostFragment extends Fragment {
     private AuthRepository authRepository;
     private TextView postTitle, postDescription, postUserName, postYummies, postImageErrorMessage;
     private ImageView postImage, postUserImage, postMapBtn, postYummiBtn, postFavoriteBtn;
-    private ProgressBar postImageProgressBar;
+    private ProgressBar postImageProgressBar, profileImageProgressBar;
     private View view;
     private Post post;
     private String postId;
@@ -75,6 +75,7 @@ public class PostFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_post, container, false);
 
+        profileImageProgressBar = view.findViewById(R.id.profileImageProgressBar);
         postTitle = view.findViewById(R.id.post_title);
         postDescription = view.findViewById(R.id.post_description);
         postUserName = view.findViewById(R.id.post_username);
@@ -152,59 +153,70 @@ public class PostFragment extends Fragment {
         postDescription.setText(post.getDescription());
         postYummies.setText(String.valueOf(post.getYummies()));
         postUserName.setText(post.getUserName());
-        postImageProgressBar.setVisibility(View.INVISIBLE);
 
         if (getContext() != null) {
-            final String pictureUrl = post.getPicture();
+            if (postImageProgressBar.getVisibility() == View.VISIBLE) {
+                final String pictureUrl = post.getPicture();
+                drawableRepository.getDrawableResource(pictureUrl.hashCode()).observe(mainActivity, new Observer<DrawableResource>() {
+                    @Override
+                    public void onChanged(DrawableResource drawableResource) {
+                        if (drawableResource == null) {
+                            Glide.with(getContext())
+                                    .load(pictureUrl)
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            postImageProgressBar.setVisibility(View.GONE);
+                                            postImageErrorMessage.setVisibility(View.VISIBLE);
+                                            return false;
+                                        }
 
-            drawableRepository.getDrawableResource(pictureUrl.hashCode()).observe(mainActivity, new Observer<DrawableResource>() {
-                @Override
-                public void onChanged(DrawableResource drawableResource) {
-                    if (drawableResource == null) {
-                        Glide.with(getContext())
-                                .load(pictureUrl)
-                                .listener(new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        postImageProgressBar.setVisibility(View.GONE);
-                                        postImageErrorMessage.setVisibility(View.VISIBLE);
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        postImageProgressBar.setVisibility(View.GONE);
-                                        drawableRepository.insertDrawable(new DrawableResource(pictureUrl.hashCode(), resource));
-                                        postImage.setOnClickListener(showPhotoDialogListener(resource));
-                                        return false;
-                                    }
-                                }).into(postImage);
-                    } else {
-                        postImageProgressBar.setVisibility(View.GONE);
-                        postImage.setImageDrawable(drawableResource.getDrawable());
-                        postImage.setOnClickListener(showPhotoDialogListener(drawableResource.getDrawable()));
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            postImageProgressBar.setVisibility(View.GONE);
+                                            drawableRepository.insertDrawable(new DrawableResource(pictureUrl.hashCode(), resource));
+                                            postImage.setOnClickListener(showPhotoDialogListener(resource));
+                                            return false;
+                                        }
+                                    }).into(postImage);
+                        } else {
+                            postImageProgressBar.setVisibility(View.GONE);
+                            postImage.setImageDrawable(drawableResource.getDrawable());
+                            postImage.setOnClickListener(showPhotoDialogListener(drawableResource.getDrawable()));
+                        }
                     }
-                }
-            });
+                });
+            }
 
-            Glide.with(getContext()).load(post.getUserimg())
-                    .apply(RequestOptions.circleCropTransform())
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            if (profileImageProgressBar.getVisibility() == View.VISIBLE) {
+                final String profilePictureUrl = post.getUserimg();
+                drawableRepository.getDrawableResource(profilePictureUrl.hashCode()).observe(mainActivity, new Observer<DrawableResource>() {
+                    @Override
+                    public void onChanged(final DrawableResource drawableResource) {
+                        if (drawableResource == null) {
+                            Glide.with(getContext()).load(post.getUserimg())
+                                    .apply(RequestOptions.circleCropTransform())
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            return false;
+                                        }
 
-                            mainActivity.showMessage("falied");
-                            return false;
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            drawableRepository.insertDrawable(new DrawableResource(profilePictureUrl.hashCode(), resource));
+                                            profileImageProgressBar.setVisibility(View.INVISIBLE);
+                                            return false;
+                                        }
+                                    })
+                                    .into(postUserImage);
+                        } else {
+                            Glide.with(mainActivity).load(drawableResource.getDrawable()).apply(RequestOptions.circleCropTransform()).into(postUserImage);
+                            profileImageProgressBar.setVisibility(View.INVISIBLE);
                         }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            mainActivity.showMessage("ready");
-
-                            return false;
-                        }
-                    })
-                    .into(postUserImage);
+                    }
+                });
+            }
         }
 
         postYummiBtn.setOnClickListener(new View.OnClickListener() {
