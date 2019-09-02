@@ -27,8 +27,9 @@ public class FirebaseAuthRepository implements AuthRepository {
     }
 
     @Override
-    public Task delete() {
-        return auth.getCurrentUser().delete();
+    public void delete() {
+        auth.getCurrentUser().delete();
+        signOut();
     }
 
     @Override

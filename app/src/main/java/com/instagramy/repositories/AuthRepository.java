@@ -9,7 +9,7 @@ public interface AuthRepository {
 
     void signOut();
 
-    Task delete();
+    void delete();
 
     Task createUserAuth(String email, String pass);
 

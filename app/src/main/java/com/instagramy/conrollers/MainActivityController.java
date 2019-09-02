@@ -9,13 +9,10 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.Navigation;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.instagramy.R;
 import com.instagramy.activities.LoginActivity;
 import com.instagramy.activities.MainActivity;
@@ -129,13 +126,9 @@ public class MainActivityController {
         String key = manager.getAuthRepository().getCurrentUser().getDisplayName();
         manager.getProfileRepository().deleteUser(key);
         manager.getPostRepository().deleteAllPostsByUserKey(key);
-        manager.getAuthRepository().delete().addOnCompleteListener(new OnCompleteListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                Intent logginActivity = new Intent(mainActivity, LoginActivity.class);
-                mainActivity.startActivity(logginActivity);
-                mainActivity.finish();
-            }
-        });
+        manager.getAuthRepository().delete();
+        Intent logginActivity = new Intent(mainActivity, LoginActivity.class);
+        mainActivity.startActivity(logginActivity);
+        mainActivity.finish();
     }
 }

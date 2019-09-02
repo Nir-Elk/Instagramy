@@ -1,5 +1,6 @@
 package com.instagramy.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
@@ -60,22 +62,31 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+
         this.redrawMap();
     }
 
 
+    @SuppressLint("CheckResult")
     void redrawMap() {
         googleMap.clear();
+
+
         // Tel Aviv
         LatLng centerMap = new LatLng(32.0853, 34.7818);
-
         if (posts != null) {
-            for (Post post : posts) {
+            for (final Post post : posts) {
                 Double lat = post.getLocationLatitude();
                 Double lng = post.getLocationLongitude();
                 if (lat != null && lng != null) {
                     LatLng position = new LatLng(lat, lng);
-                    this.googleMap.addMarker(new MarkerOptions().position(position).title(post.getTitle()));
+                    googleMap.addMarker(
+                            new MarkerOptions()
+                                    .position(position)
+                                    .title(post.getTitle())
+                                    .snippet(post.getDescription())
+                    );
+
                 }
             }
 
@@ -84,6 +95,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 centerMap = new LatLng(newestPost.getLocationLatitude(), newestPost.getLocationLongitude());
             }
         }
+
+        this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if (marker.isInfoWindowShown()) {
+                    marker.hideInfoWindow();
+                } else {
+                    marker.showInfoWindow();
+                }
+                return true;
+            }
+        });
+
 
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(centerMap));
         this.googleMap.setMinZoomPreference(10);
