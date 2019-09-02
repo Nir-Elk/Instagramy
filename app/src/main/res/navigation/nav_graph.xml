@@ -90,7 +90,8 @@
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@+id/homeFragment" />
     <action
         android:id="@+id/action_global_homeFragment"
         app:destination="@id/homeFragment"
@@ -104,7 +105,8 @@
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@+id/homeFragment" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.instagramy.fragments.ProfileFragment"
@@ -137,6 +139,7 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@+id/homeFragment"
         app:popUpToInclusive="false" />
     <fragment
         android:id="@+id/groupDetailsFragment"
@@ -155,7 +158,8 @@
     </fragment>
     <action
         android:id="@+id/action_global_mapFragment"
-        app:destination="@id/mapFragment" />
+        app:destination="@id/mapFragment"
+        app:popUpTo="@+id/homeFragment" />
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.instagramy.activities.AboutActivity"
@@ -166,24 +170,6 @@
         android:name="com.instagramy.fragments.EditProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
-    <fragment
-        android:id="@+id/errorMessageFragment"
-        android:name="com.instagramy.ErrorMessageFragment"
-        android:label="fragment_error_message"
-        tools:layout="@layout/fragment_error_message" >
-        <argument
-            android:name="message"
-            app:argType="string"
-            android:defaultValue="Some error occurd" />
-    </fragment>
-    <action
-        android:id="@+id/action_global_errorMessageFragment"
-        app:destination="@id/errorMessageFragment"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popUpTo="@id/errorMessageFragment"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     <action
         android:id="@+id/action_global_postFragment"
         app:destination="@id/postFragment"
