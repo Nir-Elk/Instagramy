@@ -10,26 +10,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.navigation.Navigation;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
-import com.instagramy.models.DrawableResource;
+import com.instagramy.helpers.PostAdapterHelper;
 import com.instagramy.models.Favorite;
 import com.instagramy.models.Post;
 import com.instagramy.repositories.AuthRepository;
@@ -41,11 +32,13 @@ import com.instagramy.view.models.FavoritesViewModel;
 
 import java.util.List;
 
+import static com.instagramy.helpers.PostAdapterHelper.populatePostView;
+
 public class PostFragment extends Fragment {
     FavoritesViewModel favoritesViewModel;
     private PostRepository postRepository;
     private AuthRepository authRepository;
-    private TextView postTitle, postDescription, postUserName, postYummies, postImageErrorMessage;
+    private TextView postTitle, postDescription, postUserName, postYummies;
     private ImageView postImage, postUserImage, postMapBtn, postYummiBtn, postFavoriteBtn;
     private ProgressBar postImageProgressBar, profileImageProgressBar;
     private View view;
@@ -136,129 +129,43 @@ public class PostFragment extends Fragment {
         return view;
     }
 
-    public View.OnClickListener showPhotoDialogListener(final Drawable drawable) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                View mView = getLayoutInflater().inflate(R.layout.main_photo_dialog, null);
-                PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
-                photoView.setImageDrawable(drawable);
-                mBuilder.setView(mView);
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
-            }
-        };
+    public void showBigImageDialog(final Drawable drawable) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+        View mView = getLayoutInflater().inflate(R.layout.main_photo_dialog, null);
+        PhotoView photoView = mView.findViewById(R.id.mainPhotoView);
+        photoView.setImageDrawable(drawable);
+        mBuilder.setView(mView);
+        AlertDialog mDialog = mBuilder.create();
+        mDialog.show();
     }
 
-    public void updateView() {
-        postTitle.setText(post.getTitle());
-        postDescription.setText(post.getDescription());
-        postYummies.setText(String.valueOf(post.getYummies()));
-        postUserName.setText(post.getUserName());
 
-        if (getContext() != null) {
-            if (postImageProgressBar.getVisibility() == View.VISIBLE) {
-                final String pictureUrl = post.getPicture();
-                drawableRepository.getDrawableResource(pictureUrl.hashCode()).observe(mainActivity, new Observer<DrawableResource>() {
+    private void updateView() {
+        populatePostView(
+                mainActivity,
+                mainActivity.getApplicationContext(),
+                post,
+                favoritesViewModel,
+                drawableRepository,
+                postRepository,
+                authRepository,
+                postYummies,
+                postTitle,
+                postUserName,
+                postImage,
+                postUserImage,
+                postYummiBtn,
+                postMapBtn,
+                postFavoriteBtn,
+                profileImageProgressBar,
+                postImageProgressBar,
+                post.alreadyYummi(authRepository.getCurrentUser().getEmail()),
+                postDescription, new PostAdapterHelper.ShowDialog() {
                     @Override
-                    public void onChanged(DrawableResource drawableResource) {
-                        if (drawableResource == null) {
-                            Glide.with(getContext())
-                                    .load(pictureUrl)
-                                    .listener(new RequestListener<Drawable>() {
-                                        @Override
-                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                            postImageProgressBar.setVisibility(View.GONE);
-                                            postImageErrorMessage.setVisibility(View.VISIBLE);
-                                            return false;
-                                        }
-
-                                        @Override
-                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                            postImageProgressBar.setVisibility(View.GONE);
-                                            drawableRepository.insertDrawable(new DrawableResource(pictureUrl.hashCode(), resource));
-                                            postImage.setOnClickListener(showPhotoDialogListener(resource));
-                                            return false;
-                                        }
-                                    }).into(postImage);
-                        } else {
-                            postImageProgressBar.setVisibility(View.GONE);
-                            postImage.setImageDrawable(drawableResource.getDrawable());
-                            postImage.setOnClickListener(showPhotoDialogListener(drawableResource.getDrawable()));
-                        }
+                    public void show(Drawable drawable) {
+                        showBigImageDialog(drawable);
                     }
                 });
-            }
-
-            if (profileImageProgressBar.getVisibility() == View.VISIBLE) {
-                final String profilePictureUrl = post.getUserimg();
-                drawableRepository.getDrawableResource(profilePictureUrl.hashCode()).observe(mainActivity, new Observer<DrawableResource>() {
-                    @Override
-                    public void onChanged(final DrawableResource drawableResource) {
-                        if (drawableResource == null) {
-                            Glide.with(getContext()).load(post.getUserimg())
-                                    .apply(RequestOptions.circleCropTransform())
-                                    .listener(new RequestListener<Drawable>() {
-                                        @Override
-                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                            return false;
-                                        }
-
-                                        @Override
-                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                            drawableRepository.insertDrawable(new DrawableResource(profilePictureUrl.hashCode(), resource));
-                                            profileImageProgressBar.setVisibility(View.INVISIBLE);
-                                            return false;
-                                        }
-                                    })
-                                    .into(postUserImage);
-                        } else {
-                            Glide.with(mainActivity).load(drawableResource.getDrawable()).apply(RequestOptions.circleCropTransform()).into(postUserImage);
-                            profileImageProgressBar.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                });
-            }
-        }
-
-        postYummiBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = authRepository.getCurrentUser().getEmail();
-                postRepository.updateYummies(post.getKey(), post.toggleYummi(email));
-                if (post.alreadyYummi(email)) {
-                    postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
-                    mainActivity.showMessage("Yummi :)");
-                } else {
-                    postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
-                    mainActivity.showMessage("Yummi removed");
-                }
-            }
-        });
-        if (post.getUserId().equals(authRepository.getCurrentUser().getDisplayName())) {
-            mainActivity.getMenuHelper().switchToEditPostToolBar();
-            final NavGraphDirections.ActionGlobalEditPostFragment editPostAction = NavGraphDirections.actionGlobalEditPostFragment(post.getKey());
-            mainActivity.getMenuHelper().setEditPostAction(editPostAction);
-            mainActivity.getMenuHelper().setDeletePostRunnableAction(new Runnable() {
-                @Override
-                public void run() {
-                    postRepository.deletePost(post.getKey());
-                    mainActivity.getMenuHelper().switchToHomeToolBar();
-                }
-            });
-        } else {
-            mainActivity.getMenuHelper().switchToHomeToolBar();
-        }
-
-        final NavGraphDirections.ActionGlobalMapFragment mapAction = PostFragmentDirections.actionGlobalMapFragment();
-        Post.PostList postList = new Post.PostList();
-        postList.add(post);
-        mapAction.setPosts(postList);
-        postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
-        final PostFragmentDirections.ActionPostFragmentToProfileFragment profileAction = PostFragmentDirections.actionPostFragmentToProfileFragment(post.getUserId());
-        postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
-        postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
     }
 
 }

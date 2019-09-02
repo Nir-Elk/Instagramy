@@ -1,45 +1,29 @@
 package com.instagramy.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
-import com.instagramy.NavGraphDirections;
 import com.instagramy.R;
 import com.instagramy.activities.MainActivity;
-import com.instagramy.fragments.MainFragmentDirections;
-import com.instagramy.models.DrawableResource;
-import com.instagramy.models.Favorite;
 import com.instagramy.models.Post;
 import com.instagramy.repositories.AuthRepository;
 import com.instagramy.repositories.DrawableRepository;
 import com.instagramy.repositories.PostRepository;
 import com.instagramy.repositories.RepositoryManager;
-import com.instagramy.utils.HashSets;
 import com.instagramy.view.models.FavoritesViewModel;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import static com.instagramy.helpers.PostAdapterHelper.populatePostView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
     private Context mContext;
@@ -47,7 +31,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public FavoritesViewModel favoritesViewModel;
     public DrawableRepository drawableRepository;
     AppCompatActivity activity;
-    Set<String> favorites = new HashSet<>();
 
     public List<Post> getmData() {
         return mData;
@@ -73,162 +56,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return new MyViewHolder(row);
     }
 
-    private boolean ifLiked(final int position, String email) {
-        return mData.get(position).alreadyYummi(email);
-    }
-
-    private void addToUserSavedPosts(Favorite favorite) {
-        if (userAlreadySavedThisPost(favorite)) {
-            favoritesViewModel.delete(favorite);
-            showMessage("Removed from your manches!");
-        } else {
-            favoritesViewModel.insert(favorite);
-            showMessage("Added to your manches!");
-        }
-    }
-
-    private boolean userAlreadySavedThisPost(Favorite favorite) {
-        return favorites.contains(favorite.getPostId());
-    }
-
-    private void onFavoriteItemChanged(@NonNull final MyViewHolder holder, String key) {
-    }
-
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        final Favorite favorite = new Favorite(mData.get(position).getKey());
-
-        favoritesViewModel.getAllLinks().observe(activity, new Observer<List<Favorite>>() {
-            @Override
-            public void onChanged(List<Favorite> favorites) {
-
-                final boolean isSavedThisPost = HashSets.convertToLiteWeigtSet(favorites).contains(favorite.getPostId());
-
-                holder.postFavoriteBtn.setImageResource(isSavedThisPost ? R.drawable.ic_favorite_svgrepo_com : R.drawable.ic_favorite_dark);
-
-                holder.postFavoriteBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isSavedThisPost) {
-                            favoritesViewModel.delete(favorite);
-                            showMessage("Removed from your Manches");
-                        } else {
-                            favoritesViewModel.insert(favorite);
-                            showMessage("Added to your Manches");
-                        }
-                    }
-                });
-            }
-        });
-
-        if (ifLiked(position, authRepository.getCurrentUser().getEmail())) {
-            holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
-        } else {
-            holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
-        }
-        holder.postUserName.setText(mData.get(position).getUserName());
-        holder.postTitle.setText(mData.get(position).getTitle());
-
-        final String profileImageUrl = mData.get(position).getUserimg();
-
-        if (holder.postProfileImagePreloader.getVisibility() == View.VISIBLE) {
-            drawableRepository.getDrawableResource(profileImageUrl.hashCode()).observe(activity, new Observer<DrawableResource>() {
-                @Override
-                public void onChanged(DrawableResource drawableResource) {
-                    if (drawableResource == null) {
-                        Glide.with(mContext).load(mData.get(position).getUserimg())
-                                .apply(RequestOptions.circleCropTransform())
-                                .listener(new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        holder.postProfileImagePreloader.setVisibility(View.INVISIBLE);
-                                        drawableRepository.insertDrawable(new DrawableResource(profileImageUrl.hashCode(), resource));
-                                        return false;
-                                    }
-                                })
-                                .into(holder.postUserImage);
-
-                    } else {
-                        holder.postProfileImagePreloader.setVisibility(View.INVISIBLE);
-                        Glide.with(mContext).load(drawableResource.getDrawable()).apply(RequestOptions.circleCropTransform()).into(holder.postUserImage);
-                    }
-                }
-            });
-        }
-
-        holder.postYummies.setText(String.valueOf(mData.get(position).getYummies()));
-        holder.postImageProgressBar.setVisibility(View.VISIBLE);
-        holder.postImageErrorMessage.setVisibility(View.INVISIBLE);
-
-        final String pictureUrl = mData.get(position).getPicture();
-
-
-        if (holder.postImageProgressBar.getVisibility() == View.VISIBLE) {
-            drawableRepository.getDrawableResource(pictureUrl.hashCode()).observe(activity, new Observer<DrawableResource>() {
-                @Override
-                public void onChanged(DrawableResource drawableResource) {
-                    if (drawableResource == null) {
-                        Glide.with(mContext)
-                                .load(pictureUrl)
-                                .listener(new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        holder.postImageProgressBar.setVisibility(View.GONE);
-                                        holder.postImageErrorMessage.setVisibility(View.VISIBLE);
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        holder.postImageProgressBar.setVisibility(View.GONE);
-                                        drawableRepository.insertDrawable(new DrawableResource(pictureUrl.hashCode(), resource));
-                                        return false;
-                                    }
-                                }).into(holder.postImage);
-                    } else {
-                        holder.postImageProgressBar.setVisibility(View.GONE);
-                        holder.postImage.setImageDrawable(drawableResource.getDrawable());
-                    }
-                }
-            });
-
-            holder.postYummiBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String email = authRepository.getCurrentUser().getEmail();
-                    postRepository.updateYummies(mData.get(position).getKey(), mData.get(position).toggleYummi(email));
-                    if (ifLiked(position, email)) {
-                        showMessage("Yummi :)");
-                        holder.postYummiBtn.setImageResource(R.mipmap.tongue_foreground);
-                    } else {
-                        holder.postYummiBtn.setImageResource(R.mipmap.not_liked_foreground);
-                        showMessage("Yummi removed");
-                    }
-                }
-            });
-        }
-
-        final NavGraphDirections.ActionGlobalPostFragment postAction = NavGraphDirections.actionGlobalPostFragment(mData.get(position).getKey());
-
-        final View.OnClickListener toPostClickListener = Navigation.createNavigateOnClickListener(postAction);
-        holder.postTitle.setOnClickListener(toPostClickListener);
-        holder.postImage.setOnClickListener(toPostClickListener);
-
-        final MainFragmentDirections.ActionHomeFragmentToProfileFragment profileAction = MainFragmentDirections.actionHomeFragmentToProfileFragment(mData.get(position).getUserId());
-        holder.postUserName.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
-        holder.postUserImage.setOnClickListener(Navigation.createNavigateOnClickListener(profileAction));
-
-        final NavGraphDirections.ActionGlobalMapFragment mapAction = MainFragmentDirections.actionGlobalMapFragment();
-        Post.PostList postList = new Post.PostList();
-        postList.add(mData.get(position));
-        mapAction.setPosts(postList);
-        holder.postMapBtn.setOnClickListener(Navigation.createNavigateOnClickListener(mapAction));
-
+        populatePostView(activity,
+                mContext,
+                mData.get(position),
+                favoritesViewModel,
+                drawableRepository,
+                postRepository,
+                authRepository,
+                holder.postYummies,
+                holder.postTitle,
+                holder.postUserName,
+                holder.postImage,
+                holder.postUserImage,
+                holder.postYummiBtn,
+                holder.postMapBtn,
+                holder.postFavoriteBtn,
+                holder.postProfileImagePreloader,
+                holder.postImageProgressBar,
+                mData.get(position).alreadyYummi(authRepository.getCurrentUser().getEmail()),
+                null,
+                null
+        );
     }
 
     @Override
@@ -275,7 +125,4 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return position;
     }
 
-    private void showMessage(String message) {
-        Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
-    }
 }
